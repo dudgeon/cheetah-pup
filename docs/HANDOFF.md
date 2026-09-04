@@ -1,7 +1,23 @@
 # Cheetah Pup — Handoff Document
 
-**Status**: Pre-design. Research complete, key architecture decisions made, repo scaffolded.
-No CAD, PCB, firmware, or training code exists yet — that's the next session's job.
+**Status** (2026-09-04): Phase 1 in progress. Research complete, architecture decided, repo
+scaffolded, design library built and tested, and three leg-architecture candidates published for
+review (DR-01). **Current gate: the owner's candidate selection.** After that: lock the design,
+generate the MuJoCo model, validate, build the RL environment.
+
+## 0. Progress
+
+| Phase | State | Where |
+|---|---|---|
+| 0 · Repo & tooling | done | this repo; `vendor/README.md` |
+| 1 · Kinematic validation | **in progress** — candidates sized and published, MJCF next | `docs/design/01-candidates.md`, `cheetah_pup/`, review page https://claude.ai/code/artifact/6b9c92f0-98d5-4cf1-928c-98a28d699ba4 |
+| 2 · Mechanical CAD | not started (build123d confirmed working here) | — |
+| 3 · Electrical / PCB | not started; volumes and power rails fixed in the design library | `cheetah_pup/electronics.py` |
+| 4 · Firmware | not started | — |
+| 5 · RL training | not started; STS3215 actuator model available from BAM | `vendor/bam` |
+| 6 · Bring-up | not started | — |
+
+Keep `docs/DESIGN_LOG.md` current: one dated entry per decision or milestone.
 
 **Purpose of this document**: everything needed to pick up this project cold and start the
 detailed spec-and-build phase, without re-deriving decisions already made or re-running research
@@ -65,6 +81,10 @@ ever need to revisit one.
 | **Experience / division of labor** | Claude/Fable drives ~95% of CAD, 100% of PCB/firmware/RL design; owner has CAD/DFM experience (not advanced linkages) and will do manufacturability refinement in Fusion 360 later | — | Stated directly. Electronics, embedded firmware, and ML/RL were **not** selected as areas of existing hands-on experience — treat those as fully Claude/Fable-driven too, not just CAD. The plan below is written assuming heavy autonomous execution with clear checkpoints for physical assembly (the one thing that must be done by human hands) and design review. |
 | **Budget** | $600–$1,500 (excluding the 3D printer already owned) | — | See §6 for a rough BOM sanity check against this. |
 | **License / distribution intent** | Personal project, **likely to open-source publicly** | Pure personal use; commercial | Drives §9.2 (unlicensed-repo caveats) and the recommended MIT license on this repo's own code (added — see root `LICENSE`). Since we're not depending on Microduck's CC BY-SA-NC assets at all (different hardware base), that restriction doesn't currently constrain us — but don't pull anything from `pollen-robotics/microduck_rl`'s asset files later without re-checking. |
+| **Servo data source** (Phase 1) | STS3215 geometry measured from Open Duck Mini v2's case meshes; electrical/friction model from BAM's identified 7.4 V parameters | datasheet values from memory | Measured meshes and an identified model beat a remembered datasheet; both are vendored (`vendor/open_duck_mini`, `vendor/bam`) and encoded in `cheetah_pup/servo.py`. Design margins use the *datasheet* stall (1.91 N·m), not BAM's more optimistic implied stall. |
+| **Sizing design point** (Phase 1) | Trot at 1.4 Hz, 60 mm step, 25 mm swing; loads = ¼ weight standing (≤ 25 % of stall) and ½ weight × 1.5 dynamic at trot peak (≤ 60 % of stall) | 1.6 Hz trot | 1.6 Hz pushed the knee past the STS3215's 5.29 rad/s cap even in direct drive. The cap, not torque, limits gait speed with these servos — accepted as the walker trade-off. |
+| **Electronics layout** (Phase 1) | Two layers: abad servos + battery low, Pi 5 (transverse) + PCB high | Pi lengthwise | Transverse Pi saves ~40 mm of body length and keeps hip-to-hip near Mini Cheetah's 1.82× thigh ratio (2.0×). |
+| **Knee-drive architecture** | **pending — DR-01** (A direct / B coaxial + belt / C coaxial + pushrod) | — | Recommendation A; see `docs/design/01-candidates.md`. |
 
 ---
 
@@ -234,18 +254,20 @@ real failure modes.
 
 ## 8. Immediate next steps
 
-For whoever (Fable 5.1 or otherwise) picks this up next:
-
-1. Read this document and `docs/research-appendix.md` in full.
-2. Skim `vendor/open_duck_mini`'s BOM/CAD and `vendor/odri_solo`'s kinematics — direct primary
-   sources beat this document's summaries for implementation-level detail.
-3. Verify `build123d` (or CadQuery fallback) installs cleanly in the current sandbox — the CAD
-   toolchain decision in §3 assumed pip-installability but wasn't fully build-tested this
-   session.
-4. Start Phase 1: hand-author the primitive-geometry MJCF and get a first standing/walking policy
-   training. This is the fastest path to a real go/no-go signal on the whole project.
-5. Keep this document current as decisions get made or revised — it's meant to stay the
-   single source of truth, not a one-time snapshot.
+1. **Owner**: pick a candidate and size on the DR-01 review page (or say it in chat). "Save
+   decision" writes to the page's store; Claude reads it back with `read_db` on
+   `feedback/current`.
+2. **Lock the design**: write `docs/design/locked.json` from the decision and add a `LOCKED`
+   preset in `cheetah_pup/design.py`; log it in `docs/DESIGN_LOG.md`.
+3. **MJCF generator** (`cheetah_pup/mjcf.py`): body and legs as primitives with the component
+   masses from `analysis.mass_model`, joint limits, STS3215 position actuators using BAM's
+   parameters (kp, velocity cap, friction, armature), foot contacts. Validate in MuJoCo
+   (`~/venv-sim` here, or `pip install -e ".[sim]"`): stand, then play the IK gaits from
+   `cheetah_pup/gait.py` open-loop and confirm joint torques/speeds agree with the quasi-static
+   sizing.
+4. **RL environment**: MuJoCo Playground (MJX) or mjlab per §4.3; observation/action spaces for
+   12 DOF; reward terms for a quadruped trot; domain randomization scaffold; ONNX export.
+5. Keep this document, the design log, and the task list current as decisions get made.
 
 ---
 
@@ -269,16 +291,15 @@ that was directly copied/adapted from those three repos. Until then, treat them 
 architecture/approach references only (already reflected in `vendor/README.md`'s usage rules).
 **Needs the owner's input** on whether/when to make that outreach.
 
-### 9.3 CAD toolchain final confirmation
-build123d was chosen over CadQuery based on general 2025-era community momentum, not a
-build-tested check in this environment. Confirm it actually installs and works here before
-committing Phase 2 work to it; fall back to CadQuery (same STEP export capability) if not.
+### 9.3 CAD toolchain — resolved 2026-09-04
+build123d 0.11.1 installs and runs in this sandbox (`~/venv-cad`); STEP export is available for the
+owner's Fusion 360 pass. CadQuery remains the fallback if a later version breaks.
 
-### 9.4 Training stack: mjlab vs. MuJoCo Playground
-§4.3 leans toward mjlab given cloud GPU access and the closer match to Microduck's actual stack,
-but this wasn't build-tested either. If mjlab setup proves friction-heavy, MuJoCo Playground is a
-fully capable fallback with a lower barrier to entry — don't burn excessive time fighting mjlab
-setup issues before falling back.
+### 9.4 Training stack: mjlab vs. MuJoCo Playground — partly resolved
+MuJoCo 3.12 installs and steps in this sandbox (`~/venv-sim`), so the Phase 1 model validation runs
+here on CPU. The choice between mjlab and MuJoCo Playground for GPU training is still open and
+belongs to Phase 5; §4.3 leans toward mjlab given cloud GPU access, with Playground as the fallback
+if setup friction is high.
 
 ### 9.5 [Low priority] Local/hybrid GPU augmentation for training
 Tracked as task #9 in this session's task list. Cloud-GPU-first is the current plan; revisit only
@@ -292,8 +313,11 @@ No decision was made on whether this robot gets a head, tail, or any non-locomot
 expressiveness (Open Duck Mini has a 4-DOF neck for character; Mini Cheetah has none). Not
 mentioned in the original brief — treat as out of scope unless the owner raises it.
 
-### 9.7 Target size/mass
-Deliberately not fixed in §4.1 — Phase 1's torque-budget analysis should determine this, not the
-reverse. If Phase 1 analysis doesn't converge on a clear answer, that's a **needs owner input**
-moment (rough size preference, e.g. "roughly duck-sized" vs. "bigger, if the torque budget
-supports it").
+### 9.7 Target size/mass — narrowed by DR-01
+The torque/speed analysis converged: size M (thigh 90 mm, ~1.45 kg, 120 mm hip height) is the
+baseline, with S (×0.85) and L (×1.15) all inside the servo allowances. Final size is part of the
+owner's DR-01 selection (**needs owner input**, in progress).
+
+### 9.8 Knee-drive architecture — needs owner input (DR-01)
+A (direct), B (coaxial + belt), or C (coaxial + pushrod); analysis and recommendation in
+`docs/design/01-candidates.md`. The sim model waits on this.

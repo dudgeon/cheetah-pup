@@ -1,0 +1,910 @@
+<title>Cheetah Pup Design Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --paper: #F4F3EF; --paper-2: #ECEAE3; --paper-3: #E2DFD6;
+    --ink: #1F2328; --ink-2: #5C626B; --ink-3: #8A8F97;
+    --line: #CBC8BF; --line-2: #B3AFA4;
+    --gold: #B8862B; --gold-ink: #7A5A18; --gold-tint: rgba(184,134,43,.16);
+    --servo: #2B2D31; --servo-edge: #101214; --servo-far: #9A9DA4;
+    --ok: #3E8E5A; --bad: #C0453A;
+    --pi: #2F8A85; --batt: #4B6BA0; --pcb: #5E8C3A; --imu: #7B5AA6;
+    --shadow: 0 1px 0 rgba(0,0,0,.03), 0 10px 28px -16px rgba(20,24,30,.35);
+    --display: "Barlow Semi Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+    --body: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+    --mono: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --paper: #1B1D21; --paper-2: #23262B; --paper-3: #2C3037;
+      --ink: #E8E5DD; --ink-2: #ABA79E; --ink-3: #7E7B74;
+      --line: #3B3F46; --line-2: #4C515A;
+      --gold: #E0A83A; --gold-ink: #F0C466; --gold-tint: rgba(224,168,58,.18);
+      --servo: #3B3E45; --servo-edge: #B0B4BC; --servo-far: #5A5E67;
+      --ok: #5DB27A; --bad: #E06A60;
+      --pi: #4FB3AD; --batt: #7C9AD0; --pcb: #8BB86A; --imu: #A88BD6;
+      --shadow: 0 1px 0 rgba(0,0,0,.2), 0 10px 28px -16px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --paper: #1B1D21; --paper-2: #23262B; --paper-3: #2C3037;
+    --ink: #E8E5DD; --ink-2: #ABA79E; --ink-3: #7E7B74;
+    --line: #3B3F46; --line-2: #4C515A;
+    --gold: #E0A83A; --gold-ink: #F0C466; --gold-tint: rgba(224,168,58,.18);
+    --servo: #3B3E45; --servo-edge: #B0B4BC; --servo-far: #5A5E67;
+    --ok: #5DB27A; --bad: #E06A60;
+    --pi: #4FB3AD; --batt: #7C9AD0; --pcb: #8BB86A; --imu: #A88BD6;
+    --shadow: 0 1px 0 rgba(0,0,0,.2), 0 10px 28px -16px rgba(0,0,0,.6);
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.45; }
+  a { color: var(--gold-ink); }
+  h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.1; margin: 0; text-wrap: balance; }
+  h1 { font-size: 30px; letter-spacing: .01em; }
+  h2 { font-size: 18px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-2); }
+  h3 { font-size: 15px; }
+  p { margin: 0; }
+  .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .num { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 13px; }
+  .muted { color: var(--ink-2); }
+  .small { font-size: 13px; }
+  .sheet { max-width: 1340px; margin: 0 auto; padding: 20px 22px 56px; display: grid; grid-template-columns: 292px minmax(0, 1fr); gap: 22px; }
+  @media (max-width: 1040px) { .sheet { grid-template-columns: 1fr; } .rail { position: static !important; } }
+
+  /* ---- title block ---- */
+  .titleblock { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) auto; border: 1px solid var(--line-2); background: var(--paper-2); }
+  .titleblock .lead { padding: 16px 20px; display: flex; flex-direction: column; gap: 6px; }
+  .titleblock .lead .eyebrow { font-family: var(--display); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-ink); }
+  .titleblock .lead p { max-width: 68ch; color: var(--ink-2); }
+  .tb { display: grid; grid-template-columns: repeat(3, auto); border-left: 1px solid var(--line-2); }
+  .tb div { padding: 8px 14px; border-left: 1px solid var(--line); border-top: 1px solid var(--line); min-width: 112px; }
+  .tb div:nth-child(-n+3) { border-top: 0; }
+  .tb div:nth-child(3n+1) { border-left: 0; }
+  .tb .k { display: block; font-family: var(--display); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+  .tb .v { display: block; font-family: var(--mono); font-size: 13px; margin-top: 2px; }
+  @media (max-width: 760px) { .titleblock { grid-template-columns: 1fr; } .tb { border-left: 0; border-top: 1px solid var(--line-2); } }
+
+  /* ---- rail ---- */
+  .rail { position: sticky; top: 14px; align-self: start; display: flex; flex-direction: column; gap: 12px; }
+  .panel { background: var(--paper-2); border: 1px solid var(--line); padding: 12px 14px 14px; }
+  .panel h2 { font-size: 12px; margin-bottom: 10px; }
+  .seg { display: grid; gap: 6px; }
+  .seg.three { grid-template-columns: repeat(3, 1fr); }
+  .seg button, .btn { appearance: none; font: inherit; font-family: var(--display); font-weight: 600; font-size: 14px; letter-spacing: .02em; color: var(--ink); background: var(--paper); border: 1px solid var(--line-2); padding: 8px 10px; cursor: pointer; text-align: left; }
+  .seg button.on { background: var(--gold-tint); border-color: var(--gold); box-shadow: inset 0 -3px 0 var(--gold); }
+  .seg button:focus-visible, .btn:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .seg button .sub { display: block; font-family: var(--body); font-weight: 400; font-size: 12px; color: var(--ink-2); letter-spacing: 0; }
+  .btn { text-align: center; }
+  .btn.primary { background: var(--gold); border-color: var(--gold); color: #1A1408; }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .ctl { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: baseline; gap: 8px; margin-top: 9px; }
+  .ctl label { font-size: 13px; color: var(--ink-2); }
+  .ctl .val { font-family: var(--mono); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+  .ctl input[type=range] { grid-column: 1 / -1; width: 100%; accent-color: var(--gold); margin: 0; }
+  .ctl.off { opacity: .45; }
+  .note { font-size: 12.5px; color: var(--ink-2); margin-top: 8px; line-height: 1.4; }
+  .rec { display: inline-block; font-family: var(--display); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--gold-ink); border: 1px solid var(--gold); padding: 1px 6px; margin-left: 6px; vertical-align: middle; }
+
+  /* ---- main ---- */
+  .main { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+  .fig { background: var(--paper-2); border: 1px solid var(--line); padding: 10px 12px 8px; }
+  .fig .cap { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+  .fig .cap h3 { font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+  .fig .cap .live { font-family: var(--mono); font-size: 12px; color: var(--ink-2); }
+  .fig svg { width: 100%; height: auto; display: block; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 860px) { .two { grid-template-columns: 1fr; } }
+
+  /* svg part styles (all take theme tokens) */
+  svg text { font-family: var(--mono); font-size: 11px; fill: var(--ink-2); }
+  svg .lbl { font-family: var(--display); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; fill: var(--ink-3); }
+  svg .ink { stroke: var(--ink); fill: none; }
+  svg .shell { fill: var(--paper); stroke: var(--ink); stroke-width: 1.4; }
+  svg .servo { fill: var(--servo); stroke: var(--servo-edge); stroke-width: 1; }
+  svg .servo.ghost { fill: none; stroke: var(--servo-edge); stroke-dasharray: 3 3; }
+  svg .shaft { fill: var(--paper); stroke: var(--servo-edge); stroke-width: 1; }
+  svg .link { fill: var(--paper-3); stroke: var(--ink); stroke-width: 1.2; stroke-linejoin: round; }
+  svg .bracket { fill: var(--paper-3); stroke: var(--ink-2); stroke-width: 1; }
+  svg .joint { fill: var(--gold); stroke: var(--ink); stroke-width: 1; }
+  svg .foot { fill: var(--ink); }
+  svg .belt { stroke: var(--gold-ink); stroke-width: 1.4; fill: none; }
+  svg .pulley { fill: none; stroke: var(--gold-ink); stroke-width: 1.2; }
+  svg .rod { stroke: var(--gold-ink); stroke-width: 2; stroke-linecap: round; }
+  svg .far { opacity: .42; }
+  svg .far .servo { fill: var(--servo-far); }
+  svg .ground { stroke: var(--ink); stroke-width: 1.2; }
+  svg .tick { stroke: var(--ink-3); stroke-width: 1; }
+  svg .axis { stroke: var(--line-2); stroke-width: 1; stroke-dasharray: 4 3; }
+  svg .dim { stroke: var(--ink-3); stroke-width: .8; fill: none; }
+  svg .dimt { fill: var(--ink-2); font-size: 10.5px; }
+  svg .pi { fill: var(--pi); fill-opacity: .28; stroke: var(--pi); stroke-width: 1; }
+  svg .batt { fill: var(--batt); fill-opacity: .28; stroke: var(--batt); stroke-width: 1; }
+  svg .pcb { fill: var(--pcb); fill-opacity: .28; stroke: var(--pcb); stroke-width: 1; }
+  svg .imu { fill: var(--imu); fill-opacity: .35; stroke: var(--imu); stroke-width: 1; }
+  svg .below { stroke-dasharray: 3 2; }
+  svg .support { fill: var(--gold); fill-opacity: .16; stroke: var(--gold); stroke-width: 1; }
+  svg .com { stroke: var(--bad); stroke-width: 1.4; fill: none; }
+  svg .trace { stroke: var(--ink-3); stroke-width: .8; fill: none; stroke-dasharray: 2 2; }
+
+  /* gait bar */
+  .gaitbar { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 10px 12px; background: var(--paper-2); border: 1px solid var(--line); }
+  .gaitbar .seg { display: flex; gap: 4px; flex-wrap: wrap; }
+  .gaitbar .seg button { padding: 5px 9px; font-size: 13px; }
+  .gaitbar .btn { padding: 5px 10px; font-size: 13px; }
+  .gaitbar input[type=range] { width: 160px; accent-color: var(--gold); }
+  .gaitbar .live { font-family: var(--mono); font-size: 12px; color: var(--ink-2); margin-left: auto; }
+
+  /* metrics */
+  .metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 1240px) { .metrics { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+  @media (max-width: 760px) { .metrics { grid-template-columns: 1fr; } }
+  .kv { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 3px 12px; font-size: 13.5px; }
+  .kv dt { color: var(--ink-2); }
+  .kv dd { margin: 0; font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.cmp th, table.cmp td { padding: 4px 6px; border-bottom: 1px solid var(--line); text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  table.cmp th { font-family: var(--display); font-weight: 600; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+  table.cmp td:first-child, table.cmp th:first-child { text-align: left; font-family: var(--body); }
+  .bar { display: grid; grid-template-columns: 96px minmax(0,1fr) 78px; align-items: center; gap: 8px; font-size: 13px; margin-top: 6px; }
+  .bar .track { position: relative; height: 10px; background: var(--paper-3); border: 1px solid var(--line); }
+  .bar .fill { position: absolute; inset: 0 auto 0 0; background: var(--ink-3); }
+  .bar .fill.over { background: var(--bad); }
+  .bar .lim { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--gold); }
+  .bar .v { font-family: var(--mono); font-size: 12px; text-align: right; }
+  .checks { display: grid; gap: 4px; font-size: 13px; margin-top: 8px; }
+  .checks div { display: grid; grid-template-columns: 18px minmax(0,1fr) auto; gap: 8px; align-items: baseline; }
+  .ok { color: var(--ok); font-weight: 600; }
+  .bad { color: var(--bad); font-weight: 600; }
+  .why { font-size: 12.5px; color: var(--ink-2); margin-top: 10px; line-height: 1.45; }
+
+  /* candidates */
+  .cands { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+  @media (max-width: 860px) { .cands { grid-template-columns: 1fr; } }
+  .cand { border: 1px solid var(--line); background: var(--paper-2); padding: 12px 14px; cursor: pointer; }
+  .cand.on { border-color: var(--gold); box-shadow: inset 0 0 0 1px var(--gold); background: var(--gold-tint); }
+  .cand h3 { display: flex; align-items: baseline; gap: 8px; }
+  .cand h3 .letter { font-size: 22px; color: var(--gold-ink); font-family: var(--display); }
+  .cand ul { margin: 8px 0 0; padding-left: 16px; font-size: 13px; color: var(--ink-2); }
+  .cand ul li { margin: 2px 0; }
+  .cand .facts { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .cand .facts span { font-family: var(--mono); font-size: 12px; background: var(--paper); border: 1px solid var(--line); padding: 1px 6px; }
+
+  /* decision */
+  .decision { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 18px; }
+  @media (max-width: 860px) { .decision { grid-template-columns: 1fr; } }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .chips label { font-size: 13px; border: 1px solid var(--line-2); padding: 4px 9px; cursor: pointer; background: var(--paper); }
+  .chips label:has(input:checked) { background: var(--gold-tint); border-color: var(--gold); }
+  .chips input { display: none; }
+  textarea { width: 100%; min-height: 96px; font: inherit; font-size: 14px; padding: 8px 10px; background: var(--paper); color: var(--ink); border: 1px solid var(--line-2); resize: vertical; }
+  .status { font-size: 13px; margin-top: 8px; min-height: 1.4em; }
+  pre.summary { font-family: var(--mono); font-size: 12px; white-space: pre-wrap; background: var(--paper); border: 1px solid var(--line); padding: 10px; margin: 8px 0 0; max-height: 260px; overflow: auto; }
+  .joints { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 6px; }
+  .joints th, .joints td { padding: 3px 6px; text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; border-bottom: 1px solid var(--line); }
+  .joints th { font-family: var(--display); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+  .joints td:first-child, .joints th:first-child { text-align: left; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 10px; font-size: 12.5px; color: var(--ink-2); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .sw { display: inline-block; width: 14px; height: 10px; border: 1px solid var(--ink-3); }
+  .legend .sw.servo { background: var(--servo); border-color: var(--servo-edge); }
+  .legend .sw.pi { background: color-mix(in srgb, var(--pi) 35%, transparent); border-color: var(--pi); }
+  .legend .sw.batt { background: color-mix(in srgb, var(--batt) 35%, transparent); border-color: var(--batt); }
+  .legend .sw.pcb { background: color-mix(in srgb, var(--pcb) 35%, transparent); border-color: var(--pcb); }
+  .legend .sw.imu { background: color-mix(in srgb, var(--imu) 40%, transparent); border-color: var(--imu); }
+  .legend .sw.support { background: var(--gold-tint); border-color: var(--gold); }
+  .legend .sw.com { background: transparent; border: 1.5px solid var(--bad); border-radius: 50%; width: 11px; height: 11px; }
+  footer.notes { grid-column: 1 / -1; font-size: 13px; color: var(--ink-2); border-top: 1px solid var(--line); padding-top: 14px; display: grid; gap: 6px; max-width: 90ch; }
+  @media (prefers-reduced-motion: reduce) { .seg button, .btn { transition: none; } }
+</style>
+
+<div class="sheet">
+  <header class="titleblock">
+    <div class="lead">
+      <span class="eyebrow">Cheetah Pup · Phase 1 · leg architecture &amp; proportions</span>
+      <h1>Three ways to hang twelve servos on a Mini Cheetah skeleton</h1>
+      <p>Same kinematics in every candidate — abduction, hip pitch, knee pitch on each of four legs, serial 2R leg, knees back — sized to the Feetech STS3215 (7.4 V) and to a body that holds a Raspberry Pi 5, a 2S 18650 pack, and the custom bus/power PCB. Pick an architecture, nudge the proportions, watch it move, then record the decision at the bottom.</p>
+    </div>
+    <div class="tb">
+      <div><span class="k">Sheet</span><span class="v">DR-01 · candidates</span></div>
+      <div><span class="k">Rev</span><span class="v" id="tb-rev">A</span></div>
+      <div><span class="k">Date</span><span class="v" id="tb-date">—</span></div>
+      <div><span class="k">Scale</span><span class="v">1.5 px : 1 mm, all views</span></div>
+      <div><span class="k">Drawn</span><span class="v">Claude · Fable 5.1</span></div>
+      <div><span class="k">Review</span><span class="v">dudgeon</span></div>
+    </div>
+  </header>
+
+  <aside class="rail">
+    <section class="panel">
+      <h2>Candidate</h2>
+      <div class="seg three" id="cand-seg">
+        <button data-cand="A">A<span class="sub">direct knee</span></button>
+        <button data-cand="B">B<span class="sub">belt knee</span></button>
+        <button data-cand="C">C<span class="sub">pushrod knee</span></button>
+      </div>
+      <div class="note" id="cand-note"></div>
+    </section>
+    <section class="panel">
+      <h2>Size</h2>
+      <div class="seg three" id="size-seg">
+        <button data-size="S">S<span class="sub">×0.85</span></button>
+        <button data-size="M">M<span class="sub">baseline</span></button>
+        <button data-size="L">L<span class="sub">×1.15</span></button>
+      </div>
+      <div class="note">Presets set the sliders below; any slider move makes it a custom variant (recorded with your feedback).</div>
+    </section>
+    <section class="panel">
+      <h2>Proportions</h2>
+      <div id="geom-controls"></div>
+    </section>
+    <section class="panel">
+      <h2>Gait parameters</h2>
+      <div id="gait-controls"></div>
+      <div class="note">Trot at these settings is the sizing case for torque and speed.</div>
+    </section>
+  </aside>
+
+  <main class="main">
+    <section class="cands" id="cands"></section>
+
+    <div class="gaitbar">
+      <div class="seg" id="gait-seg"></div>
+      <button class="btn" id="play">Pause</button>
+      <label class="small muted">Speed <select id="speed"><option value="0.25">¼×</option><option value="0.5">½×</option><option value="1" selected>1×</option></select></label>
+      <label class="small muted">Phase <input type="range" id="phase" min="0" max="1" step="0.002" value="0"></label>
+      <span class="live" id="gait-live"></span>
+    </div>
+
+    <figure class="fig" style="margin:0">
+      <div class="cap"><h3>Side elevation · left side toward viewer</h3><span class="live" id="side-live"></span></div>
+      <svg id="side" viewBox="0 0 760 420" role="img" aria-label="Side view of the quadruped: body shell with abad servos and electronics, hip clusters, thighs and shanks animated through the selected gait, with dimension lines."></svg>
+    </figure>
+
+    <div class="two">
+      <figure class="fig" style="margin:0">
+        <div class="cap"><h3>Front elevation</h3><span class="live" id="front-live"></span></div>
+        <svg id="front" viewBox="0 0 500 420" role="img" aria-label="Front view showing the body width, abad servos, hip clusters, and the legs' abduction."></svg>
+      </figure>
+      <section class="fig">
+        <div class="cap"><h3>Joint state · this frame</h3><span class="live" id="joint-live"></span></div>
+        <table class="joints"><thead><tr><th>Leg</th><th>Abad °</th><th>Hip °</th><th>Knee °</th><th>Foot x mm</th><th>Foot z mm</th><th>Phase</th></tr></thead><tbody id="joints"></tbody></table>
+        <div class="why">Angles follow the Mini Cheetah convention: hip 0° is straight down, negative swings the thigh back; positive knee flexes the shank forward, so the knee sits behind the hip–foot line. Abad positive is abduction. Foot x/z are relative to the hip axis.</div>
+        <div class="legend"><span><i class="sw servo"></i>STS3215 servo</span><span><i class="sw pi"></i>Pi 5</span><span><i class="sw batt"></i>2S 18650 + BMS</span><span><i class="sw pcb"></i>custom PCB</span><span><i class="sw imu"></i>IMU</span><span><i class="sw support"></i>support polygon</span><span><i class="sw com"></i>CoM</span></div>
+      </section>
+    </div>
+
+    <figure class="fig" style="margin:0">
+      <div class="cap"><h3>Plan · electronics bay &amp; support polygon</h3><span class="live" id="top-live"></span></div>
+      <svg id="top" viewBox="0 0 760 400" role="img" aria-label="Top view of the body layout with the Pi, battery, PCB, IMU, abad servos and hip clusters, foot positions and the current support polygon."></svg>
+    </figure>
+
+    <section class="metrics">
+      <div class="panel">
+        <h2>Mass &amp; envelope</h2>
+        <dl class="kv" id="kv-mass"></dl>
+        <div class="why" id="mass-why"></div>
+      </div>
+      <div class="panel">
+        <h2>Proportions vs Mini Cheetah</h2>
+        <table class="cmp"><thead><tr><th>Ratio</th><th>This</th><th>Mini Cheetah</th></tr></thead><tbody id="ratios"></tbody></table>
+        <div class="why">Mini Cheetah: thigh 209 / shank 195 / abad 62 mm, hips 380 mm apart, stands at 290 mm hip height (hip −46°, knee 92°). Our abad ratio runs high because a 36 mm-long servo sits where their 62 mm actuator did at 2.3× the scale.</div>
+      </div>
+      <div class="panel">
+        <h2>Servo loads · STS3215</h2>
+        <div id="bars"></div>
+        <div class="checks" id="checks"></div>
+        <div class="why" id="load-why"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Decision</h2>
+      <div class="decision">
+        <div>
+          <p class="small muted">Records the candidate, the current slider values, and the computed metrics. Claude reads this back to lock the design and generate the sim model.</p>
+          <div class="seg three" id="pick-seg" style="margin-top:10px">
+            <button data-pick="A">Choose A</button><button data-pick="B">Choose B</button><button data-pick="C">Choose C</button>
+          </div>
+          <div class="chips" id="chips">
+            <label><input type="checkbox" value="shorter body">shorter body</label>
+            <label><input type="checkbox" value="longer legs">longer legs</label>
+            <label><input type="checkbox" value="lower stance">lower stance</label>
+            <label><input type="checkbox" value="taller stance">taller stance</label>
+            <label><input type="checkbox" value="narrower">narrower</label>
+            <label><input type="checkbox" value="more torque margin">more torque margin</label>
+            <label><input type="checkbox" value="faster gait">faster gait</label>
+            <label><input type="checkbox" value="revisit 12 V servos">revisit 12 V servos</label>
+          </div>
+          <textarea id="comment" placeholder="What should change, what you like, anything the drawings don't answer…" style="margin-top:10px"></textarea>
+          <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap">
+            <button class="btn primary" id="submit">Save decision</button>
+            <button class="btn" id="copy">Copy summary</button>
+          </div>
+          <div class="status" id="status"></div>
+        </div>
+        <div>
+          <h3>Current proposal</h3>
+          <pre class="summary" id="summary"></pre>
+          <div class="note" id="last"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="notes">
+    <p><strong>How the numbers are made.</strong> Quasi-static: a vertical ground reaction at the foot, standing on four legs (¼ weight each, held continuously → allowance 25 % of stall) and a trot peak on two legs (½ weight × 1.5 dynamic factor, swept over the step → allowance 60 % of stall). Hip torque = force × fore-aft foot offset; knee torque = force × horizontal knee-to-foot offset; abad torque = force × (abad link + 10 mm lateral shift). Speeds come from inverse kinematics along the gait cycle, compared with the servo firmware's 5.29 rad/s target-rate cap (Rhoban BAM identification). Mass is a component model: 12 × 55 g servos, measured electronics, and a parametric estimate of printed parts.</p>
+    <p><strong>Servo geometry</strong> measured from the STS3215 case meshes in Open Duck Mini v2 (45.2 × 24.7 × 35.7 mm, shaft 9.6 mm from the end). Belt ratios use GT2 tooth counts; the pushrod ratio is an average — the real 4-bar varies about ±20 % over the knee range.</p>
+    <p id="xcheck" class="mono small"></p>
+  </footer>
+</div>
+
+<script>
+const DATA = __DATA_JSON__;
+</script>
+<script>
+// ---------- math (mirrors cheetah_pup/*.py; SI units) ----------
+const SV = DATA.servo, EL = DATA.electronics, MC = DATA.mini_cheetah, ALLOW = DATA.allowances;
+const G = 9.80665;
+const LEGS = ["LF", "RF", "LH", "RH"];
+const SIDE = { LF: 1, RF: -1, LH: 1, RH: -1 };
+const FRONT = { LF: true, RF: true, LH: false, RH: false };
+const GAITS = {
+  stand: { duty: 1, phase: { LF: 0, RF: 0, LH: 0, RH: 0 }, step: 0, freq: 0.4, label: "Stand / crouch", crouch: 0.35 },
+  walk:  { duty: 0.75, phase: { LH: 0, LF: 0.25, RH: 0.5, RF: 0.75 }, step: 0.85, freq: 0.65, label: "Walk" },
+  trot:  { duty: 0.5, phase: { LF: 0, RH: 0, RF: 0.5, LH: 0.5 }, step: 1, freq: 1, label: "Trot" },
+  pace:  { duty: 0.5, phase: { LF: 0, LH: 0, RF: 0.5, RH: 0.5 }, step: 1, freq: 0.9, label: "Pace" },
+  bound: { duty: 0.45, phase: { LF: 0, RF: 0, LH: 0.5, RH: 0.5 }, step: 1.2, freq: 1.1, label: "Bound (ROM demo)" },
+  sway:  { duty: 1, phase: { LF: 0, RF: 0, LH: 0, RH: 0 }, step: 0, freq: 0.5, label: "Lateral sway", sway: 0.03 },
+};
+
+function planarFk(l1, l2, qh, qk) {
+  const kx = l1 * Math.sin(qh), kz = -l1 * Math.cos(qh), a = qh + qk;
+  return { kx, kz, fx: kx + l2 * Math.sin(a), fz: kz - l2 * Math.cos(a) };
+}
+function planarIk(l1, l2, x, z, ks) {
+  const r2 = x * x + z * z;
+  let c = (r2 - l1 * l1 - l2 * l2) / (2 * l1 * l2);
+  if (c > 1 + 1e-9 || c < -1 - 1e-9) return null;
+  c = Math.max(-1, Math.min(1, c));
+  const qk = ks * Math.acos(c);
+  const qh = Math.atan2(x, -z) - Math.atan2(l2 * Math.sin(qk), l1 + l2 * Math.cos(qk));
+  return { qh, qk };
+}
+function rollYZ(y, z, a) { const c = Math.cos(a), s = Math.sin(a); return [y * c - z * s, y * s + z * c]; }
+function legFk(p, qa, qh, qk, side) {
+  const f = planarFk(p.thigh, p.shank, qh, qk), roll = side * qa, y0 = side * p.abad_link;
+  const [hy, hz] = rollYZ(y0, 0, roll), [ky, kz] = rollYZ(y0, f.kz, roll), [fy, fz] = rollYZ(y0, f.fz, roll);
+  return { hip: [0, hy, hz], knee: [f.kx, ky, kz], foot: [f.fx, fy, fz], planar: f };
+}
+function legIk(p, foot, side, ks) {
+  const [x, y, z] = foot, d2 = y * y + z * z;
+  if (d2 < p.abad_link * p.abad_link) return null;
+  const zp = -Math.sqrt(d2 - p.abad_link * p.abad_link);
+  let roll = Math.atan2(z, y) - Math.atan2(zp, side * p.abad_link);
+  roll = ((roll + Math.PI) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI) - Math.PI;
+  const q = planarIk(p.thigh, p.shank, x, zp, ks);
+  return q ? { qa: side * roll, qh: q.qh, qk: q.qk } : null;
+}
+function kneeSign(p, front) { return p.knee_config === "cheetah" ? 1 : p.knee_config === "forward" ? -1 : (front ? 1 : -1); }
+function derive(p) { p.shell_length = p.hip_to_hip - 2 * p.hip_x_offset; p.leg_length = p.thigh + p.shank; return p; }
+
+function footTraj(p, gait, leg, phase) {
+  const g = GAITS[gait], side = SIDE[leg], h = p.stance_height; let y = side * p.abad_link;
+  if (gait === "stand") return [0, y, -h * (1 - g.crouch * 0.5 * (1 - Math.cos(2 * Math.PI * phase)))];
+  if (gait === "sway") return [0, y + g.sway * Math.sin(2 * Math.PI * phase), -h];
+  const s = p.step_length * g.step, duty = g.duty, local = ((phase - g.phase[leg]) % 1 + 1) % 1;
+  if (local < duty) { const u = local / duty; return [s / 2 - u * s, y, -h]; }
+  const u = (local - duty) / (1 - duty);
+  return [-s / 2 + u * s, y, -h + p.swing_height * Math.sin(Math.PI * u)];
+}
+function bodySpeed(p, gait) { const g = GAITS[gait]; return g.step ? p.step_length * g.step * p.stride_frequency * g.freq / g.duty : 0; }
+
+const EXTRA_TX = { direct: 0, belt: 0.012, pushrod: 0.010 };
+function structureMasses(p) {
+  const area = 2 * (p.shell_length * (p.abad_to_abad + 0.025) + p.shell_length * p.body_height + (p.abad_to_abad + 0.025) * p.body_height);
+  return { shell: area * 0.0024 * 1240 * 0.8, thigh: 0.16 * p.thigh + 0.008, shank: 0.12 * p.shank + 0.005, bracket: 0.025, foot: 0.008, hw: 0.012 + EXTRA_TX[p.architecture] };
+}
+function massModel(p) {
+  const sm = structureMasses(p), comps = [];
+  const add = (name, m, x, y, z, group) => comps.push({ name, m, x, y, z, group });
+  add("shell", sm.shell, 0, 0, p.body_z_offset, "structure");
+  add("battery", EL.battery.mass, 0, 0, p.body_z_offset - p.body_height / 2 + p.wall + EL.battery.size[2] / 2, "electronics");
+  const topZ = p.body_z_offset - p.body_height / 2 + p.wall + SV.width + 0.002 + EL.pi.size[2] / 2;
+  add("pi", EL.pi.mass, -0.5 * (p.shell_length / 2 - EL.pi.size[0] / 2 - p.wall), 0, topZ, "electronics");
+  add("pcb", EL.pcb.mass, 0.5 * (p.shell_length / 2 - EL.pcb.size[0] / 2 - p.wall), 0, topZ, "electronics");
+  add("imu", EL.imu.mass, 0, 0, p.body_z_offset, "electronics");
+  add("wiring", 0.060, 0, 0, p.body_z_offset, "electronics");
+  for (const leg of LEGS) {
+    const side = SIDE[leg], front = FRONT[leg], sx = front ? 1 : -1, hx = sx * p.hip_to_hip / 2, ay = side * p.abad_to_abad / 2, ty = side * (p.abad_to_abad / 2 + p.abad_link);
+    const q = planarIk(p.thigh, p.shank, 0, -p.stance_height, kneeSign(p, front)) || { qh: 0, qk: 0 };
+    const f = planarFk(p.thigh, p.shank, q.qh, q.qk);
+    add(leg + " abad servo", SV.mass, hx - sx * (p.hip_x_offset + SV.height / 2), ay - side * (SV.length / 2 - SV.shaft_from_end), 0, "servos");
+    add(leg + " bracket", sm.bracket, hx, side * (p.abad_to_abad / 2 + p.abad_link / 2), 0.01, "structure");
+    add(leg + " hip servo", SV.mass, hx, ty - side * (0.006 + SV.height / 2), 0.013, "servos");
+    if (p.architecture === "direct") { const ux = -f.kx / p.thigh, uz = -f.kz / p.thigh; add(leg + " knee servo", SV.mass, hx + f.kx + ux * 0.013, ty, f.kz + uz * 0.013, "servos"); }
+    else add(leg + " knee servo", SV.mass, hx, ty + side * (0.006 + SV.height / 2), 0.013, "servos");
+    add(leg + " thigh", sm.thigh, hx + f.kx / 2, ty, f.kz / 2, "structure");
+    add(leg + " shank", sm.shank, hx + (f.kx + f.fx) / 2, ty, (f.kz + f.fz) / 2, "structure");
+    add(leg + " foot", sm.foot, hx + f.fx, ty, f.fz, "structure");
+    add(leg + " hardware", sm.hw, hx + f.kx / 2, ty, f.kz / 2, "structure");
+  }
+  const total = comps.reduce((s, c) => s + c.m, 0);
+  const com = [0, 1, 2].map(i => comps.reduce((s, c) => s + c.m * [c.x, c.y, c.z][i], 0) / total);
+  const groups = {}; for (const c of comps) groups[c.group] = (groups[c.group] || 0) + c.m;
+  return { total, com, groups };
+}
+function staticTorques(p, qh, qk, F, lat) { const f = planarFk(p.thigh, p.shank, qh, qk); return { abad: F * (p.abad_link + lat), hip: F * f.fx, knee: F * (f.fx - f.kx) }; }
+function torqueReport(p, m) {
+  const W = m * G, stall = SV.stall_torque, out = { stall };
+  for (const [cs, F, sweep] of [["stand", W / 4, 0], ["trot", W / 2 * p.dynamic_factor, p.step_length / 2]]) {
+    const worst = { abad: 0, hip: 0, knee: 0 };
+    const xs = sweep ? Array.from({ length: 21 }, (_, i) => sweep * (i / 10 - 1)) : [0];
+    for (const front of [true, false]) {
+      const ks = kneeSign(p, front);
+      for (const x of xs) {
+        const q = planarIk(p.thigh, p.shank, x, -p.stance_height, ks); if (!q) continue;
+        const t = staticTorques(p, q.qh, q.qk, F, cs === "trot" ? p.lateral_shift : 0);
+        worst.abad = Math.max(worst.abad, Math.abs(t.abad)); worst.hip = Math.max(worst.hip, Math.abs(t.hip)); worst.knee = Math.max(worst.knee, Math.abs(t.knee));
+      }
+    }
+    const kneeServo = worst.knee / p.knee_ratio, limit = stall * (cs === "stand" ? ALLOW.continuous : ALLOW.peak);
+    out[cs] = { F, abad: worst.abad, hip: worst.hip, kneeJoint: worst.knee, kneeServo, limit, ok: Math.max(worst.abad, worst.hip, kneeServo) <= limit };
+  }
+  return out;
+}
+function speedReport(p, gait, n = 120) {
+  const g = GAITS[gait], freq = p.stride_frequency * g.freq, dt = 1 / (freq * n), peak = { abad: 0, hip: 0, knee: 0 };
+  let unreachable = false;
+  for (const leg of LEGS) {
+    const side = SIDE[leg], ks = kneeSign(p, FRONT[leg]), qs = [];
+    for (let i = 0; i < n; i++) { const q = legIk(p, footTraj(p, gait, leg, i / n), side, ks); if (!q) unreachable = true; qs.push(q); }
+    for (let i = 0; i < n; i++) {
+      const a = qs[(i - 1 + n) % n], b = qs[(i + 1) % n]; if (!a || !b) continue;
+      peak.abad = Math.max(peak.abad, Math.abs((b.qa - a.qa) / (2 * dt)));
+      peak.hip = Math.max(peak.hip, Math.abs((b.qh - a.qh) / (2 * dt)));
+      peak.knee = Math.max(peak.knee, Math.abs((b.qk - a.qk) / (2 * dt)));
+    }
+  }
+  const kneeServo = peak.knee * p.knee_ratio, worst = Math.max(peak.abad, peak.hip, kneeServo);
+  return { gait, bodySpeed: bodySpeed(p, gait), abad: peak.abad, hip: peak.hip, kneeJoint: peak.knee, kneeServo, cap: SV.max_velocity, worstFrac: worst / SV.max_velocity, ok: worst <= SV.max_velocity, unreachable };
+}
+function footprint(item, bx, by) {
+  const [l, w] = item.size, o = [];
+  if (l <= bx && w <= by) o.push([l, w, false]);
+  if (w <= bx && l <= by) o.push([w, l, true]);
+  if (!o.length) return null; o.sort((a, b) => a[0] - b[0]); return o[0];
+}
+function packaging(p) {
+  const innerLen = p.shell_length - 2 * p.wall, innerWid = p.abad_to_abad + 2 * SV.shaft_from_end + 0.004, innerH = p.body_height - 2 * p.wall;
+  const gap = p.shell_length - 2 * SV.height - 2 * p.wall;
+  const batt = footprint(EL.battery, gap, innerWid), pi = footprint(EL.pi, innerLen, innerWid), pcb = footprint(EL.pcb, innerLen, innerWid);
+  const topNeeded = (pi ? pi[0] : EL.pi.size[0]) + (pcb ? pcb[0] : EL.pcb.size[0]) + 0.008, hNeeded = SV.width + 0.002 + EL.pi.size[2];
+  return { innerLen, innerWid, innerH, gap, batt, pi, pcb, topNeeded, batteryFits: !!batt, topFits: !!pi && !!pcb && topNeeded <= innerLen, hNeeded, heightFits: innerH >= hNeeded };
+}
+function metrics(p) {
+  derive(p);
+  const mm = massModel(p), tq = torqueReport(p, mm.total), sp = speedReport(p, "trot"), pk = packaging(p);
+  const nominal = planarIk(p.thigh, p.shank, 0, -p.stance_height, kneeSign(p, true));
+  const outboard = p.architecture !== "direct" ? SV.height + 0.006 : 0.006;
+  return { mass: mm.total, com: mm.com, groups: mm.groups, tq, sp, pk, nominal,
+    bodyTop: p.stance_height + p.body_z_offset + p.body_height / 2,
+    length: p.hip_to_hip + 2 * (0.03 + p.foot_radius),
+    width: 2 * (p.abad_to_abad / 2 + p.abad_link + outboard + 0.010),
+    servoFrac: 12 * SV.mass / mm.total, reachable: !sp.unreachable && !!nominal };
+}
+function sizedPreset(key, size) {
+  const b = DATA.presets[key], s = DATA.sizes[size], p = JSON.parse(JSON.stringify(b));
+  p.thigh = b.thigh * s; p.shank = b.shank * s; p.abad_link = b.abad_link * (0.5 + 0.5 * s);
+  p.hip_to_hip = Math.max(b.hip_to_hip * s, 0.175); p.abad_to_abad = b.abad_to_abad * (0.5 + 0.5 * s);
+  p.stance_height = b.stance_height * s; p.step_length = b.step_length * s; p.swing_height = b.swing_height * s;
+  return derive(p);
+}
+</script>
+<script>
+// ---------- app ----------
+const PX = 1500; // px per metre: 1.5 px per mm in every view
+const $ = id => document.getElementById(id);
+const mm = v => (v * 1000).toFixed(0);
+const deg = r => (r * 180 / Math.PI).toFixed(0);
+const f2 = v => v.toFixed(2);
+const pct = v => (v * 100).toFixed(0) + " %";
+
+const CAND_TEXT = {
+  A: { name: "Direct drive", rec: true, pros: ["Knee servo sits at the knee and drives the shank straight off its horn — no transmission to design, tension, or model.", "Closest to Open Duck Mini's joints, so its BAM actuator identification and sim-to-real pipeline carry over unchanged.", "Narrowest hips: hip servo tucks inboard of the thigh."], cons: ["55 g of servo swings at the knee — higher leg inertia, a heavier lower thigh housing.", "Knee torque is what the servo gives: no reduction to lean on if the robot grows."] },
+  B: { name: "Coaxial hip + belt knee", rec: false, pros: ["Both leg servos coaxial at the hip, thigh between them — the Mini Cheetah arrangement, slim printed thigh, low swing inertia.", "GT2 belt with a mild 1.25:1 step-up at the knee buys torque margin; the belt adds a little impact compliance.", "All three servos cluster at the hip: short wiring, hip clusters can be one printed cradle."], cons: ["+70 mm overall width from the outboard knee servo.", "Belt tensioning and pulley-to-horn adapters to design; belt stretch is one more thing the sim must model.", "Any reduction costs knee speed — the STS3215's cap is already the binding limit on trot frequency."] },
+  C: { name: "Coaxial hip + pushrod knee", rec: false, pros: ["Same hip cluster as B with a printed 4-bar pushrod instead of a belt: no tension, all printed parts plus pins.", "Ratio can be shaped to favour the crouched stance where knee torque peaks."], cons: ["Usable knee range is bounded by the linkage (~100°), which limits crouch and fold.", "The variable ratio and pin play are the hardest of the three for the sim to mirror."] },
+};
+
+const GEOM = [
+  { id: "thigh", label: "Thigh (hip→knee)", min: 60, max: 130, step: 1, unit: "mm", get: p => p.thigh * 1000, set: (p, v) => { const r = p.shank / p.thigh; p.thigh = v / 1000; p.shank = r * p.thigh; } },
+  { id: "shank_ratio", label: "Shank ÷ thigh", min: 0.75, max: 1.15, step: 0.01, unit: "", get: p => p.shank / p.thigh, set: (p, v) => { p.shank = v * p.thigh; }, fmt: v => v.toFixed(2) },
+  { id: "abad_link", label: "Abad link (axis→thigh plane)", min: 25, max: 60, step: 1, unit: "mm", get: p => p.abad_link * 1000, set: (p, v) => { p.abad_link = v / 1000; } },
+  { id: "hip_to_hip", label: "Hip to hip", min: 150, max: 240, step: 1, unit: "mm", get: p => p.hip_to_hip * 1000, set: (p, v) => { p.hip_to_hip = v / 1000; } },
+  { id: "abad_to_abad", label: "Abad axes apart", min: 50, max: 100, step: 1, unit: "mm", get: p => p.abad_to_abad * 1000, set: (p, v) => { p.abad_to_abad = v / 1000; } },
+  { id: "stance", label: "Stance height ÷ leg length", min: 0.5, max: 0.85, step: 0.01, unit: "", get: p => p.stance_height / (p.thigh + p.shank), set: (p, v) => { p.stance_height = v * (p.thigh + p.shank); }, fmt: v => v.toFixed(2) },
+  { id: "body_height", label: "Body shell height", min: 50, max: 80, step: 1, unit: "mm", get: p => p.body_height * 1000, set: (p, v) => { p.body_height = v / 1000; } },
+  { id: "knee_ratio", label: "Knee reduction (joint : servo)", min: 1, max: 2, step: 0.05, unit: ":1", get: p => p.knee_ratio, set: (p, v) => { p.knee_ratio = v; }, fmt: v => v.toFixed(2), onlyTx: true },
+];
+const GAITP = [
+  { id: "step_length", label: "Step length (trot)", min: 30, max: 100, step: 1, unit: "mm", get: p => p.step_length * 1000, set: (p, v) => { p.step_length = v / 1000; } },
+  { id: "stride_frequency", label: "Stride frequency (trot)", min: 0.6, max: 2.2, step: 0.05, unit: "Hz", get: p => p.stride_frequency, set: (p, v) => { p.stride_frequency = v; }, fmt: v => v.toFixed(2) },
+  { id: "swing_height", label: "Swing height", min: 10, max: 45, step: 1, unit: "mm", get: p => p.swing_height * 1000, set: (p, v) => { p.swing_height = v / 1000; } },
+];
+
+const state = { cand: "A", size: "M", custom: false, gait: "trot", playing: true, speed: 1, phase: 0.12, p: null, m: null, legs: {}, pushrod: {} };
+state.p = sizedPreset("A", "M");
+const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (reduced) state.playing = false;
+
+// ---- controls ----
+function buildControls() {
+  const mk = (list, host) => {
+    host.innerHTML = "";
+    for (const c of list) {
+      const div = document.createElement("div"); div.className = "ctl"; div.dataset.id = c.id;
+      div.innerHTML = `<label for="c-${c.id}">${c.label}</label><span class="val" id="v-${c.id}"></span><input type="range" id="c-${c.id}" min="${c.min}" max="${c.max}" step="${c.step}">`;
+      host.appendChild(div);
+      div.querySelector("input").addEventListener("input", e => { c.set(state.p, parseFloat(e.target.value)); state.custom = true; recompute(); });
+    }
+  };
+  mk(GEOM, $("geom-controls")); mk(GAITP, $("gait-controls"));
+  const kc = document.createElement("div"); kc.className = "ctl"; kc.style.marginTop = "12px";
+  kc.innerHTML = `<label>Knee configuration</label><span></span><div class="seg three" id="knee-seg" style="grid-column:1/-1"><button data-k="cheetah">Knees back<span class="sub">Mini Cheetah</span></button><button data-k="x">X stance<span class="sub">ANYmal</span></button><button data-k="forward">Knees fwd<span class="sub"></span></button></div>`;
+  $("geom-controls").appendChild(kc);
+  $("knee-seg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; state.p.knee_config = b.dataset.k; state.custom = true; recompute(); });
+}
+function syncControls() {
+  for (const c of [...GEOM, ...GAITP]) {
+    const v = c.get(state.p); const el = $("c-" + c.id); el.value = v;
+    $("v-" + c.id).textContent = (c.fmt ? c.fmt(v) : v.toFixed(0)) + (c.unit ? " " + c.unit : "");
+    const row = el.closest(".ctl");
+    if (c.onlyTx) { const off = state.p.architecture === "direct"; row.classList.toggle("off", off); el.disabled = off; }
+  }
+  for (const b of $("knee-seg").querySelectorAll("button")) b.classList.toggle("on", b.dataset.k === state.p.knee_config);
+  for (const b of $("cand-seg").querySelectorAll("button")) b.classList.toggle("on", b.dataset.cand === state.cand);
+  for (const b of $("size-seg").querySelectorAll("button")) b.classList.toggle("on", b.dataset.size === state.size && !state.custom);
+  for (const b of $("pick-seg").querySelectorAll("button")) b.classList.toggle("on", b.dataset.pick === state.cand);
+  for (const b of $("gait-seg").querySelectorAll("button")) b.classList.toggle("on", b.dataset.gait === state.gait);
+  for (const el of document.querySelectorAll(".cand")) el.classList.toggle("on", el.dataset.cand === state.cand);
+  $("cand-note").textContent = state.p.knee_ratio_note;
+}
+function loadPreset(cand, size) {
+  const keepGait = state.p ? { step_length: state.p.step_length, stride_frequency: state.p.stride_frequency, swing_height: state.p.swing_height } : null;
+  state.cand = cand; state.size = size; state.custom = false; state.p = sizedPreset(cand, size);
+  if (keepGait && state.customGait) Object.assign(state.p, keepGait);
+  state.pushrod = {};
+  recompute();
+}
+$("cand-seg").addEventListener("click", e => { const b = e.target.closest("button"); if (b) loadPreset(b.dataset.cand, state.size); });
+$("size-seg").addEventListener("click", e => { const b = e.target.closest("button"); if (b) loadPreset(state.cand, b.dataset.size); });
+$("pick-seg").addEventListener("click", e => { const b = e.target.closest("button"); if (b) loadPreset(b.dataset.pick, state.size); });
+
+// candidate cards
+function buildCands() {
+  const host = $("cands"); host.innerHTML = "";
+  for (const k of ["A", "B", "C"]) {
+    const t = CAND_TEXT[k], m = metrics(sizedPreset(k, "M"));
+    const el = document.createElement("div"); el.className = "cand"; el.dataset.cand = k; el.tabIndex = 0; el.setAttribute("role", "button");
+    el.innerHTML = `<h3><span class="letter">${k}</span>${t.name}${t.rec ? '<span class="rec">Recommended</span>' : ""}</h3>
+      <div class="facts"><span>${f2(m.mass)} kg</span><span>W ${mm(m.width)} mm</span><span>knee ${pct(m.tq.trot.kneeServo / m.tq.stall)} stall</span><span>speed ${pct(m.sp.worstFrac)} cap</span></div>
+      <ul>${t.pros.map(s => `<li>${s}</li>`).join("")}${t.cons.map(s => `<li class="muted">− ${s}</li>`).join("")}</ul>`;
+    el.addEventListener("click", () => loadPreset(k, state.size));
+    el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); loadPreset(k, state.size); } });
+    host.appendChild(el);
+  }
+}
+// gait bar
+function buildGaitBar() {
+  const seg = $("gait-seg"); seg.innerHTML = "";
+  for (const [k, g] of Object.entries(GAITS)) { const b = document.createElement("button"); b.dataset.gait = k; b.textContent = g.label; b.addEventListener("click", () => { state.gait = k; state.pushrod = {}; syncControls(); }); seg.appendChild(b); }
+  $("play").addEventListener("click", () => { state.playing = !state.playing; $("play").textContent = state.playing ? "Pause" : "Play"; });
+  $("play").textContent = state.playing ? "Pause" : "Play";
+  $("speed").addEventListener("change", e => { state.speed = parseFloat(e.target.value); });
+  $("phase").addEventListener("input", e => { state.playing = false; $("play").textContent = "Play"; state.phase = parseFloat(e.target.value); frame(0); });
+}
+
+// ---- drawing helpers ----
+const svgEsc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+function servoBox(cx, cy, angleDeg, cls = "") {
+  return `<g transform="translate(${cx.toFixed(1)},${cy.toFixed(1)}) rotate(${angleDeg.toFixed(1)})"><rect class="servo ${cls}" x="${(-SV.shaft_from_end * PX).toFixed(1)}" y="${(-SV.width / 2 * PX).toFixed(1)}" width="${(SV.length * PX).toFixed(1)}" height="${(SV.width * PX).toFixed(1)}" rx="3"/><circle class="shaft" r="4.5"/></g>`;
+}
+function linkPoly(x1, y1, x2, y2, w1, w2, cls = "link") {
+  const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L;
+  const pts = [[x1 + nx * w1 / 2, y1 + ny * w1 / 2], [x2 + nx * w2 / 2, y2 + ny * w2 / 2], [x2 - nx * w2 / 2, y2 - ny * w2 / 2], [x1 - nx * w1 / 2, y1 - ny * w1 / 2]];
+  return `<polygon class="${cls}" points="${pts.map(p => p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" ")}"/>`;
+}
+function hdim(x1, x2, y, label, tickLen = 8) {
+  const t = tickLen; return `<g class="dim"><line x1="${x1}" y1="${y - t}" x2="${x1}" y2="${y + t}"/><line x1="${x2}" y1="${y - t}" x2="${x2}" y2="${y + t}"/><line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}"/></g><text class="dimt" x="${(x1 + x2) / 2}" y="${y - 4}" text-anchor="middle">${label}</text>`;
+}
+function vdim(x, y1, y2, label, side = 1) {
+  return `<g class="dim"><line x1="${x - 8}" y1="${y1}" x2="${x + 8}" y2="${y1}"/><line x1="${x - 8}" y1="${y2}" x2="${x + 8}" y2="${y2}"/><line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}"/></g><text class="dimt" x="${x + 6 * side}" y="${(y1 + y2) / 2 + 4}" text-anchor="${side > 0 ? "start" : "end"}">${label}</text>`;
+}
+function circleIntersect(ax, ay, ar, bx, by, br) {
+  const dx = bx - ax, dy = by - ay, d = Math.hypot(dx, dy); if (d > ar + br || d < Math.abs(ar - br) || d === 0) return null;
+  const a = (ar * ar - br * br + d * d) / (2 * d), h = Math.sqrt(Math.max(0, ar * ar - a * a)), mx = ax + a * dx / d, my = ay + a * dy / d;
+  return [[mx + h * -dy / d, my + h * dx / d], [mx - h * -dy / d, my - h * dx / d]];
+}
+
+// ---- side view ----
+function sideStatic(p, m) {
+  const W = 760, cx = 380, groundY = 392, hipY = groundY - p.stance_height * PX;
+  const X = x => cx + x * PX, Z = z => hipY - z * PX; const parts = [];
+  const shellX1 = X(-p.shell_length / 2), shellX2 = X(p.shell_length / 2), top = Z(p.body_z_offset + p.body_height / 2), bot = Z(p.body_z_offset - p.body_height / 2);
+  parts.push(`<rect class="shell" x="${shellX1.toFixed(1)}" y="${top.toFixed(1)}" width="${(shellX2 - shellX1).toFixed(1)}" height="${(bot - top).toFixed(1)}" rx="6"/>`);
+  // abad servos inside the corners (axis along x, seen end-on as 35.7 x 24.7)
+  for (const sx of [1, -1]) { const x2 = sx * p.shell_length / 2, x1 = x2 - sx * SV.height; parts.push(`<rect class="servo" x="${Math.min(X(x1), X(x2)).toFixed(1)}" y="${Z(SV.width / 2).toFixed(1)}" width="${(SV.height * PX).toFixed(1)}" height="${(SV.width * PX).toFixed(1)}" rx="2"/><circle class="shaft" cx="${X(x2).toFixed(1)}" cy="${Z(0).toFixed(1)}" r="4"/>`); }
+  // electronics (side projection)
+  const pk = m.pk, wall = p.wall;
+  const bz1 = p.body_z_offset - p.body_height / 2 + wall, battH = EL.battery.size[2], bx = pk.batt ? pk.batt[0] : EL.battery.size[0];
+  parts.push(`<rect class="batt" x="${X(-bx / 2).toFixed(1)}" y="${Z(bz1 + battH).toFixed(1)}" width="${(bx * PX).toFixed(1)}" height="${(battH * PX).toFixed(1)}"/><text x="${X(0).toFixed(1)}" y="${(Z(bz1 + battH / 2) + 4).toFixed(1)}" text-anchor="middle">2S 18650</text>`);
+  const tz1 = bz1 + SV.width + 0.002, piX = pk.pi ? pk.pi[0] : EL.pi.size[0], pcbX = pk.pcb ? pk.pcb[0] : EL.pcb.size[0], piH = EL.pi.size[2], pcbH = EL.pcb.size[2];
+  const piC = -(p.shell_length / 2 - wall - piX / 2), pcbC = (p.shell_length / 2 - wall - pcbX / 2);
+  parts.push(`<rect class="pi" x="${X(piC - piX / 2).toFixed(1)}" y="${Z(tz1 + piH).toFixed(1)}" width="${(piX * PX).toFixed(1)}" height="${(piH * PX).toFixed(1)}"/><text x="${X(piC).toFixed(1)}" y="${(Z(tz1 + piH / 2) + 4).toFixed(1)}" text-anchor="middle">Pi 5</text>`);
+  parts.push(`<rect class="pcb" x="${X(pcbC - pcbX / 2).toFixed(1)}" y="${Z(tz1 + pcbH).toFixed(1)}" width="${(pcbX * PX).toFixed(1)}" height="${(pcbH * PX).toFixed(1)}"/><text x="${X(pcbC).toFixed(1)}" y="${(Z(tz1 + pcbH / 2) + 4).toFixed(1)}" text-anchor="middle">PCB</text>`);
+  parts.push(`<rect class="imu" x="${X(-EL.imu.size[0] / 2).toFixed(1)}" y="${Z(tz1 + 0.006).toFixed(1)}" width="${(EL.imu.size[0] * PX).toFixed(1)}" height="${(EL.imu.size[2] * PX).toFixed(1)}"/>`);
+  // hip axes marks
+  for (const sx of [1, -1]) parts.push(`<line class="axis" x1="${X(sx * p.hip_to_hip / 2).toFixed(1)}" y1="${(top - 40).toFixed(1)}" x2="${X(sx * p.hip_to_hip / 2).toFixed(1)}" y2="${(Z(0) + 24).toFixed(1)}"/>`);
+  // dimensions
+  parts.push(hdim(X(-p.hip_to_hip / 2), X(p.hip_to_hip / 2), top - 48, `hip to hip ${mm(p.hip_to_hip)}`));
+  parts.push(hdim(shellX1, shellX2, bot + 34, `shell ${mm(p.shell_length)}`));
+  parts.push(vdim(X(p.hip_to_hip / 2) + 64, Z(0), groundY, `hip ${mm(p.stance_height)}`));
+  parts.push(vdim(X(-p.hip_to_hip / 2) - 100, top, groundY, `top ${mm(m.bodyTop)}`, -1));
+  parts.push(`<text class="lbl" x="${(shellX2 + 4).toFixed(1)}" y="${(top - 54).toFixed(1)}">forward →</text>`);
+  $("side").innerHTML = `<g id="sv-ground"></g><g id="sv-far"></g><g>${parts.join("")}</g><g id="sv-near"></g>`;
+  state.sideGeom = { cx, groundY, hipY, X, Z };
+}
+function drawLegSide(p, leg, st, near) {
+  const { X, Z } = state.sideGeom, sx = FRONT[leg] ? 1 : -1, hx = sx * p.hip_to_hip / 2;
+  const fk = st.fk, kx = hx + fk.knee[0], kz = fk.knee[2], fx = hx + fk.foot[0], fz = fk.foot[2];
+  const Hx = X(hx), Hy = Z(0), Kx = X(kx), Ky = Z(kz), Fx = X(fx), Fy = Z(fz); const parts = [];
+  const thighDeg = Math.atan2(Ky - Hy, Kx - Hx) * 180 / Math.PI; // screen angle hip→knee
+  // bracket from the shell end to the hip axis
+  const shellEnd = X(sx * p.shell_length / 2);
+  parts.push(`<rect class="bracket" x="${Math.min(shellEnd, Hx + sx * 10).toFixed(1)}" y="${(Hy - 19).toFixed(1)}" width="${Math.abs(Hx + sx * 10 - shellEnd).toFixed(1)}" height="38" rx="4"/>`);
+  if (p.architecture === "direct") {
+    parts.push(linkPoly(Hx, Hy, Kx, Ky, 22, 38));
+    parts.push(servoBox(Kx, Ky, thighDeg + 180)); // case points from the knee back up the thigh
+  } else {
+    parts.push(linkPoly(Hx, Hy, Kx, Ky, 22, 16));
+    if (p.architecture === "belt") {
+      const r1 = 6.4 * 1.5, r2 = 6.4 * 1.5 * p.knee_ratio, dx = Kx - Hx, dy = Ky - Hy, L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L;
+      parts.push(`<circle class="pulley" cx="${Hx.toFixed(1)}" cy="${Hy.toFixed(1)}" r="${r1.toFixed(1)}"/><circle class="pulley" cx="${Kx.toFixed(1)}" cy="${Ky.toFixed(1)}" r="${r2.toFixed(1)}"/>`);
+      for (const s of [1, -1]) parts.push(`<line class="belt" x1="${(Hx + s * nx * r1).toFixed(1)}" y1="${(Hy + s * ny * r1).toFixed(1)}" x2="${(Kx + s * nx * r2).toFixed(1)}" y2="${(Ky + s * ny * r2).toFixed(1)}"/>`);
+    } else {
+      // 4-bar: crank at the hip, rocker pin on the shank behind the knee, rod of fixed length
+      const rc = 12 * 1.5, rr = 16 * 1.5;
+      const sdx = Fx - Kx, sdy = Fy - Ky, sL = Math.hypot(sdx, sdy) || 1; let nx = -sdy / sL, ny = sdx / sL;
+      if (nx * (Kx - Hx) + ny * (Ky - Hy) < 0) { nx = -nx; ny = -ny; }
+      const Rx = Kx + nx * rr, Ry = Ky + ny * rr;
+      const key = leg + p.architecture; let ps = state.pushrod[key];
+      if (!ps) { const ang = Math.atan2(Ry - Hy, Rx - Hx) + 1.25; const Px = Hx + rc * Math.cos(ang), Py = Hy + rc * Math.sin(ang); ps = state.pushrod[key] = { L: Math.hypot(Px - Rx, Py - Ry), Px, Py }; }
+      const sol = circleIntersect(Hx, Hy, rc, Rx, Ry, ps.L);
+      if (sol) { const pick = sol.reduce((b, s) => Math.hypot(s[0] - ps.Px, s[1] - ps.Py) < Math.hypot(b[0] - ps.Px, b[1] - ps.Py) ? s : b); ps.Px = pick[0]; ps.Py = pick[1]; }
+      parts.push(`<line class="rod" x1="${Hx.toFixed(1)}" y1="${Hy.toFixed(1)}" x2="${ps.Px.toFixed(1)}" y2="${ps.Py.toFixed(1)}"/><line class="rod" x1="${Kx.toFixed(1)}" y1="${Ky.toFixed(1)}" x2="${Rx.toFixed(1)}" y2="${Ry.toFixed(1)}"/><line class="belt" x1="${ps.Px.toFixed(1)}" y1="${ps.Py.toFixed(1)}" x2="${Rx.toFixed(1)}" y2="${Ry.toFixed(1)}" style="stroke-width:2.2"/><circle class="joint" cx="${ps.Px.toFixed(1)}" cy="${ps.Py.toFixed(1)}" r="3"/><circle class="joint" cx="${Rx.toFixed(1)}" cy="${Ry.toFixed(1)}" r="3"/>`);
+    }
+    parts.push(servoBox(Hx + 6, Hy - 6, -90, "ghost")); // coaxial knee servo, outboard: dashed ghost
+  }
+  parts.push(linkPoly(Kx, Ky, Fx, Fy, 14, 9));
+  parts.push(servoBox(Hx, Hy, -90)); // hip-pitch servo, case pointing up
+  parts.push(`<circle class="joint" cx="${Hx.toFixed(1)}" cy="${Hy.toFixed(1)}" r="4"/><circle class="joint" cx="${Kx.toFixed(1)}" cy="${Ky.toFixed(1)}" r="3.5"/><circle class="foot" cx="${Fx.toFixed(1)}" cy="${Fy.toFixed(1)}" r="${(p.foot_radius * PX).toFixed(1)}"/>`);
+  if (near && leg === "LF") {
+    const midT = [(Hx + Kx) / 2, (Hy + Ky) / 2], midS = [(Kx + Fx) / 2, (Ky + Fy) / 2];
+    parts.push(`<text class="dimt" x="${(midT[0] + 36).toFixed(1)}" y="${midT[1].toFixed(1)}">thigh ${mm(p.thigh)}</text><text class="dimt" x="${(midS[0] + 30).toFixed(1)}" y="${midS[1].toFixed(1)}">shank ${mm(p.shank)}</text>`);
+  }
+  return `<g class="${near ? "near" : "far"}">${parts.join("")}</g>`;
+}
+function sideFrame(p) {
+  const { cx, groundY, X } = state.sideGeom;
+  // scrolling ground ticks
+  const spacing = 0.05 * PX, off = ((state.travel * PX) % spacing + spacing) % spacing; const ticks = [];
+  for (let x = -off; x < 760 + spacing; x += spacing) ticks.push(`<line class="tick" x1="${(760 - x).toFixed(1)}" y1="${groundY}" x2="${(760 - x - 6).toFixed(1)}" y2="${groundY + 6}"/>`);
+  $("sv-ground").innerHTML = `<line class="ground" x1="0" y1="${groundY}" x2="760" y2="${groundY}"/>${ticks.join("")}`;
+  $("sv-far").innerHTML = ["RF", "RH"].map(l => state.legs[l] ? drawLegSide(p, l, state.legs[l], false) : "").join("");
+  $("sv-near").innerHTML = ["LH", "LF"].map(l => state.legs[l] ? drawLegSide(p, l, state.legs[l], true) : "").join("");
+}
+
+// ---- front view ----
+function frontStatic(p, m) {
+  const cx = 250, groundY = 392, hipY = groundY - p.stance_height * PX; const Y = y => cx + y * PX, Z = z => hipY - z * PX; const parts = [];
+  const halfW = p.abad_to_abad / 2 + SV.shaft_from_end + 0.002, top = Z(p.body_z_offset + p.body_height / 2), bot = Z(p.body_z_offset - p.body_height / 2);
+  parts.push(`<rect class="shell" x="${Y(-halfW).toFixed(1)}" y="${top.toFixed(1)}" width="${(2 * halfW * PX).toFixed(1)}" height="${(bot - top).toFixed(1)}" rx="6"/>`);
+  for (const side of [1, -1]) { const ay = side * p.abad_to_abad / 2, y1 = ay - side * (SV.length - SV.shaft_from_end), y2 = ay + side * SV.shaft_from_end; parts.push(`<rect class="servo" x="${Math.min(Y(y1), Y(y2)).toFixed(1)}" y="${Z(SV.width / 2).toFixed(1)}" width="${(SV.length * PX).toFixed(1)}" height="${(SV.width * PX).toFixed(1)}" rx="2"/><circle class="shaft" cx="${Y(ay).toFixed(1)}" cy="${Z(0).toFixed(1)}" r="4"/>`); }
+  const bz1 = p.body_z_offset - p.body_height / 2 + p.wall, tz1 = bz1 + SV.width + 0.002, pk = m.pk;
+  const battY = pk.batt ? pk.batt[1] : EL.battery.size[1], piY = pk.pi ? pk.pi[1] : EL.pi.size[1];
+  parts.push(`<rect class="batt" x="${Y(-battY / 2).toFixed(1)}" y="${Z(bz1 + EL.battery.size[2]).toFixed(1)}" width="${(battY * PX).toFixed(1)}" height="${(EL.battery.size[2] * PX).toFixed(1)}"/>`);
+  parts.push(`<rect class="pi" x="${Y(-piY / 2).toFixed(1)}" y="${Z(tz1 + EL.pi.size[2]).toFixed(1)}" width="${(piY * PX).toFixed(1)}" height="${(EL.pi.size[2] * PX).toFixed(1)}"/>`);
+  parts.push(hdim(Y(-m.width / 2), Y(m.width / 2), groundY + 22, `overall ${mm(m.width)}`));
+  parts.push(hdim(Y(-p.abad_to_abad / 2), Y(p.abad_to_abad / 2), top - 30, `abad axes ${mm(p.abad_to_abad)}`));
+  parts.push(hdim(Y(p.abad_to_abad / 2), Y(p.abad_to_abad / 2 + p.abad_link), top - 12, `${mm(p.abad_link)}`));
+  parts.push(`<text class="lbl" x="${Y(-halfW).toFixed(1)}" y="${(top - 42).toFixed(1)}">R</text><text class="lbl" x="${Y(halfW).toFixed(1)}" y="${(top - 42).toFixed(1)}" text-anchor="end">L</text>`);
+  $("front").innerHTML = `<line class="ground" x1="0" y1="${groundY}" x2="500" y2="${groundY}"/><g id="fv-far"></g><g>${parts.join("")}</g><g id="fv-near"></g>`;
+  state.frontGeom = { Y, Z, groundY };
+}
+function drawLegFront(p, leg, st, near) {
+  const { Y, Z } = state.frontGeom, side = SIDE[leg], ay = side * p.abad_to_abad / 2, ty = ay + side * p.abad_link;
+  const f = st.fk.planar, qa = st.q.qa; const parts = [];
+  const Ay = Y(ay), Az = Z(0);
+  parts.push(`<rect class="bracket" x="${Math.min(Y(ay - side * 0.01), Y(ty)).toFixed(1)}" y="${(Az - 4).toFixed(1)}" width="${Math.abs(Y(ty) - Y(ay - side * 0.01)).toFixed(1)}" height="22" rx="3"/>`);
+  const hipCase = [ty - side * SV.height, ty];
+  parts.push(`<rect class="servo" x="${Math.min(Y(hipCase[0]), Y(hipCase[1])).toFixed(1)}" y="${Z(SV.length - SV.shaft_from_end).toFixed(1)}" width="${(SV.height * PX).toFixed(1)}" height="${(SV.length * PX).toFixed(1)}" rx="2"/>`);
+  if (p.architecture !== "direct") { const kc = [ty + side * 0.006, ty + side * (0.006 + SV.height)]; parts.push(`<rect class="servo" x="${Math.min(Y(kc[0]), Y(kc[1])).toFixed(1)}" y="${Z(SV.length - SV.shaft_from_end).toFixed(1)}" width="${(SV.height * PX).toFixed(1)}" height="${(SV.length * PX).toFixed(1)}" rx="2"/>`); }
+  parts.push(linkPoly(Y(ty), Z(0), Y(ty), Z(f.kz), 16, 14));
+  if (p.architecture === "direct") parts.push(`<rect class="servo" x="${Y(ty - SV.height / 2).toFixed(1)}" y="${Z(f.kz + Math.abs(Math.cos(st.q.qh)) * SV.length * 0.8).toFixed(1)}" width="${(SV.height * PX).toFixed(1)}" height="${(Math.abs(Math.cos(st.q.qh)) * SV.length * 0.8 * PX).toFixed(1)}" rx="2"/>`);
+  parts.push(linkPoly(Y(ty), Z(f.kz), Y(ty), Z(f.fz), 12, 9));
+  parts.push(`<circle class="joint" cx="${Y(ty).toFixed(1)}" cy="${Z(0).toFixed(1)}" r="3.5"/><circle class="foot" cx="${Y(ty).toFixed(1)}" cy="${Z(f.fz).toFixed(1)}" r="${(p.foot_radius * PX).toFixed(1)}"/>`);
+  return `<g class="${near ? "near" : "far"}" transform="rotate(${(-side * qa * 180 / Math.PI).toFixed(2)} ${Ay.toFixed(1)} ${Az.toFixed(1)})">${parts.join("")}</g>`;
+}
+function frontFrame(p) {
+  $("fv-far").innerHTML = ["LH", "RH"].map(l => state.legs[l] ? drawLegFront(p, l, state.legs[l], false) : "").join("");
+  $("fv-near").innerHTML = ["LF", "RF"].map(l => state.legs[l] ? drawLegFront(p, l, state.legs[l], true) : "").join("");
+}
+
+// ---- top view ----
+function topStatic(p, m) {
+  const cx = 380, cy = 190; const X = x => cx + x * PX, Y = y => cy - y * PX; const parts = [];
+  const halfW = p.abad_to_abad / 2 + SV.shaft_from_end + 0.002;
+  parts.push(`<rect class="shell" x="${X(-p.shell_length / 2).toFixed(1)}" y="${Y(halfW).toFixed(1)}" width="${(p.shell_length * PX).toFixed(1)}" height="${(2 * halfW * PX).toFixed(1)}" rx="6"/>`);
+  const pk = m.pk, wall = p.wall;
+  const bx = pk.batt ? pk.batt[0] : EL.battery.size[0], by = pk.batt ? pk.batt[1] : EL.battery.size[1];
+  parts.push(`<rect class="batt below" x="${X(-bx / 2).toFixed(1)}" y="${Y(by / 2).toFixed(1)}" width="${(bx * PX).toFixed(1)}" height="${(by * PX).toFixed(1)}"/>`);
+  const piX = pk.pi ? pk.pi[0] : EL.pi.size[0], piY = pk.pi ? pk.pi[1] : EL.pi.size[1], pcbX = pk.pcb ? pk.pcb[0] : EL.pcb.size[0], pcbY = pk.pcb ? pk.pcb[1] : EL.pcb.size[1];
+  const piC = -(p.shell_length / 2 - wall - piX / 2), pcbC = (p.shell_length / 2 - wall - pcbX / 2);
+  parts.push(`<rect class="pi" x="${X(piC - piX / 2).toFixed(1)}" y="${Y(piY / 2).toFixed(1)}" width="${(piX * PX).toFixed(1)}" height="${(piY * PX).toFixed(1)}"/><text x="${X(piC).toFixed(1)}" y="${(Y(piY / 2) - 5).toFixed(1)}" text-anchor="middle">Pi 5${pk.pi && pk.pi[2] ? " ⟂" : ""}</text>`);
+  parts.push(`<rect class="pcb" x="${X(pcbC - pcbX / 2).toFixed(1)}" y="${Y(pcbY / 2).toFixed(1)}" width="${(pcbX * PX).toFixed(1)}" height="${(pcbY * PX).toFixed(1)}"/><text x="${X(pcbC).toFixed(1)}" y="${(Y(pcbY / 2) - 5).toFixed(1)}" text-anchor="middle">PCB</text>`);
+  parts.push(`<rect class="imu" x="${X(-EL.imu.size[0] / 2).toFixed(1)}" y="${Y(EL.imu.size[1] / 2).toFixed(1)}" width="${(EL.imu.size[0] * PX).toFixed(1)}" height="${(EL.imu.size[1] * PX).toFixed(1)}"/><text x="${X(0).toFixed(1)}" y="${(Y(-by / 2) + 13).toFixed(1)}" text-anchor="middle">IMU over 2S 18650 (dashed, lower layer)</text>`);
+  for (const sx of [1, -1]) for (const side of [1, -1]) {
+    const ay = side * p.abad_to_abad / 2, x2 = sx * p.shell_length / 2, x1 = x2 - sx * SV.height, y1 = ay - side * (SV.length - SV.shaft_from_end), y2 = ay + side * SV.shaft_from_end;
+    parts.push(`<rect class="servo" x="${Math.min(X(x1), X(x2)).toFixed(1)}" y="${Math.min(Y(y1), Y(y2)).toFixed(1)}" width="${(SV.height * PX).toFixed(1)}" height="${(SV.length * PX).toFixed(1)}" rx="2"/>`);
+    const hx = sx * p.hip_to_hip / 2, ty = ay + side * p.abad_link;
+    parts.push(`<rect class="servo" x="${X(hx - SV.width / 2).toFixed(1)}" y="${Math.min(Y(ty - side * SV.height), Y(ty)).toFixed(1)}" width="${(SV.width * PX).toFixed(1)}" height="${(SV.height * PX).toFixed(1)}" rx="2"/>`);
+    if (p.architecture !== "direct") parts.push(`<rect class="servo" x="${X(hx - SV.width / 2).toFixed(1)}" y="${Math.min(Y(ty + side * 0.006), Y(ty + side * (0.006 + SV.height))).toFixed(1)}" width="${(SV.width * PX).toFixed(1)}" height="${(SV.height * PX).toFixed(1)}" rx="2"/>`);
+    parts.push(`<line class="axis" x1="${X(hx).toFixed(1)}" y1="${Y(ay).toFixed(1)}" x2="${X(hx).toFixed(1)}" y2="${Y(ty + side * (p.architecture !== "direct" ? 0.046 : 0.01)).toFixed(1)}"/>`);
+  }
+  parts.push(hdim(X(-p.hip_to_hip / 2), X(p.hip_to_hip / 2), Y(m.width / 2) - 22, `hip to hip ${mm(p.hip_to_hip)}`));
+  parts.push(vdim(X(p.shell_length / 2) + 110, Y(m.width / 2), Y(-m.width / 2), `overall ${mm(m.width)}`));
+  parts.push(vdim(X(-p.shell_length / 2) - 110, Y(p.abad_to_abad / 2), Y(-p.abad_to_abad / 2), `abad ${mm(p.abad_to_abad)}`, -1));
+  parts.push(`<text class="lbl" x="${(X(p.shell_length / 2) + 40).toFixed(1)}" y="${(Y(m.width / 2) - 26).toFixed(1)}">forward →</text>`);
+  $("top").innerHTML = `<g id="tv-support"></g><g>${parts.join("")}</g><g id="tv-legs"></g>`;
+  state.topGeom = { X, Y };
+}
+function topFrame(p, m) {
+  const { X, Y } = state.topGeom; const legs = [], stance = [];
+  for (const leg of LEGS) {
+    const st = state.legs[leg]; if (!st) continue; const side = SIDE[leg], sx = FRONT[leg] ? 1 : -1, hx = sx * p.hip_to_hip / 2, ay = side * p.abad_to_abad / 2;
+    const kx = hx + st.fk.knee[0], ky = ay + st.fk.knee[1], fx = hx + st.fk.foot[0], fy = ay + st.fk.foot[1];
+    const onGround = st.foot[2] <= -p.stance_height + 1e-6 && state.gait !== "stand";
+    if (onGround || state.gait === "stand" || state.gait === "sway") stance.push([X(fx), Y(fy)]);
+    legs.push(`<g class="${onGround || state.gait === "stand" || state.gait === "sway" ? "near" : "far"}"><line class="ink" x1="${X(hx).toFixed(1)}" y1="${Y(ay + side * p.abad_link).toFixed(1)}" x2="${X(kx).toFixed(1)}" y2="${Y(ky).toFixed(1)}" stroke-width="3"/><line class="ink" x1="${X(kx).toFixed(1)}" y1="${Y(ky).toFixed(1)}" x2="${X(fx).toFixed(1)}" y2="${Y(fy).toFixed(1)}" stroke-width="2"/><circle class="foot" cx="${X(fx).toFixed(1)}" cy="${Y(fy).toFixed(1)}" r="${(p.foot_radius * PX).toFixed(1)}"/></g>`);
+  }
+  let support = "";
+  if (stance.length >= 3) { const c = stance.reduce((a, q) => [a[0] + q[0] / stance.length, a[1] + q[1] / stance.length], [0, 0]); stance.sort((a, b) => Math.atan2(a[1] - c[1], a[0] - c[0]) - Math.atan2(b[1] - c[1], b[0] - c[0])); support = `<polygon class="support" points="${stance.map(q => q[0].toFixed(1) + "," + q[1].toFixed(1)).join(" ")}"/>`; }
+  else if (stance.length === 2) support = `<line class="support" x1="${stance[0][0].toFixed(1)}" y1="${stance[0][1].toFixed(1)}" x2="${stance[1][0].toFixed(1)}" y2="${stance[1][1].toFixed(1)}" stroke-width="3"/>`;
+  const cx = X(m.com[0]), cy = Y(m.com[1]);
+  support += `<g class="com"><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="6"/><line x1="${(cx - 10).toFixed(1)}" y1="${cy.toFixed(1)}" x2="${(cx + 10).toFixed(1)}" y2="${cy.toFixed(1)}"/><line x1="${cx.toFixed(1)}" y1="${(cy - 10).toFixed(1)}" x2="${cx.toFixed(1)}" y2="${(cy + 10).toFixed(1)}"/></g>`;
+  $("tv-support").innerHTML = support; $("tv-legs").innerHTML = legs.join("");
+  $("top-live").textContent = stance.length >= 3 ? `${stance.length} feet down · static support` : stance.length === 2 ? "2 feet down · dynamic balance" : "flight";
+}
+
+// ---- metrics panels ----
+function barRow(label, value, limit, cap) {
+  const w = Math.min(100, value / cap * 100), lim = Math.min(100, limit / cap * 100), over = value > limit;
+  return `<div class="bar"><span>${label}</span><div class="track"><div class="fill${over ? " over" : ""}" style="width:${w.toFixed(1)}%"></div><div class="lim" style="left:${lim.toFixed(1)}%"></div></div><span class="v">${value.toFixed(2)} N·m</span></div>`;
+}
+function renderMetrics(p, m) {
+  const tq = m.tq, sp = m.sp, pk = m.pk;
+  $("kv-mass").innerHTML = [
+    ["Estimated mass", `${f2(m.mass)} kg`], ["· servos ×12", `${f2(m.groups.servos)} kg`], ["· electronics + wiring", `${f2(m.groups.electronics)} kg`], ["· printed structure", `${f2(m.groups.structure)} kg`],
+    ["CoM (x, y, z from hip centre)", `${mm(m.com[0])}, ${mm(m.com[1])}, ${mm(m.com[2])} mm`],
+    ["Hip height / body top", `${mm(p.stance_height)} / ${mm(m.bodyTop)} mm`], ["Nominal hip / knee", `${m.nominal ? deg(m.nominal.qh) : "—"}° / ${m.nominal ? deg(m.nominal.qk) : "—"}°`],
+    ["Length (feet) / width", `${mm(m.length)} / ${mm(m.width)} mm`], ["Leg length (thigh+shank)", `${mm(p.leg_length)} mm`], ["Trot speed at these settings", `${f2(sp.bodySpeed)} m/s · ${(sp.bodySpeed / p.hip_to_hip).toFixed(1)} bodies/s`],
+  ].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
+  $("mass-why").textContent = `Servos are ${pct(m.servoFrac)} of the mass — the STS3215 is the robot. Structure is a parametric estimate (3-perimeter PLA shell, hollow printed links) to be replaced by CAD mass properties in Phase 2.`;
+  const r = [["shank ÷ thigh", p.shank / p.thigh, MC.shank / MC.thigh], ["hip-to-hip ÷ thigh", p.hip_to_hip / p.thigh, MC.hip_to_hip / MC.thigh], ["abad link ÷ thigh", p.abad_link / p.thigh, MC.abad_link / MC.thigh], ["abad axes ÷ hip-to-hip", p.abad_to_abad / p.hip_to_hip, MC.abad_to_abad / MC.hip_to_hip], ["stance ÷ leg length", p.stance_height / p.leg_length, MC.stance_height / (MC.thigh + MC.shank)], ["linear scale", p.thigh / MC.thigh, 1], ["mass", m.mass, MC.mass]];
+  $("ratios").innerHTML = r.map(([k, a, b]) => `<tr><td>${k}</td><td>${k === "mass" ? f2(a) + " kg" : a.toFixed(2)}</td><td>${k === "mass" ? b.toFixed(1) + " kg" : b.toFixed(2)}</td></tr>`).join("");
+  const stall = tq.stall;
+  $("bars").innerHTML = `<div class="small muted">Stand on 4 legs · continuous allowance ${pct(ALLOW.continuous)} of stall (${(stall * ALLOW.continuous).toFixed(2)} N·m)</div>` +
+    barRow("abad", tq.stand.abad, tq.stand.limit, stall) + barRow("hip", tq.stand.hip, tq.stand.limit, stall) + barRow("knee servo", tq.stand.kneeServo, tq.stand.limit, stall) +
+    `<div class="small muted" style="margin-top:10px">Trot peak · 2 legs × 1.5 dynamic · allowance ${pct(ALLOW.peak)} of stall (${(stall * ALLOW.peak).toFixed(2)} N·m)</div>` +
+    barRow("abad", tq.trot.abad, tq.trot.limit, stall) + barRow("hip", tq.trot.hip, tq.trot.limit, stall) + barRow("knee servo", tq.trot.kneeServo, tq.trot.limit, stall) +
+    `<div class="small muted" style="margin-top:10px">Peak servo speed in the trot · cap ${sp.cap.toFixed(2)} rad/s</div>` +
+    `<div class="bar"><span>hip</span><div class="track"><div class="fill${sp.hip > sp.cap ? " over" : ""}" style="width:${Math.min(100, sp.hip / sp.cap * 100).toFixed(1)}%"></div><div class="lim" style="left:100%"></div></div><span class="v">${sp.hip.toFixed(2)} rad/s</span></div>` +
+    `<div class="bar"><span>knee servo</span><div class="track"><div class="fill${sp.kneeServo > sp.cap ? " over" : ""}" style="width:${Math.min(100, sp.kneeServo / sp.cap * 100).toFixed(1)}%"></div><div class="lim" style="left:100%"></div></div><span class="v">${sp.kneeServo.toFixed(2)} rad/s</span></div>`;
+  const chk = (ok, label, detail) => `<div><span class="${ok ? "ok" : "bad"}">${ok ? "✓" : "✗"}</span><span>${label}</span><span class="num muted">${detail}</span></div>`;
+  $("checks").innerHTML = chk(tq.stand.ok, "Standing torque within continuous allowance", "") + chk(tq.trot.ok, "Trot peak torque within peak allowance", "") + chk(sp.ok, "Trot joint speeds under the firmware cap", pct(sp.worstFrac)) +
+    chk(m.reachable, "Gait reachable by the leg", "") + chk(pk.batteryFits, "Battery between the abad servos", `${mm(pk.gap)} mm bay`) + chk(pk.topFits, `Pi 5 ${pk.pi && pk.pi[2] ? "transverse" : "lengthwise"} + PCB in the top layer`, `${mm(pk.topNeeded)} / ${mm(pk.innerLen)} mm`) + chk(pk.heightFits, "Two layers fit the shell height", `${mm(pk.hNeeded)} / ${mm(pk.innerH)} mm`);
+  const binding = sp.worstFrac > Math.max(tq.trot.kneeServo, tq.trot.abad, tq.trot.hip) / tq.trot.limit ? "servo speed" : "knee torque";
+  $("load-why").textContent = `Binding constraint right now: ${binding}. ${p.architecture === "direct" ? "Direct drive puts the full knee torque on the servo but keeps knee speed 1:1." : `A ${p.knee_ratio.toFixed(2)}:1 knee reduction divides servo torque by ${p.knee_ratio.toFixed(2)} and multiplies servo speed by the same.`} Raising stride frequency or step length moves the speed bars; lowering the stance (deeper crouch) moves the knee torque.`;
+}
+
+// ---- summary & feedback ----
+function summaryText() {
+  const p = state.p, m = state.m;
+  return [`Candidate ${state.cand} · ${CAND_TEXT[state.cand].name} · size ${state.custom ? "custom (from " + state.size + ")" : state.size}`,
+    `thigh ${mm(p.thigh)} mm, shank ${mm(p.shank)} mm (${(p.shank / p.thigh).toFixed(2)}), abad link ${mm(p.abad_link)} mm`,
+    `hip-to-hip ${mm(p.hip_to_hip)} mm, abad axes ${mm(p.abad_to_abad)} mm, shell ${mm(p.shell_length)} × ${mm(p.body_height)} mm`,
+    `stance ${mm(p.stance_height)} mm (${(p.stance_height / p.leg_length).toFixed(2)} of leg), knees: ${p.knee_config}, knee ratio ${p.knee_ratio.toFixed(2)}:1`,
+    `gait: step ${mm(p.step_length)} mm, ${p.stride_frequency.toFixed(2)} Hz, swing ${mm(p.swing_height)} mm → ${f2(m.sp.bodySpeed)} m/s trot`,
+    `mass ${f2(m.mass)} kg, width ${mm(m.width)} mm, body top ${mm(m.bodyTop)} mm`,
+    `trot peak: knee servo ${f2(m.tq.trot.kneeServo)} N·m (${pct(m.tq.trot.kneeServo / m.tq.stall)}), abad ${f2(m.tq.trot.abad)}, hip ${f2(m.tq.trot.hip)}; speed ${pct(m.sp.worstFrac)} of cap`,
+    `checks: torque ${m.tq.stand.ok && m.tq.trot.ok ? "ok" : "OVER"}, speed ${m.sp.ok ? "ok" : "OVER"}, packaging ${m.pk.batteryFits && m.pk.topFits && m.pk.heightFits ? "ok" : "NO FIT"}`].join("\n");
+}
+function payload() {
+  const tags = [...document.querySelectorAll("#chips input:checked")].map(i => i.value);
+  return { candidate: state.cand, size: state.custom ? "custom" : state.size, basedOn: state.size, params: JSON.parse(JSON.stringify(state.p)),
+    metrics: { mass: state.m.mass, width: state.m.width, bodyTop: state.m.bodyTop, kneeServoTrot: state.m.tq.trot.kneeServo, abadTrot: state.m.tq.trot.abad, hipTrot: state.m.tq.trot.hip, speedFrac: state.m.sp.worstFrac, trotSpeed: state.m.sp.bodySpeed },
+    tags, comment: $("comment").value.trim(), summary: summaryText(), submittedAt: new Date().toISOString(), page: DATA.meta };
+}
+let db = null;
+function showLast(data) {
+  if (!data) { $("last").textContent = "No decision saved yet."; return; }
+  $("last").innerHTML = `<strong>Last saved:</strong> candidate ${svgEsc(data.candidate)} (${svgEsc(data.size)}) at ${new Date(data.submittedAt).toLocaleString()}${data.tags && data.tags.length ? " · " + svgEsc(data.tags.join(", ")) : ""}${data.comment ? `<br>“${svgEsc(data.comment)}”` : ""}`;
+}
+async function initDb() {
+  if (!(window.claude && typeof window.claude.use === "function")) { $("status").textContent = "Saving needs the claude.ai viewer — use Copy summary and paste it in chat."; return; }
+  db = await window.claude.use("db");
+  if (!db) { $("status").textContent = "Saving unavailable in this view — use Copy summary and paste it in chat."; return; }
+  db.doc("feedback/current").onSnapshot(snap => showLast(snap.exists ? snap.data() : null), () => {});
+}
+$("submit").addEventListener("click", async () => {
+  const data = payload();
+  if (!db) { $("status").textContent = "Not saved (no store here). Summary copied below — paste it in chat."; return; }
+  $("submit").disabled = true; $("status").textContent = "Saving…";
+  try { await db.doc("feedback/current").set(data); await db.collection("reviews").add(data); $("status").innerHTML = `<span class="ok">Saved</span> · Claude will read this decision back.`; }
+  catch (e) { $("status").innerHTML = `<span class="bad">Not saved</span> (${svgEsc(e && e.code || "error")}). Copy the summary and paste it in chat instead.`; }
+  $("submit").disabled = false;
+});
+$("copy").addEventListener("click", async () => {
+  const txt = summaryText() + "\ntags: " + [...document.querySelectorAll("#chips input:checked")].map(i => i.value).join(", ") + "\n" + $("comment").value.trim();
+  try { await navigator.clipboard.writeText(txt); $("status").textContent = "Summary copied."; } catch (e) { $("status").textContent = "Clipboard blocked here — select the summary text and copy it."; }
+});
+
+// ---- compute + frame loop ----
+function recompute() {
+  derive(state.p); state.m = metrics(state.p);
+  sideStatic(state.p, state.m); frontStatic(state.p, state.m); topStatic(state.p, state.m);
+  renderMetrics(state.p, state.m); syncControls(); $("summary").textContent = summaryText();
+  frame(0);
+}
+function frame(dt) {
+  const p = state.p, g = GAITS[state.gait], freq = p.stride_frequency * g.freq;
+  if (state.playing && dt > 0) { state.phase = (state.phase + dt * freq * state.speed) % 1; state.travel = (state.travel || 0) + bodySpeed(p, state.gait) * dt * state.speed; }
+  $("phase").value = state.phase.toFixed(3);
+  const rows = [];
+  for (const leg of LEGS) {
+    const side = SIDE[leg], foot = footTraj(p, state.gait, leg, state.phase), q = legIk(p, foot, side, kneeSign(p, FRONT[leg]));
+    if (!q) { state.legs[leg] = null; rows.push(`<tr><td>${leg}</td><td colspan="6" class="bad">unreachable</td></tr>`); continue; }
+    const fk = legFk(p, q.qa, q.qh, q.qk, side); state.legs[leg] = { q, fk, foot };
+    const local = ((state.phase - g.phase[leg]) % 1 + 1) % 1;
+    rows.push(`<tr><td>${leg}</td><td>${deg(q.qa)}</td><td>${deg(q.qh)}</td><td>${deg(q.qk)}</td><td>${mm(foot[0])}</td><td>${mm(foot[2])}</td><td>${g.step ? (local < g.duty ? "stance" : "swing") : "—"}</td></tr>`);
+  }
+  $("joints").innerHTML = rows.join("");
+  sideFrame(p); frontFrame(p); topFrame(p, state.m);
+  $("gait-live").textContent = `${g.label} · ${freq.toFixed(2)} Hz · ${f2(bodySpeed(p, state.gait))} m/s`;
+  $("side-live").textContent = `phase ${state.phase.toFixed(2)} · ${state.cand} ${state.custom ? "custom" : state.size}`;
+  $("front-live").textContent = state.legs.LF ? `LF abad ${deg(state.legs.LF.q.qa)}°` : "";
+  $("joint-live").textContent = state.playing ? "animating" : "paused";
+}
+let last = null;
+function loop(ts) { if (last !== null) frame(Math.min(0.05, (ts - last) / 1000)); last = ts; requestAnimationFrame(loop); }
+
+// ---- cross-check against the Python package ----
+function crossCheck() {
+  const rows = [];
+  for (const k of ["A", "B", "C"]) {
+    const m = metrics(sizedPreset(k, "M")), r = DATA.reference[k];
+    const pairs = [["mass", m.mass, r.mass], ["width", m.width, r.width], ["knee trot", m.tq.trot.kneeServo, r.knee_servo_trot], ["abad trot", m.tq.trot.abad, r.abad_trot], ["hip trot", m.tq.trot.hip, r.hip_trot], ["speed knee", m.sp.kneeServo, r.speed_knee_servo], ["speed hip", m.sp.hip, r.speed_hip]];
+    const worst = Math.max(...pairs.map(([, a, b]) => Math.abs(a - b) / Math.max(1e-9, Math.abs(b))));
+    rows.push(`${k}: ${(worst * 100).toFixed(1)} %`);
+  }
+  $("xcheck").textContent = `Cross-check of this page's math against cheetah_pup (commit ${DATA.meta.commit}, ${DATA.meta.generated}) — max deviation ${rows.join(" · ")}.`;
+}
+
+$("tb-date").textContent = DATA.meta.generated;
+buildControls(); buildCands(); buildGaitBar(); recompute(); crossCheck(); initDb();
+requestAnimationFrame(loop);
+</script>

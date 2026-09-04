@@ -1,0 +1,21 @@
+[project]
+name = "cheetah-pup"
+version = "0.1.0"
+description = "Design library for the Cheetah Pup quadruped: geometry, kinematics, gaits, sizing, sim model generation"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+sim = ["mujoco>=3.1", "numpy"]
+cad = ["build123d"]
+dev = ["pytest"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["cheetah_pup"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
