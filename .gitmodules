@@ -1,0 +1,21 @@
+[submodule "vendor/open_duck_mini"]
+	path = vendor/open_duck_mini
+	url = https://github.com/apirrone/open_duck_mini
+[submodule "vendor/open_duck_mini_runtime"]
+	path = vendor/open_duck_mini_runtime
+	url = https://github.com/apirrone/open_duck_mini_runtime
+[submodule "vendor/open_duck_playground"]
+	path = vendor/open_duck_playground
+	url = https://github.com/apirrone/open_duck_playground
+[submodule "vendor/open_duck_reference_motion_generator"]
+	path = vendor/open_duck_reference_motion_generator
+	url = https://github.com/apirrone/open_duck_reference_motion_generator
+[submodule "vendor/odri_solo"]
+	path = vendor/odri_solo
+	url = https://github.com/open-dynamic-robot-initiative/solo
+[submodule "vendor/odri_actuator_hardware"]
+	path = vendor/odri_actuator_hardware
+	url = https://github.com/open-dynamic-robot-initiative/open_robot_actuator_hardware
+[submodule "vendor/bam"]
+	path = vendor/bam
+	url = https://github.com/Rhoban/bam
