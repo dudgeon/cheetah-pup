@@ -1,16 +1,16 @@
 # Cheetah Pup — Handoff Document
 
-**Status** (2026-09-04): Phase 1 in progress. Research complete, architecture decided, repo
-scaffolded, design library built and tested, and three leg-architecture candidates published for
-review (DR-01). **Current gate: the owner's candidate selection.** After that: lock the design,
-generate the MuJoCo model, validate, build the RL environment.
+**Status** (2026-09-04): Phase 1 nearly complete. Research done, architecture decided, design
+library built and tested, DR-01 candidates reviewed, **design locked (A · M)**, MuJoCo model
+generated and validated open-loop (stands, walks, trots). **Next: the RL environment** so training
+can start on cloud GPU.
 
 ## 0. Progress
 
 | Phase | State | Where |
 |---|---|---|
 | 0 · Repo & tooling | done | this repo; `vendor/README.md` |
-| 1 · Kinematic validation | **in progress** — candidates sized and published, MJCF next | `docs/design/01-candidates.md`, `cheetah_pup/`, review page https://claude.ai/code/artifact/6b9c92f0-98d5-4cf1-928c-98a28d699ba4 |
+| 1 · Kinematic validation | **design locked; sim model validated (DR-02); RL environment in progress** | `docs/design/locked.json`, `cheetah_pup/mjcf.py`, `sim/cheetah_pup.xml`, `docs/design/02-sim-validation.md`; DR-01 review https://claude.ai/code/artifact/6b9c92f0-98d5-4cf1-928c-98a28d699ba4; DR-02 playback https://claude.ai/code/artifact/2db54b1d-2707-4034-895f-95bec2b86281 |
 | 2 · Mechanical CAD | not started (build123d confirmed working here) | — |
 | 3 · Electrical / PCB | not started; volumes and power rails fixed in the design library | `cheetah_pup/electronics.py` |
 | 4 · Firmware | not started | — |
@@ -84,7 +84,8 @@ ever need to revisit one.
 | **Servo data source** (Phase 1) | STS3215 geometry measured from Open Duck Mini v2's case meshes; electrical/friction model from BAM's identified 7.4 V parameters | datasheet values from memory | Measured meshes and an identified model beat a remembered datasheet; both are vendored (`vendor/open_duck_mini`, `vendor/bam`) and encoded in `cheetah_pup/servo.py`. Design margins use the *datasheet* stall (1.91 N·m), not BAM's more optimistic implied stall. |
 | **Sizing design point** (Phase 1) | Trot at 1.4 Hz, 60 mm step, 25 mm swing; loads = ¼ weight standing (≤ 25 % of stall) and ½ weight × 1.5 dynamic at trot peak (≤ 60 % of stall) | 1.6 Hz trot | 1.6 Hz pushed the knee past the STS3215's 5.29 rad/s cap even in direct drive. The cap, not torque, limits gait speed with these servos — accepted as the walker trade-off. |
 | **Electronics layout** (Phase 1) | Two layers: abad servos + battery low, Pi 5 (transverse) + PCB high | Pi lengthwise | Transverse Pi saves ~40 mm of body length and keeps hip-to-hip near Mini Cheetah's 1.82× thigh ratio (2.0×). |
-| **Knee-drive architecture** | **pending — DR-01** (A direct / B coaxial + belt / C coaxial + pushrod) | — | Recommendation A; see `docs/design/01-candidates.md`. |
+| **Knee-drive architecture & size** (locked 2026-09-04) | **A · direct drive, size M**, knees back, baseline proportions and gait — `cheetah_pup.design.locked()`, `docs/design/locked.json` | B coaxial + belt; C coaxial + pushrod; sizes S/L | Owner accepted the DR-01 defaults. A is the lowest-risk path and the best fit for reusing Open Duck Mini's directly-driven-joint sim-to-real pipeline; 40 % of stall at trot peak, 76 % of the speed cap, narrowest hips. |
+| **Sim actuator model** (Phase 1) | MuJoCo `general` PD from BAM's electrical model (kp 18.8 N·m/rad, kd 0.56 N·m·s/rad), clamped at the datasheet stall 1.91 N·m; joint armature 0.026 kg·m², Coulomb 0.05 N·m | BAM's implied 3.4 N·m stall; BAM's full stateful model | Conservative clamp for viability; `--bam` flag generates the optimistic variant. The RL environment should move to BAM's MuJoCo integration (rate-limited target, extended friction) for the real training runs. |
 
 ---
 
@@ -254,20 +255,19 @@ real failure modes.
 
 ## 8. Immediate next steps
 
-1. **Owner**: pick a candidate and size on the DR-01 review page (or say it in chat). "Save
-   decision" writes to the page's store; Claude reads it back with `read_db` on
-   `feedback/current`.
-2. **Lock the design**: write `docs/design/locked.json` from the decision and add a `LOCKED`
-   preset in `cheetah_pup/design.py`; log it in `docs/DESIGN_LOG.md`.
-3. **MJCF generator** (`cheetah_pup/mjcf.py`): body and legs as primitives with the component
-   masses from `analysis.mass_model`, joint limits, STS3215 position actuators using BAM's
-   parameters (kp, velocity cap, friction, armature), foot contacts. Validate in MuJoCo
-   (`~/venv-sim` here, or `pip install -e ".[sim]"`): stand, then play the IK gaits from
-   `cheetah_pup/gait.py` open-loop and confirm joint torques/speeds agree with the quasi-static
-   sizing.
-4. **RL environment**: MuJoCo Playground (MJX) or mjlab per §4.3; observation/action spaces for
-   12 DOF; reward terms for a quadruped trot; domain randomization scaffold; ONNX export.
-5. Keep this document, the design log, and the task list current as decisions get made.
+1. **RL environment** (`cheetah_pup/rl/`): MJX/MuJoCo Playground env over `sim/cheetah_pup.xml`
+   — observations (IMU orientation + gyro, joint positions/velocities, last action, velocity
+   command), 12-DOF PD position-target actions at 50 Hz, trot/walk reward terms (velocity
+   tracking, height, orientation, foot clearance, action smoothness, torque/energy penalties),
+   termination on falls, domain randomization hooks (mass, friction, servo gains, latency, BAM
+   backlash). Smoke-test on CPU here; train on cloud GPU (§4.3: mjlab is the closer Microduck
+   match, Playground the lower-friction fallback).
+2. **Actuator realism**: swap the PD approximation for BAM's MuJoCo actuator model
+   (`vendor/bam`, native STS3215 @ 7.4 V params) before the real training runs.
+3. **Phase 2 kickoff (parallel)**: build123d parametric CAD from `locked()` — servo pockets,
+   bearing points, wire routes, print splits — then STEP to the owner for the Fusion 360 pass;
+   re-derive MJCF mass properties from CAD.
+4. Keep this document, `docs/DESIGN_LOG.md`, and the task list current as decisions get made.
 
 ---
 
@@ -313,11 +313,17 @@ No decision was made on whether this robot gets a head, tail, or any non-locomot
 expressiveness (Open Duck Mini has a 4-DOF neck for character; Mini Cheetah has none). Not
 mentioned in the original brief — treat as out of scope unless the owner raises it.
 
-### 9.7 Target size/mass — narrowed by DR-01
-The torque/speed analysis converged: size M (thigh 90 mm, ~1.45 kg, 120 mm hip height) is the
-baseline, with S (×0.85) and L (×1.15) all inside the servo allowances. Final size is part of the
-owner's DR-01 selection (**needs owner input**, in progress).
+### 9.7 Target size/mass — resolved 2026-09-04
+Size M locked (thigh 90 mm, 1.41 kg modeled, 120 mm hip height). S/L remain available as presets
+if Phase 2 CAD or bring-up argues for a change.
 
-### 9.8 Knee-drive architecture — needs owner input (DR-01)
-A (direct), B (coaxial + belt), or C (coaxial + pushrod); analysis and recommendation in
-`docs/design/01-candidates.md`. The sim model waits on this.
+### 9.8 Knee-drive architecture — resolved 2026-09-04
+A · direct drive locked (owner accepted the DR-01 defaults). B/C presets stay in the library for
+reference.
+
+### 9.9 Open-loop speed loss — carry into the RL environment
+Open-loop trot reaches a third of its commanded speed: the trunk pitches under the rear legs and
+the front feet float most of the cycle (servo tracking itself is fine, 2–3° mean error). A crude
+leveling term recovers speed but oscillates. Both behaviors are what the policy must learn around;
+keep torque saturation and BAM's rate-limited target in the training model so the policy does not
+learn an unrealistically fast robot, and give it the IMU (orientation + rates) in the observation.

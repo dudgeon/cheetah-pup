@@ -6,7 +6,7 @@ robot's parameters; the design-review artifact and the MJCF generator both deriv
 
 from .servo import STS3215, Servo
 from .electronics import PI5, BATTERY_2S, PCB, IMU
-from .design import DesignParams, MINI_CHEETAH, PRESETS, preset
+from .design import DesignParams, MINI_CHEETAH, PRESETS, preset, locked
 from .kinematics import planar_fk, planar_ik, leg_fk, leg_ik, planar_jacobian
 from .gait import GAITS, foot_trajectory, joint_trajectories
 from .analysis import metrics, mass_model, torque_report, speed_report, packaging_report

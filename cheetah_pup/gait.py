@@ -48,13 +48,14 @@ def foot_trajectory(p: DesignParams, gait: str, leg: str, phase: float):
         return 0.0, y, -h
     s = p.step_length * g["step"]
     duty = g["duty"]
+    ground = -h - p.stance_depth  # stance feet reach slightly below nominal so they carry load
     local = (phase - g["phase"][leg]) % 1.0
     if local < duty:
         u = local / duty
-        return s / 2 - u * s, y, -h
+        return s / 2 - u * s, y, ground
     u = (local - duty) / (1.0 - duty)
     lift = p.swing_height * math.sin(math.pi * u)
-    return -s / 2 + u * s, y, -h + lift
+    return -s / 2 + u * s, y, ground + lift
 
 
 def body_speed(p: DesignParams, gait: str) -> float:

@@ -1,0 +1,221 @@
+{
+ "model": "sim/cheetah_pup.xml",
+ "design": "Cheetah Pup v0 \u00b7 A direct drive \u00b7 M (locked 2026-09-04)",
+ "total_mass_kg": 1.4091,
+ "nq": 19,
+ "nv": 18,
+ "nu": 12,
+ "servo": {
+  "kp": 18.76663738657845,
+  "kd": 0.5594633315851051,
+  "limit": 1.9122967499999999,
+  "no_load_speed": 6.095448369565218
+ },
+ "control_hz": 50,
+ "timestep": 0.002,
+ "stand": {
+  "settled_height_m": 0.1292,
+  "target_height_m": 0.13,
+  "sag_mm": 0.8,
+  "pitch_deg": -0.1,
+  "roll_deg": -0.0,
+  "hold_torque_Nm": {
+   "abad": 0.059,
+   "hip": 0.045,
+   "knee": 0.244
+  },
+  "joint_error_deg": 0.75
+ },
+ "runs": {
+  "openloop": {
+   "stand": {
+    "gait": "stand",
+    "level_gain": 0.0,
+    "seconds": 6.0,
+    "contact_duty": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "fell": false,
+    "distance_m": -0.0028,
+    "mean_speed_mps": -0.0005,
+    "commanded_speed_mps": 0.0,
+    "height_min": 0.0867,
+    "height_max": 0.1292,
+    "pitch_max_deg": 0.2,
+    "roll_max_deg": 0.0,
+    "peak_torque_Nm": {
+     "abad": 0.10812271480224572,
+     "hip": 0.1551489690271488,
+     "knee": 0.451990628943463
+    },
+    "peak_speed_rads": {
+     "abad": 0.002391589834410825,
+     "hip": 0.4649957022350866,
+     "knee": 1.0290521599137459
+    },
+    "lateral_drift_m": 0.0,
+    "yaw_drift_deg": -0.0
+   },
+   "walk": {
+    "gait": "walk",
+    "level_gain": 0.0,
+    "seconds": 6.0,
+    "contact_duty": [
+     0.276,
+     0.332,
+     0.621,
+     0.575
+    ],
+    "fell": false,
+    "distance_m": 0.071,
+    "mean_speed_mps": 0.0118,
+    "commanded_speed_mps": 0.0619,
+    "height_min": 0.13,
+    "height_max": 0.139,
+    "pitch_max_deg": 10.0,
+    "roll_max_deg": 11.3,
+    "peak_torque_Nm": {
+     "abad": 0.6804924301849453,
+     "hip": 1.9123,
+     "knee": 1.9123
+    },
+    "peak_speed_rads": {
+     "abad": 0.4369030367453079,
+     "hip": 3.8652281085464066,
+     "knee": 5.30730402674048
+    },
+    "lateral_drift_m": -0.0414,
+    "yaw_drift_deg": -6.3
+   },
+   "trot": {
+    "gait": "trot",
+    "level_gain": 0.0,
+    "seconds": 6.0,
+    "contact_duty": [
+     0.206,
+     0.179,
+     0.362,
+     0.395
+    ],
+    "fell": false,
+    "distance_m": 0.3335,
+    "mean_speed_mps": 0.0556,
+    "commanded_speed_mps": 0.168,
+    "height_min": 0.1301,
+    "height_max": 0.1381,
+    "pitch_max_deg": 8.5,
+    "roll_max_deg": 11.4,
+    "peak_torque_Nm": {
+     "abad": 0.584148985531291,
+     "hip": 1.9123,
+     "knee": 1.9123
+    },
+    "peak_speed_rads": {
+     "abad": 0.45067254624953523,
+     "hip": 3.321819704924042,
+     "knee": 4.269012800546398
+    },
+    "lateral_drift_m": 0.05,
+    "yaw_drift_deg": 0.6
+   }
+  },
+  "leveled": {
+   "stand": {
+    "gait": "stand",
+    "level_gain": 0.7,
+    "seconds": 6.0,
+    "contact_duty": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "fell": false,
+    "distance_m": -0.0034,
+    "mean_speed_mps": -0.0006,
+    "commanded_speed_mps": 0.0,
+    "height_min": 0.0866,
+    "height_max": 0.1292,
+    "pitch_max_deg": 0.7,
+    "roll_max_deg": 0.0,
+    "peak_torque_Nm": {
+     "abad": 0.10902086490452512,
+     "hip": 0.15486526898548902,
+     "knee": 0.4541113683580065
+    },
+    "peak_speed_rads": {
+     "abad": 0.0024530396760425095,
+     "hip": 0.46580716447773196,
+     "knee": 1.0329850479774119
+    },
+    "lateral_drift_m": -0.0,
+    "yaw_drift_deg": 0.0
+   },
+   "walk": {
+    "gait": "walk",
+    "level_gain": 0.7,
+    "seconds": 6.0,
+    "contact_duty": [
+     0.339,
+     0.395,
+     0.495,
+     0.468
+    ],
+    "fell": false,
+    "distance_m": 0.1183,
+    "mean_speed_mps": 0.0197,
+    "commanded_speed_mps": 0.0619,
+    "height_min": 0.129,
+    "height_max": 0.1361,
+    "pitch_max_deg": 16.3,
+    "roll_max_deg": 16.4,
+    "peak_torque_Nm": {
+     "abad": 0.6385279783726773,
+     "hip": 1.9123,
+     "knee": 1.9123
+    },
+    "peak_speed_rads": {
+     "abad": 0.43451306446440674,
+     "hip": 3.4673565796261494,
+     "knee": 6.205496878142548
+    },
+    "lateral_drift_m": -0.0161,
+    "yaw_drift_deg": 1.2
+   },
+   "trot": {
+    "gait": "trot",
+    "level_gain": 0.7,
+    "seconds": 6.0,
+    "contact_duty": [
+     0.272,
+     0.243,
+     0.382,
+     0.439
+    ],
+    "fell": false,
+    "distance_m": 0.6162,
+    "mean_speed_mps": 0.1027,
+    "commanded_speed_mps": 0.168,
+    "height_min": 0.1268,
+    "height_max": 0.138,
+    "pitch_max_deg": 18.5,
+    "roll_max_deg": 19.3,
+    "peak_torque_Nm": {
+     "abad": 0.6279964860654313,
+     "hip": 1.9123,
+     "knee": 1.9123
+    },
+    "peak_speed_rads": {
+     "abad": 0.5609596501857265,
+     "hip": 4.701926117426771,
+     "knee": 9.254788495989338
+    },
+    "lateral_drift_m": -0.0353,
+    "yaw_drift_deg": -7.8
+   }
+  }
+ }
+}

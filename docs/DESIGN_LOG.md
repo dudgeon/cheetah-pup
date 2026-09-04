@@ -3,6 +3,39 @@
 Dated record of decisions, milestones, and findings. Newest first. The decision table in
 `docs/HANDOFF.md` §3 is the summary; this log keeps the reasoning and the state at the time.
 
+## 2026-09-04 — Design locked (A · M) and first MuJoCo validation (Fable 5.1)
+
+- **Decision (owner, in chat)**: "All of the defaults look fine" on the DR-01 page → candidate
+  **A · direct drive, size M, knees back**, baseline proportions (thigh 90 / shank 85 / abad link
+  40 mm, hips 180 apart, abad axes 70 apart, shell 148 × 62 mm, hip height 120 mm) and gait
+  defaults (60 mm step, 1.4 Hz, 25 mm swing). Recorded as `cheetah_pup.design.locked()` and
+  `docs/design/locked.json`; every downstream artifact derives from it.
+- **Sim model**: `cheetah_pup/mjcf.py` generates `sim/cheetah_pup.xml` — primitives with the
+  component masses (1.409 kg total, matching the sizing), joint conventions verified against the
+  kinematics library by test, STS3215 as a MuJoCo `general` actuator with kp 18.8 N·m/rad and
+  back-EMF damping 0.56 N·m·s/rad from BAM's model, clamped at the datasheet stall (1.91 N·m);
+  reflected inertia 0.026 kg·m² and Coulomb friction 0.05 N·m on the joints; 50 Hz control,
+  2 ms physics.
+- **Validation (open-loop IK targets, no balance feedback)** — `cheetah_pup/validate.py`,
+  `sim/validation/`: stands with 0.8 mm sag and 0.75° droop, knee hold torque 0.244 N·m vs
+  0.22 N·m quasi-static; walks 6 s without falling (0.10 m, pitch ≤ 10°); trots 6 s without
+  falling (0.37 m, 0.062 m/s vs 0.168 commanded, pitch ≤ 8.5°, roll ≤ 10°). Servo torque
+  saturates briefly at hip and knee during swing (stiff position loop hitting its 1.91 N·m clamp),
+  which is what costs the commanded speed; peak joint speeds 3.4–5.1 rad/s, at the firmware cap.
+  Conclusion: the locked geometry is viable on these servos; an RL policy has slack to work with.
+- **Bug fixed on the way**: a `<general>` actuator needs `biastype="affine"` or MuJoCo drops the
+  position/velocity terms and applies a constant feed-forward torque — the model collapsed at max
+  torque until that was set. Keyframe trunk height now includes the foot radius.
+- **DR-02 playback page** published: https://claude.ai/code/artifact/2db54b1d-2707-4034-895f-95bec2b86281
+  (`docs/design/replay/`, built by `cheetah_pup.build_replay` from `sim/validation/`).
+- **Why open-loop is slow**: servo tracking is good (mean error 2–3°, torque clamp hit only 1–4 %
+  of samples); the front feet are simply off the ground ~80 % of the trot cycle because the trunk
+  pitches under the rear legs' push. A 6 mm stance depth did nothing; a geometric leveling term
+  (foot height ∝ hip x · pitch) swept from gain 0.2 to 1.0 buys speed (0.10 m/s at 0.7) at the cost
+  of 18–27° attitude swings — proportional leveling through a laggy position loop oscillates. Kept
+  gain 0.7 as the comparison run in DR-02. Conclusion for Phase 5: balance is the policy's job; the
+  hand-written gait is only a viability probe.
+
 ## 2026-09-04 — Phase 1 candidates published (Fable 5.1)
 
 - **Milestone**: DR-01 review page published with three leg-architecture candidates at true scale,

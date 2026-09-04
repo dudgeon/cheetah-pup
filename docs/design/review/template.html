@@ -398,9 +398,10 @@ function footTraj(p, gait, leg, phase) {
   if (gait === "stand") return [0, y, -h * (1 - g.crouch * 0.5 * (1 - Math.cos(2 * Math.PI * phase)))];
   if (gait === "sway") return [0, y + g.sway * Math.sin(2 * Math.PI * phase), -h];
   const s = p.step_length * g.step, duty = g.duty, local = ((phase - g.phase[leg]) % 1 + 1) % 1;
-  if (local < duty) { const u = local / duty; return [s / 2 - u * s, y, -h]; }
+  const ground = -h - (p.stance_depth || 0);  // stance feet reach slightly below nominal so they carry load
+  if (local < duty) { const u = local / duty; return [s / 2 - u * s, y, ground]; }
   const u = (local - duty) / (1 - duty);
-  return [-s / 2 + u * s, y, -h + p.swing_height * Math.sin(Math.PI * u)];
+  return [-s / 2 + u * s, y, ground + p.swing_height * Math.sin(Math.PI * u)];
 }
 function bodySpeed(p, gait) { const g = GAITS[gait]; return g.step ? p.step_length * g.step * p.stride_frequency * g.freq / g.duty : 0; }
 
@@ -777,7 +778,7 @@ function topFrame(p, m) {
   for (const leg of LEGS) {
     const st = state.legs[leg]; if (!st) continue; const side = SIDE[leg], sx = FRONT[leg] ? 1 : -1, hx = sx * p.hip_to_hip / 2, ay = side * p.abad_to_abad / 2;
     const kx = hx + st.fk.knee[0], ky = ay + st.fk.knee[1], fx = hx + st.fk.foot[0], fy = ay + st.fk.foot[1];
-    const onGround = st.foot[2] <= -p.stance_height + 1e-6 && state.gait !== "stand";
+    const onGround = st.foot[2] <= -p.stance_height - (p.stance_depth || 0) + 1e-6 && state.gait !== "stand";
     if (onGround || state.gait === "stand" || state.gait === "sway") stance.push([X(fx), Y(fy)]);
     legs.push(`<g class="${onGround || state.gait === "stand" || state.gait === "sway" ? "near" : "far"}"><line class="ink" x1="${X(hx).toFixed(1)}" y1="${Y(ay + side * p.abad_link).toFixed(1)}" x2="${X(kx).toFixed(1)}" y2="${Y(ky).toFixed(1)}" stroke-width="3"/><line class="ink" x1="${X(kx).toFixed(1)}" y1="${Y(ky).toFixed(1)}" x2="${X(fx).toFixed(1)}" y2="${Y(fy).toFixed(1)}" stroke-width="2"/><circle class="foot" cx="${X(fx).toFixed(1)}" cy="${Y(fy).toFixed(1)}" r="${(p.foot_radius * PX).toFixed(1)}"/></g>`);
   }

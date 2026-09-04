@@ -50,6 +50,7 @@ class DesignParams:
     step_length: float = 0.06    # m, trot
     stride_frequency: float = 1.4  # Hz, trot — the STS3215 speed cap binds above ~1.5 Hz
     swing_height: float = 0.025  # m
+    stance_depth: float = 0.006  # m, stance feet reach below the nominal height so they actually load
     dynamic_factor: float = 1.5  # peak-to-static vertical load factor during trot
     lateral_shift: float = 0.01  # m, abad torque case: foot displaced outward from the thigh plane
     # Transmission
@@ -128,6 +129,17 @@ PRESETS: dict[str, DesignParams] = {
 }
 
 SIZES = {"S": 0.85, "M": 1.0, "L": 1.15}
+
+# Locked on 2026-09-04 (DR-01): the owner accepted the review page defaults — candidate A (direct
+# drive), size M, knees back, baseline proportions and gait. Every downstream artifact (MJCF, RL
+# environment, CAD) derives from `locked()`; change it only with a new dated design-log entry.
+LOCKED_KEY = "A"
+LOCKED_SIZE = "M"
+LOCKED_NAME = "Cheetah Pup v0 · A direct drive · M (locked 2026-09-04)"
+
+
+def locked() -> "DesignParams":
+    return preset(LOCKED_KEY, LOCKED_SIZE, name=LOCKED_NAME)
 
 
 def preset(key: str, size: str = "M", **overrides) -> DesignParams:

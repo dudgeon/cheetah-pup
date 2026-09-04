@@ -1,0 +1,119 @@
+<mujoco model="cheetah_pup">
+  <compiler angle="radian" autolimits="true"/>
+  <option timestep="0.002" integrator="implicitfast" cone="elliptic"/>
+  <visual><headlight ambient="0.4 0.4 0.4" diffuse="0.6 0.6 0.6"/><map znear="0.01"/></visual>
+  <default>
+    <geom density="0" condim="3" friction="0.8 0.02 0.001" solref="0.005 1"/>
+    <joint damping="0.0599" armature="0.0261" frictionloss="0.0515"/>
+    <default class="visual"><geom contype="0" conaffinity="0" group="1" rgba="0.17 0.18 0.19 1"/></default>
+    <default class="collision"><geom group="0" rgba="0.85 0.83 0.78 1"/></default>
+    <default class="electronics"><geom contype="0" conaffinity="0" group="1" rgba="0.3 0.55 0.5 0.6"/></default>
+    <default class="servo"><general dyntype="none" gaintype="fixed" biastype="affine" ctrllimited="true" forcelimited="true" gainprm="18.7666" biasprm="0 -18.7666 -0.5595" forcerange="-1.9123 1.9123"/></default>
+  </default>
+  <asset><texture name="grid" type="2d" builtin="checker" rgb1="0.9 0.9 0.88" rgb2="0.8 0.8 0.78" width="256" height="256"/><material name="grid" texture="grid" texrepeat="8 8" reflectance="0.05"/></asset>
+  <worldbody>
+    <light pos="0.5 -0.5 1.2" dir="-0.3 0.3 -1" directional="true"/>
+    <geom name="floor" type="plane" size="0 0 0.05" material="grid" contype="1" conaffinity="1" friction="0.8 0.02 0.001"/>
+    <body name="trunk" pos="0 0 0.1300">
+      <freejoint name="root"/>
+      <site name="imu" pos="0 0 0" size="0.005"/>
+<geom name="shell" type="box" class="collision" pos="0.00000 0.00000 0.00000" size="0.07400 0.04750 0.03100" mass="0.19869" />
+<geom name="battery" type="box" class="electronics" pos="0.00000 0.00000 -0.01700" size="0.03500 0.02000 0.01100" mass="0.12500" rgba="0.3 0.42 0.63 0.6"/>
+<geom name="pi5" type="box" class="electronics" pos="-0.04300 0.00000 0.01122" size="0.02800 0.04250 0.01250" mass="0.06500" />
+<geom name="pcb" type="box" class="electronics" pos="0.04850 0.00000 0.00472" size="0.02250 0.03000 0.00600" mass="0.02500" rgba="0.37 0.55 0.23 0.6"/>
+<geom name="imu_board" type="box" class="electronics" pos="0.00000 0.00000 0.00172" size="0.01350 0.01000 0.00200" mass="0.00500" rgba="0.48 0.35 0.65 0.7"/>
+<geom name="LF_abad_servo" type="box" class="visual" pos="0.05615 0.02199 0.00000" size="0.01785 0.02261 0.01236" mass="0.05500" />
+      <body name="LF_abad" pos="0.09000 0.03500 0">
+        <joint name="LF_abad" axis="1 0 0" range="-0.8 0.8"/>
+  <geom name="LF_bracket" type="box" class="visual" pos="0.00000 0.02000 -0.00400" size="0.01000 0.02000 0.01100" mass="0.02500" />
+  <geom name="LF_hip_servo" type="box" class="visual" pos="0.00000 0.01615 0.01301" size="0.01236 0.01785 0.02261" mass="0.05500" />
+        <body name="LF_hip" pos="0 0.04000 0">
+          <joint name="LF_hip" axis="0 -1 0" range="-1.6 1.6"/>
+          <geom name="LF_thigh" type="capsule" class="collision" fromto="0 0 0 0 0 -0.09000" size="0.010" mass="0.03440"/>
+    <geom name="LF_knee_servo" type="box" class="visual" pos="0.00000 0.00000 -0.07699" size="0.01236 0.01785 0.02261" mass="0.05500" />
+          <body name="LF_knee" pos="0 0 -0.09000">
+            <joint name="LF_knee" axis="0 -1 0" range="0.05 2.7"/>
+            <geom name="LF_shank" type="capsule" class="collision" fromto="0 0 0 0 0 -0.08500" size="0.007" mass="0.01520"/>
+            <geom name="LF_foot" type="sphere" class="collision" pos="0 0 -0.08500" size="0.0100" mass="0.00800" friction="1.0 0.02 0.001" rgba="0.12 0.12 0.12 1"/>
+            <site name="LF_foot" pos="0 0 -0.08500" size="0.0120" type="sphere" rgba="0 0 0 0"/>
+          </body>
+        </body>
+      </body>
+<geom name="RF_abad_servo" type="box" class="visual" pos="0.05615 -0.02199 0.00000" size="0.01785 0.02261 0.01236" mass="0.05500" />
+      <body name="RF_abad" pos="0.09000 -0.03500 0">
+        <joint name="RF_abad" axis="-1 0 0" range="-0.8 0.8"/>
+  <geom name="RF_bracket" type="box" class="visual" pos="0.00000 -0.02000 -0.00400" size="0.01000 0.02000 0.01100" mass="0.02500" />
+  <geom name="RF_hip_servo" type="box" class="visual" pos="0.00000 -0.01615 0.01301" size="0.01236 0.01785 0.02261" mass="0.05500" />
+        <body name="RF_hip" pos="0 -0.04000 0">
+          <joint name="RF_hip" axis="0 -1 0" range="-1.6 1.6"/>
+          <geom name="RF_thigh" type="capsule" class="collision" fromto="0 0 0 0 0 -0.09000" size="0.010" mass="0.03440"/>
+    <geom name="RF_knee_servo" type="box" class="visual" pos="0.00000 0.00000 -0.07699" size="0.01236 0.01785 0.02261" mass="0.05500" />
+          <body name="RF_knee" pos="0 0 -0.09000">
+            <joint name="RF_knee" axis="0 -1 0" range="0.05 2.7"/>
+            <geom name="RF_shank" type="capsule" class="collision" fromto="0 0 0 0 0 -0.08500" size="0.007" mass="0.01520"/>
+            <geom name="RF_foot" type="sphere" class="collision" pos="0 0 -0.08500" size="0.0100" mass="0.00800" friction="1.0 0.02 0.001" rgba="0.12 0.12 0.12 1"/>
+            <site name="RF_foot" pos="0 0 -0.08500" size="0.0120" type="sphere" rgba="0 0 0 0"/>
+          </body>
+        </body>
+      </body>
+<geom name="LH_abad_servo" type="box" class="visual" pos="-0.05615 0.02199 0.00000" size="0.01785 0.02261 0.01236" mass="0.05500" />
+      <body name="LH_abad" pos="-0.09000 0.03500 0">
+        <joint name="LH_abad" axis="1 0 0" range="-0.8 0.8"/>
+  <geom name="LH_bracket" type="box" class="visual" pos="0.00000 0.02000 -0.00400" size="0.01000 0.02000 0.01100" mass="0.02500" />
+  <geom name="LH_hip_servo" type="box" class="visual" pos="0.00000 0.01615 0.01301" size="0.01236 0.01785 0.02261" mass="0.05500" />
+        <body name="LH_hip" pos="0 0.04000 0">
+          <joint name="LH_hip" axis="0 -1 0" range="-1.6 1.6"/>
+          <geom name="LH_thigh" type="capsule" class="collision" fromto="0 0 0 0 0 -0.09000" size="0.010" mass="0.03440"/>
+    <geom name="LH_knee_servo" type="box" class="visual" pos="0.00000 0.00000 -0.07699" size="0.01236 0.01785 0.02261" mass="0.05500" />
+          <body name="LH_knee" pos="0 0 -0.09000">
+            <joint name="LH_knee" axis="0 -1 0" range="0.05 2.7"/>
+            <geom name="LH_shank" type="capsule" class="collision" fromto="0 0 0 0 0 -0.08500" size="0.007" mass="0.01520"/>
+            <geom name="LH_foot" type="sphere" class="collision" pos="0 0 -0.08500" size="0.0100" mass="0.00800" friction="1.0 0.02 0.001" rgba="0.12 0.12 0.12 1"/>
+            <site name="LH_foot" pos="0 0 -0.08500" size="0.0120" type="sphere" rgba="0 0 0 0"/>
+          </body>
+        </body>
+      </body>
+<geom name="RH_abad_servo" type="box" class="visual" pos="-0.05615 -0.02199 0.00000" size="0.01785 0.02261 0.01236" mass="0.05500" />
+      <body name="RH_abad" pos="-0.09000 -0.03500 0">
+        <joint name="RH_abad" axis="-1 0 0" range="-0.8 0.8"/>
+  <geom name="RH_bracket" type="box" class="visual" pos="0.00000 -0.02000 -0.00400" size="0.01000 0.02000 0.01100" mass="0.02500" />
+  <geom name="RH_hip_servo" type="box" class="visual" pos="0.00000 -0.01615 0.01301" size="0.01236 0.01785 0.02261" mass="0.05500" />
+        <body name="RH_hip" pos="0 -0.04000 0">
+          <joint name="RH_hip" axis="0 -1 0" range="-1.6 1.6"/>
+          <geom name="RH_thigh" type="capsule" class="collision" fromto="0 0 0 0 0 -0.09000" size="0.010" mass="0.03440"/>
+    <geom name="RH_knee_servo" type="box" class="visual" pos="0.00000 0.00000 -0.07699" size="0.01236 0.01785 0.02261" mass="0.05500" />
+          <body name="RH_knee" pos="0 0 -0.09000">
+            <joint name="RH_knee" axis="0 -1 0" range="0.05 2.7"/>
+            <geom name="RH_shank" type="capsule" class="collision" fromto="0 0 0 0 0 -0.08500" size="0.007" mass="0.01520"/>
+            <geom name="RH_foot" type="sphere" class="collision" pos="0 0 -0.08500" size="0.0100" mass="0.00800" friction="1.0 0.02 0.001" rgba="0.12 0.12 0.12 1"/>
+            <site name="RH_foot" pos="0 0 -0.08500" size="0.0120" type="sphere" rgba="0 0 0 0"/>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  <actuator>
+    <general name="LF_abad" class="servo" joint="LF_abad" ctrlrange="-0.8 0.8"/>
+    <general name="LF_hip" class="servo" joint="LF_hip" ctrlrange="-1.6 1.6"/>
+    <general name="LF_knee" class="servo" joint="LF_knee" ctrlrange="0.05 2.7"/>
+    <general name="RF_abad" class="servo" joint="RF_abad" ctrlrange="-0.8 0.8"/>
+    <general name="RF_hip" class="servo" joint="RF_hip" ctrlrange="-1.6 1.6"/>
+    <general name="RF_knee" class="servo" joint="RF_knee" ctrlrange="0.05 2.7"/>
+    <general name="LH_abad" class="servo" joint="LH_abad" ctrlrange="-0.8 0.8"/>
+    <general name="LH_hip" class="servo" joint="LH_hip" ctrlrange="-1.6 1.6"/>
+    <general name="LH_knee" class="servo" joint="LH_knee" ctrlrange="0.05 2.7"/>
+    <general name="RH_abad" class="servo" joint="RH_abad" ctrlrange="-0.8 0.8"/>
+    <general name="RH_hip" class="servo" joint="RH_hip" ctrlrange="-1.6 1.6"/>
+    <general name="RH_knee" class="servo" joint="RH_knee" ctrlrange="0.05 2.7"/>
+  </actuator>
+  <sensor>
+    <framequat name="imu_quat" objtype="site" objname="imu"/>
+    <gyro name="imu_gyro" site="imu"/>
+    <accelerometer name="imu_acc" site="imu"/>
+    <touch name="LF_touch" site="LF_foot"/>
+    <touch name="RF_touch" site="RF_foot"/>
+    <touch name="LH_touch" site="LH_foot"/>
+    <touch name="RH_touch" site="RH_foot"/>
+  </sensor>
+  <keyframe><key name="stand" qpos="0 0 0.1300 1 0 0 0 0 -0.78530 1.63129 0 -0.78530 1.63129 0 -0.78530 1.63129 0 -0.78530 1.63129" ctrl="0 -0.78530 1.63129 0 -0.78530 1.63129 0 -0.78530 1.63129 0 -0.78530 1.63129"/></keyframe>
+</mujoco>

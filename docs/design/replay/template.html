@@ -1,0 +1,404 @@
+<title>Cheetah Pup Sim Playback</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --paper: #F4F3EF; --paper-2: #ECEAE3; --paper-3: #E2DFD6;
+    --ink: #1F2328; --ink-2: #5C626B; --ink-3: #8A8F97;
+    --line: #CBC8BF; --line-2: #B3AFA4;
+    --gold: #B8862B; --gold-ink: #7A5A18; --gold-tint: rgba(184,134,43,.16);
+    --servo: #2B2D31; --servo-edge: #101214; --servo-far: #9A9DA4;
+    --ok: #3E8E5A; --bad: #C0453A;
+    --s-hip: #9C6A12; --s-knee: #1F6FBF; --s-cmd: #5C626B;
+    --display: "Barlow Semi Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+    --body: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+    --mono: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --paper: #1B1D21; --paper-2: #23262B; --paper-3: #2C3037;
+      --ink: #E8E5DD; --ink-2: #ABA79E; --ink-3: #7E7B74;
+      --line: #3B3F46; --line-2: #4C515A;
+      --gold: #E0A83A; --gold-ink: #F0C466; --gold-tint: rgba(224,168,58,.18);
+      --servo: #3B3E45; --servo-edge: #B0B4BC; --servo-far: #5A5E67;
+      --ok: #5DB27A; --bad: #E06A60;
+      --s-hip: #B07A20; --s-knee: #3D86CC; --s-cmd: #ABA79E;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --paper: #1B1D21; --paper-2: #23262B; --paper-3: #2C3037;
+    --ink: #E8E5DD; --ink-2: #ABA79E; --ink-3: #7E7B74;
+    --line: #3B3F46; --line-2: #4C515A;
+    --gold: #E0A83A; --gold-ink: #F0C466; --gold-tint: rgba(224,168,58,.18);
+    --servo: #3B3E45; --servo-edge: #B0B4BC; --servo-far: #5A5E67;
+    --ok: #5DB27A; --bad: #E06A60;
+    --s-hip: #B07A20; --s-knee: #3D86CC; --s-cmd: #ABA79E;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.45; }
+  h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.1; margin: 0; text-wrap: balance; }
+  h1 { font-size: 30px; }
+  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-2); margin-bottom: 10px; }
+  h3 { font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+  p { margin: 0; }
+  .muted { color: var(--ink-2); } .small { font-size: 13px; }
+  .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .sheet { max-width: 1240px; margin: 0 auto; padding: 20px 22px 56px; display: flex; flex-direction: column; gap: 18px; }
+  .titleblock { display: grid; grid-template-columns: minmax(0, 1fr) auto; border: 1px solid var(--line-2); background: var(--paper-2); }
+  .titleblock .lead { padding: 16px 20px; display: flex; flex-direction: column; gap: 6px; }
+  .eyebrow { font-family: var(--display); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-ink); }
+  .titleblock .lead p { max-width: 70ch; color: var(--ink-2); }
+  .tb { display: grid; grid-template-columns: repeat(3, auto); border-left: 1px solid var(--line-2); }
+  .tb div { padding: 8px 14px; border-left: 1px solid var(--line); border-top: 1px solid var(--line); min-width: 112px; }
+  .tb div:nth-child(-n+3) { border-top: 0; } .tb div:nth-child(3n+1) { border-left: 0; }
+  .tb .k { display: block; font-family: var(--display); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+  .tb .v { display: block; font-family: var(--mono); font-size: 13px; margin-top: 2px; }
+  @media (max-width: 760px) { .titleblock { grid-template-columns: 1fr; } .tb { border-left: 0; border-top: 1px solid var(--line-2); } }
+  .panel { background: var(--paper-2); border: 1px solid var(--line); padding: 12px 14px 14px; }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 10px 12px; background: var(--paper-2); border: 1px solid var(--line); }
+  .seg { display: flex; gap: 4px; flex-wrap: wrap; }
+  .seg button, .btn { appearance: none; font: inherit; font-family: var(--display); font-weight: 600; font-size: 13px; letter-spacing: .02em; color: var(--ink); background: var(--paper); border: 1px solid var(--line-2); padding: 5px 10px; cursor: pointer; }
+  .seg button.on { background: var(--gold-tint); border-color: var(--gold); box-shadow: inset 0 -3px 0 var(--gold); }
+  .seg button:focus-visible, .btn:focus-visible, input:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .bar input[type=range] { width: 200px; accent-color: var(--gold); }
+  .bar .live { font-family: var(--mono); font-size: 12px; color: var(--ink-2); margin-left: auto; }
+  .fig { background: var(--paper-2); border: 1px solid var(--line); padding: 10px 12px 8px; }
+  .fig .cap { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+  .fig .cap .live { font-family: var(--mono); font-size: 12px; color: var(--ink-2); }
+  .fig svg { width: 100%; height: auto; display: block; }
+  svg text { font-family: var(--mono); font-size: 11px; fill: var(--ink-2); }
+  svg .lbl { font-family: var(--display); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; fill: var(--ink-3); }
+  svg .shell { fill: var(--paper); stroke: var(--ink); stroke-width: 1.4; }
+  svg .servo { fill: var(--servo); stroke: var(--servo-edge); stroke-width: 1; }
+  svg .shaft { fill: var(--paper); stroke: var(--servo-edge); stroke-width: 1; }
+  svg .link { fill: var(--paper-3); stroke: var(--ink); stroke-width: 1.2; stroke-linejoin: round; }
+  svg .bracket { fill: var(--paper-3); stroke: var(--ink-2); stroke-width: 1; }
+  svg .joint { fill: var(--gold); stroke: var(--ink); stroke-width: 1; }
+  svg .foot { fill: var(--ink); }
+  svg .contact { fill: none; stroke: var(--gold); stroke-width: 3; }
+  svg .far { opacity: .42; } svg .far .servo { fill: var(--servo-far); }
+  svg .ghost { opacity: .5; } svg .ghost .link, svg .ghost .joint { fill: none; stroke-dasharray: 3 3; stroke: var(--s-cmd); }
+  svg .ground { stroke: var(--ink); stroke-width: 1.2; } svg .tick { stroke: var(--ink-3); stroke-width: 1; }
+  svg .grid { stroke: var(--line); stroke-width: 1; } svg .axis { stroke: var(--line-2); stroke-width: 1; }
+  svg .ref { stroke: var(--ink-3); stroke-width: 1; stroke-dasharray: 4 3; }
+  svg .ref-bad { stroke: var(--bad); stroke-width: 1; stroke-dasharray: 4 3; }
+  svg .series { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  svg .s-hip { stroke: var(--s-hip); } svg .s-knee { stroke: var(--s-knee); } svg .s-ink { stroke: var(--ink); } svg .s-cmd { stroke: var(--s-cmd); stroke-dasharray: 5 3; }
+  svg .cursor { stroke: var(--gold); stroke-width: 1.2; }
+  svg .stance { fill: var(--gold); fill-opacity: .14; }
+  svg .touch { fill: var(--ink); }
+  svg .dot { stroke: var(--paper-2); stroke-width: 2; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .tile { background: var(--paper); border: 1px solid var(--line); padding: 8px 10px; }
+  .tile .k { font-family: var(--display); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+  .tile .v { font-family: var(--mono); font-size: 18px; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .tile .s { font-size: 12px; color: var(--ink-2); }
+  .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 900px) { .charts { grid-template-columns: 1fr; } }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-2); margin-top: 4px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { display: inline-block; width: 18px; height: 0; border-top: 2px solid; }
+  .legend i.hip { border-color: var(--s-hip); } .legend i.knee { border-color: var(--s-knee); } .legend i.cmd { border-color: var(--s-cmd); border-top-style: dashed; } .legend i.ink { border-color: var(--ink); }
+  .tip { position: fixed; pointer-events: none; background: var(--paper); border: 1px solid var(--line-2); padding: 6px 8px; font-family: var(--mono); font-size: 12px; box-shadow: 0 6px 18px -10px rgba(0,0,0,.4); display: none; z-index: 5; }
+  details summary { cursor: pointer; color: var(--ink-2); font-size: 13px; }
+  table.data { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 8px; }
+  table.data th, table.data td { padding: 3px 6px; text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; border-bottom: 1px solid var(--line); }
+  table.data th { font-family: var(--display); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+  table.data td:first-child, table.data th:first-child { text-align: left; }
+  .notes { font-size: 13px; color: var(--ink-2); border-top: 1px solid var(--line); padding-top: 14px; display: grid; gap: 6px; max-width: 90ch; }
+  .why { font-size: 12.5px; color: var(--ink-2); margin-top: 8px; line-height: 1.45; }
+  .ok { color: var(--ok); font-weight: 600; } .bad { color: var(--bad); font-weight: 600; }
+</style>
+
+<div class="sheet">
+  <header class="titleblock">
+    <div class="lead">
+      <span class="eyebrow">Cheetah Pup · Phase 1 · MuJoCo validation of the locked design</span>
+      <h1>The locked robot, standing and trotting in simulation</h1>
+      <p>Recorded MuJoCo runs of <span class="mono" id="design-name"></span>: the servos track inverse-kinematics gait targets at 50 Hz with no learned policy. <strong>Open-loop</strong> sends the targets blind; <strong>leveled</strong> adds one geometric term that lengthens legs under a low corner of the body. Neither balances — a robot that survives both has slack for the RL policy to use. Drag the timeline or hover the charts; the playback and the cursors move together.</p>
+    </div>
+    <div class="tb">
+      <div><span class="k">Sheet</span><span class="v">DR-02 · sim playback</span></div>
+      <div><span class="k">Model</span><span class="v" id="tb-model">—</span></div>
+      <div><span class="k">Date</span><span class="v" id="tb-date">—</span></div>
+      <div><span class="k">Scale</span><span class="v">1.5 px : 1 mm</span></div>
+      <div><span class="k">Physics</span><span class="v" id="tb-phys">—</span></div>
+      <div><span class="k">Servo</span><span class="v" id="tb-servo">—</span></div>
+    </div>
+  </header>
+
+  <div class="bar">
+    <span class="small muted">Control</span><div class="seg" id="mode-seg"></div>
+    <span class="small muted">Gait</span><div class="seg" id="gait-seg"></div>
+    <button class="btn" id="play">Pause</button>
+    <label class="small muted">Speed <select id="speed"><option value="0.25">¼×</option><option value="0.5">½×</option><option value="1" selected>1×</option></select></label>
+    <label class="small muted">Time <input type="range" id="scrub" min="0" max="1" step="1" value="0"></label>
+    <span class="live" id="time-live"></span>
+  </div>
+
+  <section class="panel">
+    <h2>This run</h2>
+    <div class="tiles" id="tiles"></div>
+    <div class="why" id="run-why"></div>
+  </section>
+
+  <figure class="fig" style="margin:0">
+    <div class="cap"><h3>Side elevation · recorded pose, left side toward viewer</h3><span class="live" id="side-live"></span></div>
+    <svg id="side" viewBox="0 0 760 420" role="img" aria-label="Side view of the simulated robot at the current time: trunk pitch and height from the physics, legs at their recorded joint angles, feet in contact ringed; dashed ghost legs show the commanded pose."></svg>
+    <div class="legend"><span><i class="ink"></i>recorded joints</span><span><i class="cmd"></i>commanded joints (near legs)</span><span><i style="border-color:var(--gold);border-top-width:3px"></i>foot in contact</span></div>
+  </figure>
+
+  <div class="charts">
+    <figure class="fig" style="margin:0"><div class="cap"><h3>Trunk height</h3><span class="live" id="h-live"></span></div><svg id="ch-height" viewBox="0 0 600 220" role="img" aria-label="Trunk height above ground over time with the target height as a reference line."></svg></figure>
+    <figure class="fig" style="margin:0"><div class="cap"><h3>Trunk pitch &amp; roll</h3><span class="live" id="a-live"></span></div><svg id="ch-att" viewBox="0 0 600 220" role="img" aria-label="Trunk pitch and roll over time."></svg><div class="legend"><span><i class="hip"></i>pitch (nose down +)</span><span><i class="knee"></i>roll (left up +)</span></div></figure>
+    <figure class="fig" style="margin:0"><div class="cap"><h3>LF servo torque</h3><span class="live" id="t-live"></span></div><svg id="ch-tau" viewBox="0 0 600 220" role="img" aria-label="Left-front hip and knee actuator torque over time against the stall clamp and the peak allowance."></svg><div class="legend"><span><i class="hip"></i>hip</span><span><i class="knee"></i>knee</span><span class="muted">dashed: 60 % peak allowance · red: 1.91 N·m clamp</span></div></figure>
+    <figure class="fig" style="margin:0"><div class="cap"><h3>LF joint speed</h3><span class="live" id="v-live"></span></div><svg id="ch-vel" viewBox="0 0 600 220" role="img" aria-label="Left-front hip and knee joint speed over time against the servo firmware cap."></svg><div class="legend"><span><i class="hip"></i>hip</span><span><i class="knee"></i>knee</span><span class="muted">red: 5.29 rad/s firmware cap</span></div></figure>
+    <figure class="fig" style="margin:0"><div class="cap"><h3>LF knee · commanded vs recorded</h3><span class="live" id="k-live"></span></div><svg id="ch-track" viewBox="0 0 600 220" role="img" aria-label="Left-front knee angle commanded and recorded over time."></svg><div class="legend"><span><i class="cmd"></i>commanded</span><span><i class="knee"></i>recorded</span></div></figure>
+    <figure class="fig" style="margin:0"><div class="cap"><h3>Foot contact vs commanded stance</h3><span class="live" id="c-live"></span></div><svg id="ch-gait" viewBox="0 0 600 220" role="img" aria-label="Gait diagram: for each leg, the commanded stance windows shaded and the recorded foot contacts filled."></svg><div class="legend"><span><i style="border-color:var(--gold);border-top-width:8px;opacity:.5"></i>commanded stance</span><span><i class="ink" style="border-top-width:6px"></i>foot touching</span></div></figure>
+  </div>
+
+  <section class="panel">
+    <h2>All runs</h2>
+    <table class="data" id="all-runs"></table>
+    <details style="margin-top:10px"><summary>Data table for this run (every 0.5 s)</summary><table class="data" id="run-table"></table></details>
+  </section>
+
+  <footer class="notes">
+    <p><strong>What was simulated.</strong> <span id="notes-model"></span> Each run stands for 1 s on the keyframe pose, then plays 6 s of gait targets from the design library's inverse kinematics. Feet are 10 mm spheres with friction 1.0 on a flat floor; a fall is a trunk below half the stance height or more than 46° of pitch or roll.</p>
+    <p><strong>How to read it.</strong> Open-loop speed below the command is feet slipping and the trunk pitching under the rear legs' push — the front feet float most of the cycle (gait diagram). The leveled run shows how much one cheap correction recovers; the RL policy closes the rest. Torque saturating at the clamp during swing is the stiff firmware loop hitting its limit for a few samples, not a design margin problem — the standing knee torque of <span class="mono" id="notes-hold"></span> matches the 0.22 N·m quasi-static estimate.</p>
+    <p id="notes-commit" class="mono small"></p>
+  </footer>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>
+const DATA = __DATA_JSON__;
+</script>
+<script>
+const P = DATA.params, SV = DATA.servo, RUNS = DATA.runs, HZ = DATA.control_hz;
+const LEGS = ["LF", "RF", "LH", "RH"], SIDE = { LF: 1, RF: -1, LH: 1, RH: -1 }, FRONT = { LF: true, RF: true, LH: false, RH: false };
+const PX = 1500;
+const $ = id => document.getElementById(id);
+const mm = v => (v * 1000).toFixed(0), deg = r => (r * 180 / Math.PI).toFixed(1), f2 = v => v.toFixed(2), f3 = v => v.toFixed(3);
+P.shell_length = P.hip_to_hip - 2 * P.hip_x_offset;
+const Z0 = P.stance_height + P.foot_radius;
+
+function planarFk(l1, l2, qh, qk) { const kx = l1 * Math.sin(qh), kz = -l1 * Math.cos(qh), a = qh + qk; return { kx, kz, fx: kx + l2 * Math.sin(a), fz: kz - l2 * Math.cos(a) }; }
+function rollYZ(y, z, a) { const c = Math.cos(a), s = Math.sin(a); return [y * c - z * s, y * s + z * c]; }
+function legFk(qa, qh, qk, side) {
+  const f = planarFk(P.thigh, P.shank, qh, qk), roll = side * qa, y0 = side * P.abad_link;
+  const [ky, kz] = rollYZ(y0, f.kz, roll), [fy, fz] = rollYZ(y0, f.fz, roll);
+  return { knee: [f.kx, ky, kz], foot: [f.fx, fy, fz] };
+}
+
+const state = { mode: "openloop", gait: "trot", i: 0, playing: true, speed: 1, run: null, cursorT: null };
+const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (reduced) state.playing = false;
+const modes = Object.keys(RUNS);
+const gaits = Object.keys(RUNS[modes[0]]);
+function currentRun() { return RUNS[state.mode][state.gait]; }
+
+// ---- controls ----
+function seg(host, items, key, onpick) {
+  host.innerHTML = "";
+  for (const [k, label] of items) { const b = document.createElement("button"); b.dataset[key] = k; b.textContent = label; b.addEventListener("click", () => onpick(k)); host.appendChild(b); }
+}
+seg($("mode-seg"), modes.map(m => [m, m === "openloop" ? "Open-loop" : "Leveled"]), "mode", m => { state.mode = m; loadRun(); });
+seg($("gait-seg"), gaits.map(g => [g, DATA.gaits[g].label]), "gait", g => { state.gait = g; loadRun(); });
+$("play").addEventListener("click", () => { state.playing = !state.playing; $("play").textContent = state.playing ? "Pause" : "Play"; });
+$("play").textContent = state.playing ? "Pause" : "Play";
+$("speed").addEventListener("change", e => { state.speed = parseFloat(e.target.value); });
+$("scrub").addEventListener("input", e => { state.playing = false; $("play").textContent = "Play"; state.i = parseInt(e.target.value, 10); frame(0); });
+function syncSeg() {
+  for (const b of $("mode-seg").querySelectorAll("button")) b.classList.toggle("on", b.dataset.mode === state.mode);
+  for (const b of $("gait-seg").querySelectorAll("button")) b.classList.toggle("on", b.dataset.gait === state.gait);
+}
+
+// ---- side view ----
+function servoBox(cx, cy, angleDeg, cls = "") {
+  return `<g transform="translate(${cx.toFixed(1)},${cy.toFixed(1)}) rotate(${angleDeg.toFixed(1)})"><rect class="servo ${cls}" x="${(-SV.shaft_from_end * PX).toFixed(1)}" y="${(-SV.width / 2 * PX).toFixed(1)}" width="${(SV.length * PX).toFixed(1)}" height="${(SV.width * PX).toFixed(1)}" rx="3"/><circle class="shaft" r="4.5"/></g>`;
+}
+function linkPoly(x1, y1, x2, y2, w1, w2) {
+  const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L;
+  const pts = [[x1 + nx * w1 / 2, y1 + ny * w1 / 2], [x2 + nx * w2 / 2, y2 + ny * w2 / 2], [x2 - nx * w2 / 2, y2 - ny * w2 / 2], [x1 - nx * w1 / 2, y1 - ny * w1 / 2]];
+  return `<polygon class="link" points="${pts.map(p => p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" ")}"/>`;
+}
+const SIDEG = { cx: 380, groundY: 392 };
+SIDEG.hipY = SIDEG.groundY - Z0 * PX;
+const X = x => SIDEG.cx + x * PX, Z = z => SIDEG.hipY - z * PX;
+function bodyStatic() {
+  const parts = [];
+  const top = Z(P.body_z_offset + P.body_height / 2), bot = Z(P.body_z_offset - P.body_height / 2);
+  parts.push(`<rect class="shell" x="${X(-P.shell_length / 2).toFixed(1)}" y="${top.toFixed(1)}" width="${(P.shell_length * PX).toFixed(1)}" height="${(bot - top).toFixed(1)}" rx="6"/>`);
+  for (const sx of [1, -1]) { const x2 = sx * P.shell_length / 2, x1 = x2 - sx * SV.height; parts.push(`<rect class="servo" x="${Math.min(X(x1), X(x2)).toFixed(1)}" y="${Z(SV.width / 2).toFixed(1)}" width="${(SV.height * PX).toFixed(1)}" height="${(SV.width * PX).toFixed(1)}" rx="2"/>`); }
+  parts.push(`<text class="lbl" x="${X(-P.shell_length / 2).toFixed(1)}" y="${(top - 46).toFixed(1)}">forward →</text>`);
+  return parts.join("");
+}
+function drawLeg(leg, q, near, ghost, contact) {
+  const side = SIDE[leg], sx = FRONT[leg] ? 1 : -1, hx = sx * P.hip_to_hip / 2;
+  const fk = legFk(q[0], q[1], q[2], side);
+  const Hx = X(hx), Hy = Z(0), Kx = X(hx + fk.knee[0]), Ky = Z(fk.knee[2]), Fx = X(hx + fk.foot[0]), Fy = Z(fk.foot[2]);
+  const parts = [];
+  if (!ghost) {
+    const shellEnd = X(sx * P.shell_length / 2);
+    parts.push(`<rect class="bracket" x="${Math.min(shellEnd, Hx + sx * 10).toFixed(1)}" y="${(Hy - 19).toFixed(1)}" width="${Math.abs(Hx + sx * 10 - shellEnd).toFixed(1)}" height="38" rx="4"/>`);
+  }
+  parts.push(linkPoly(Hx, Hy, Kx, Ky, 22, 38));
+  if (!ghost) parts.push(servoBox(Kx, Ky, Math.atan2(Ky - Hy, Kx - Hx) * 180 / Math.PI + 180));
+  parts.push(linkPoly(Kx, Ky, Fx, Fy, 14, 9));
+  if (!ghost) parts.push(servoBox(Hx, Hy, -90));
+  parts.push(`<circle class="joint" cx="${Hx.toFixed(1)}" cy="${Hy.toFixed(1)}" r="4"/><circle class="joint" cx="${Kx.toFixed(1)}" cy="${Ky.toFixed(1)}" r="3.5"/>`);
+  if (!ghost) parts.push(`<circle class="foot" cx="${Fx.toFixed(1)}" cy="${Fy.toFixed(1)}" r="${(P.foot_radius * PX).toFixed(1)}"/>${contact ? `<circle class="contact" cx="${Fx.toFixed(1)}" cy="${Fy.toFixed(1)}" r="${(P.foot_radius * PX + 4).toFixed(1)}"/>` : ""}`);
+  return `<g class="${ghost ? "ghost" : near ? "near" : "far"}">${parts.join("")}</g>`;
+}
+function sideFrame(run, i) {
+  const pos = run.pos[i], rpy = run.rpy[i], q = run.q[i], c = run.ctrl[i], ct = run.contact[i];
+  const dz = pos[2] - Z0, pitchDeg = rpy[1] * 180 / Math.PI;
+  const spacing = 0.05 * PX, off = ((pos[0] * PX) % spacing + spacing) % spacing, ticks = [];
+  for (let x = -off; x < 760 + spacing; x += spacing) ticks.push(`<line class="tick" x1="${(760 - x).toFixed(1)}" y1="${SIDEG.groundY}" x2="${(760 - x - 6).toFixed(1)}" y2="${SIDEG.groundY + 6}"/>`);
+  const qs = leg => q.slice(LEGS.indexOf(leg) * 3, LEGS.indexOf(leg) * 3 + 3), cs = leg => c.slice(LEGS.indexOf(leg) * 3, LEGS.indexOf(leg) * 3 + 3);
+  const body = `<g transform="translate(0,${(-dz * PX).toFixed(1)}) rotate(${pitchDeg.toFixed(2)} ${SIDEG.cx} ${SIDEG.hipY})">` +
+    ["RF", "RH"].map(l => drawLeg(l, qs(l), false, false, ct[LEGS.indexOf(l)])).join("") + bodyStatic() +
+    ["LH", "LF"].map(l => drawLeg(l, cs(l), true, true, false)).join("") + ["LH", "LF"].map(l => drawLeg(l, qs(l), true, false, ct[LEGS.indexOf(l)])).join("") + `</g>`;
+  $("side").innerHTML = `<line class="ground" x1="0" y1="${SIDEG.groundY}" x2="760" y2="${SIDEG.groundY}"/>${ticks.join("")}${body}`;
+  $("side-live").textContent = `t ${run.t[i].toFixed(2)} s · x ${f3(pos[0])} m · height ${mm(pos[2])} mm · pitch ${pitchDeg.toFixed(1)}° · roll ${deg(rpy[0])}°`;
+}
+
+// ---- charts ----
+const charts = {};
+function lineChart(id, opts) {
+  const W = 600, H = 220, L = 46, R = opts.series.length > 1 ? 74 : 14, T = 12, B = 30, w = W - L - R, h = H - T - B;
+  const t = opts.t, tmin = t[0], tmax = t[t.length - 1];
+  const ys = opts.series.flatMap(s => s.values).concat(opts.refs ? opts.refs.map(r => r.y) : []);
+  let ymin = opts.ymin !== undefined ? opts.ymin : Math.min(...ys), ymax = opts.ymax !== undefined ? opts.ymax : Math.max(...ys);
+  if (ymax - ymin < 1e-9) { ymax += 1; ymin -= 1; }
+  const pad = (ymax - ymin) * 0.08; if (opts.ymin === undefined) ymin -= pad; if (opts.ymax === undefined) ymax += pad;
+  const sx = v => L + (v - tmin) / (tmax - tmin) * w, sy = v => T + (ymax - v) / (ymax - ymin) * h;
+  const parts = [];
+  const nticks = 4;
+  for (let k = 0; k <= nticks; k++) { const v = ymin + (ymax - ymin) * k / nticks; parts.push(`<line class="grid" x1="${L}" y1="${sy(v).toFixed(1)}" x2="${W - R}" y2="${sy(v).toFixed(1)}"/><text x="${L - 6}" y="${(sy(v) + 4).toFixed(1)}" text-anchor="end">${opts.fmt ? opts.fmt(v) : v.toFixed(1)}</text>`); }
+  for (let s = Math.ceil(tmin); s <= tmax; s++) parts.push(`<text x="${sx(s).toFixed(1)}" y="${H - 10}" text-anchor="middle">${s} s</text>`);
+  parts.push(`<line class="axis" x1="${L}" y1="${T}" x2="${L}" y2="${T + h}"/><line class="axis" x1="${L}" y1="${T + h}" x2="${W - R}" y2="${T + h}"/>`);
+  if (opts.settle) parts.push(`<rect class="stance" x="${L}" y="${T}" width="${(sx(opts.settle) - L).toFixed(1)}" height="${h}"/><text class="lbl" x="${(L + 4)}" y="${T + 12}">stand</text>`);
+  for (const r of opts.refs || []) parts.push(`<line class="${r.bad ? "ref-bad" : "ref"}" x1="${L}" y1="${sy(r.y).toFixed(1)}" x2="${W - R}" y2="${sy(r.y).toFixed(1)}"/><text x="${W - R}" y="${(sy(r.y) - 3).toFixed(1)}" text-anchor="end">${r.label}</text>`);
+  for (const s of opts.series) {
+    const d = s.values.map((v, i) => `${i ? "L" : "M"}${sx(t[i]).toFixed(1)},${sy(v).toFixed(1)}`).join("");
+    parts.push(`<path class="series ${s.cls}" d="${d}"/>`);
+    if (opts.series.length > 1) { const last = s.values.length - 1; parts.push(`<text x="${(sx(t[last]) + 3).toFixed(1)}" y="${(sy(s.values[last]) + 4).toFixed(1)}">${s.name}</text>`); }
+  }
+  parts.push(`<g id="${id}-cursor"><line class="cursor" x1="${L}" y1="${T}" x2="${L}" y2="${T + h}"/>${opts.series.map((s, k) => `<circle class="dot" r="4" cx="${L}" cy="${T}" style="fill:var(--${s.cls === "s-hip" ? "s-hip" : s.cls === "s-knee" ? "s-knee" : s.cls === "s-cmd" ? "s-cmd" : "ink"})"/>`).join("")}</g>`);
+  parts.push(`<rect id="${id}-hit" x="${L}" y="${T}" width="${w}" height="${h}" fill="transparent"/>`);
+  const el = $(id); el.innerHTML = parts.join("");
+  charts[id] = { opts, sx, sy, L, T, w, h };
+  const hit = $(`${id}-hit`);
+  const toIndex = ev => { const r = el.getBoundingClientRect(); const px = (ev.clientX - r.left) / r.width * W; const tt = tmin + (px - L) / w * (tmax - tmin); let best = 0, bd = 1e9; for (let i = 0; i < t.length; i++) { const d = Math.abs(t[i] - tt); if (d < bd) { bd = d; best = i; } } return best; };
+  hit.addEventListener("mousemove", ev => { const i = toIndex(ev); showTip(ev, id, i); if (ev.buttons & 1) { state.playing = false; $("play").textContent = "Play"; state.i = i; frame(0); } });
+  hit.addEventListener("mousedown", ev => { state.playing = false; $("play").textContent = "Play"; state.i = toIndex(ev); frame(0); });
+  hit.addEventListener("mouseleave", () => { $("tip").style.display = "none"; });
+}
+function showTip(ev, id, i) {
+  const c = charts[id]; const lines = [`t ${c.opts.t[i].toFixed(2)} s`].concat(c.opts.series.map(s => `${s.name}: ${c.opts.fmt ? c.opts.fmt(s.values[i]) : s.values[i].toFixed(2)}${c.opts.unit || ""}`));
+  const tip = $("tip"); tip.innerHTML = lines.join("<br>"); tip.style.display = "block"; tip.style.left = (ev.clientX + 12) + "px"; tip.style.top = (ev.clientY + 12) + "px";
+}
+function moveCursors(i) {
+  for (const [id, c] of Object.entries(charts)) {
+    const g = $(`${id}-cursor`); if (!g) continue; const x = c.sx(c.opts.t[i]);
+    g.querySelector("line").setAttribute("x1", x.toFixed(1)); g.querySelector("line").setAttribute("x2", x.toFixed(1));
+    g.querySelectorAll("circle").forEach((dot, k) => { dot.setAttribute("cx", x.toFixed(1)); dot.setAttribute("cy", c.sy(c.opts.series[k].values[i]).toFixed(1)); });
+  }
+}
+function gaitChart(run) {
+  const W = 600, H = 220, L = 46, R = 14, T = 12, B = 30, w = W - L - R, h = H - T - B, t = run.t, tmin = t[0], tmax = t[t.length - 1];
+  const sx = v => L + (v - tmin) / (tmax - tmin) * w, rowH = h / 4, parts = [];
+  const g = DATA.gaits[state.gait], freq = P.stride_frequency * g.freq, settle = DATA.settle;
+  for (let r = 0; r < 4; r++) {
+    const leg = LEGS[r], y = T + r * rowH; parts.push(`<text x="${L - 6}" y="${(y + rowH / 2 + 4).toFixed(1)}" text-anchor="end">${leg}</text><line class="grid" x1="${L}" y1="${(y + rowH).toFixed(1)}" x2="${W - R}" y2="${(y + rowH).toFixed(1)}"/>`);
+    if (g.step) {
+      // commanded stance windows
+      let inStance = false, start = 0;
+      for (let i = 0; i < t.length; i++) {
+        const local = t[i] < settle ? 0 : (((t[i] - settle) * freq - g.phase[leg]) % 1 + 1) % 1, st = t[i] < settle || local < g.duty;
+        if (st && !inStance) { inStance = true; start = t[i]; }
+        if ((!st || i === t.length - 1) && inStance) { inStance = false; parts.push(`<rect class="stance" x="${sx(start).toFixed(1)}" y="${(y + 3).toFixed(1)}" width="${Math.max(1, sx(t[i]) - sx(start)).toFixed(1)}" height="${(rowH - 6).toFixed(1)}"/>`); }
+      }
+    }
+    let on = false, s0 = 0;
+    for (let i = 0; i < t.length; i++) { const c = run.contact[i][r] > 0.5; if (c && !on) { on = true; s0 = t[i]; } if ((!c || i === t.length - 1) && on) { on = false; parts.push(`<rect class="touch" x="${sx(s0).toFixed(1)}" y="${(y + rowH / 2 - 5).toFixed(1)}" width="${Math.max(1, sx(t[i]) - sx(s0)).toFixed(1)}" height="10"/>`); } }
+  }
+  for (let s = Math.ceil(tmin); s <= tmax; s++) parts.push(`<text x="${sx(s).toFixed(1)}" y="${H - 10}" text-anchor="middle">${s} s</text>`);
+  parts.push(`<g id="ch-gait-cursor"><line class="cursor" x1="${L}" y1="${T}" x2="${L}" y2="${T + h}"/></g>`);
+  $("ch-gait").innerHTML = parts.join("");
+  charts["ch-gait"] = { opts: { t, series: [] }, sx, sy: () => 0 };
+}
+
+// ---- run loading ----
+function fmtDuty(d) { return d ? d.map(v => (v * 100).toFixed(0) + "%").join(" · ") : "—"; }
+function loadRun() {
+  const run = currentRun(); state.run = run; state.i = Math.min(state.i, run.t.length - 1);
+  $("scrub").max = run.t.length - 1; syncSeg();
+  const s = run.stats, stall = SV.stall;
+  const tiles = [
+    ["Outcome", s.fell ? "fell" : "stayed up", s.fell ? "bad" : "ok"],
+    ["Distance", `${f2(s.distance_m)} m`, `in ${s.seconds} s`],
+    ["Speed", `${f3(s.mean_speed_mps)} m/s`, `commanded ${f3(s.commanded_speed_mps)}`],
+    ["Trunk height", `${mm(s.height_min)}–${mm(s.height_max)} mm`, `target ${mm(Z0)}`],
+    ["Pitch / roll max", `${s.pitch_max_deg}° / ${s.roll_max_deg}°`, ""],
+    ["Peak knee torque", `${f2(s.peak_torque_Nm.knee)} N·m`, `${(s.peak_torque_Nm.knee / stall * 100).toFixed(0)} % of stall`],
+    ["Peak hip torque", `${f2(s.peak_torque_Nm.hip)} N·m`, `${(s.peak_torque_Nm.hip / stall * 100).toFixed(0)} % of stall`],
+    ["Peak knee speed", `${f2(s.peak_speed_rads.knee)} rad/s`, `cap ${f2(SV.cap)}`],
+    ["Contact duty LF·RF·LH·RH", fmtDuty(s.contact_duty), `commanded ${(DATA.gaits[state.gait].duty * 100).toFixed(0)} %`],
+  ];
+  $("tiles").innerHTML = tiles.map(([k, v, sub]) => `<div class="tile"><div class="k">${k}</div><div class="v ${sub === "ok" || sub === "bad" ? sub : ""}">${v}</div><div class="s">${sub === "ok" || sub === "bad" ? "" : sub}</div></div>`).join("");
+  $("run-why").textContent = state.mode === "openloop"
+    ? "Open-loop: targets from the gait generator only. Whatever the body does, the legs keep their programmed cycle."
+    : `Leveled: each foot's height target is shifted by ${s.level_gain} × (hip x · sin pitch − hip y · sin roll) so legs under a low corner lengthen. Still no balance or velocity feedback.`;
+  // charts
+  const t = run.t, settle = DATA.settle;
+  const height = run.pos.map(p => p[2] * 1000), pitch = run.rpy.map(r => r[1] * 180 / Math.PI), roll = run.rpy.map(r => r[0] * 180 / Math.PI);
+  const hipTau = run.tau.map(r => r[1]), kneeTau = run.tau.map(r => r[2]);
+  const dq = (k) => run.q.map((r, i) => i === 0 ? 0 : (run.q[i][k] - run.q[i - 1][k]) * HZ);
+  lineChart("ch-height", { t, series: [{ name: "height", values: height, cls: "s-ink" }], refs: [{ y: Z0 * 1000, label: "target" }], settle, fmt: v => v.toFixed(0), unit: " mm", ymin: Math.min(...height, Z0 * 1000) - 12, ymax: Math.max(...height, Z0 * 1000) + 12 });
+  lineChart("ch-att", { t, series: [{ name: "pitch", values: pitch, cls: "s-hip" }, { name: "roll", values: roll, cls: "s-knee" }], refs: [{ y: 0, label: "" }], settle, fmt: v => v.toFixed(0), unit: "°" });
+  lineChart("ch-tau", { t, series: [{ name: "hip", values: hipTau, cls: "s-hip" }, { name: "knee", values: kneeTau, cls: "s-knee" }], refs: [{ y: SV.stall, label: "clamp", bad: true }, { y: -SV.stall, label: "", bad: true }, { y: SV.stall * SV.peak, label: "60 % peak" }, { y: -SV.stall * SV.peak, label: "" }], settle, fmt: v => v.toFixed(1), unit: " N·m", ymin: -SV.stall * 1.1, ymax: SV.stall * 1.1 });
+  lineChart("ch-vel", { t, series: [{ name: "hip", values: dq(1), cls: "s-hip" }, { name: "knee", values: dq(2), cls: "s-knee" }], refs: [{ y: SV.cap, label: "cap", bad: true }, { y: -SV.cap, label: "", bad: true }], settle, fmt: v => v.toFixed(1), unit: " rad/s", ymin: -SV.cap * 1.3, ymax: SV.cap * 1.3 });
+  lineChart("ch-track", { t, series: [{ name: "commanded", values: run.ctrl.map(r => r[2] * 180 / Math.PI), cls: "s-cmd" }, { name: "recorded", values: run.q.map(r => r[2] * 180 / Math.PI), cls: "s-knee" }], settle, fmt: v => v.toFixed(0), unit: "°" });
+  gaitChart(run);
+  // per-run data table (every 0.5 s)
+  const rows = [];
+  for (let i = 0; i < t.length; i += Math.round(HZ / 2)) rows.push(`<tr><td>${t[i].toFixed(1)}</td><td>${f3(run.pos[i][0])}</td><td>${mm(run.pos[i][2])}</td><td>${pitch[i].toFixed(1)}</td><td>${roll[i].toFixed(1)}</td><td>${f2(hipTau[i])}</td><td>${f2(kneeTau[i])}</td><td>${run.contact[i].map(c => c ? "●" : "○").join("")}</td></tr>`);
+  $("run-table").innerHTML = `<thead><tr><th>t s</th><th>x m</th><th>height mm</th><th>pitch °</th><th>roll °</th><th>LF hip N·m</th><th>LF knee N·m</th><th>contact</th></tr></thead><tbody>${rows.join("")}</tbody>`;
+  frame(0);
+}
+function allRunsTable() {
+  const rows = [];
+  for (const m of modes) for (const g of gaits) { const s = RUNS[m][g].stats; rows.push(`<tr><td>${m === "openloop" ? "open-loop" : "leveled"} · ${DATA.gaits[g].label}</td><td class="${s.fell ? "bad" : "ok"}">${s.fell ? "fell" : "up"}</td><td>${f2(s.distance_m)}</td><td>${f3(s.mean_speed_mps)} / ${f3(s.commanded_speed_mps)}</td><td>${mm(s.height_min)}–${mm(s.height_max)}</td><td>${s.pitch_max_deg} / ${s.roll_max_deg}</td><td>${f2(s.peak_torque_Nm.hip)} / ${f2(s.peak_torque_Nm.knee)}</td><td>${f2(s.peak_speed_rads.hip)} / ${f2(s.peak_speed_rads.knee)}</td><td>${fmtDuty(s.contact_duty)}</td></tr>`); }
+  $("all-runs").innerHTML = `<thead><tr><th>Run</th><th>Outcome</th><th>Distance m</th><th>Speed / cmd m/s</th><th>Height mm</th><th>Pitch / roll °</th><th>Peak τ hip / knee N·m</th><th>Peak ω hip / knee rad/s</th><th>Contact duty</th></tr></thead><tbody>${rows.join("")}</tbody>`;
+}
+
+// ---- frame loop ----
+function frame(dt) {
+  const run = state.run; if (!run) return;
+  if (state.playing && dt > 0) { state.acc = (state.acc || 0) + dt * HZ * state.speed; const n = Math.floor(state.acc); if (n > 0) { state.i = (state.i + n) % run.t.length; state.acc -= n; } }
+  $("scrub").value = state.i;
+  sideFrame(run, state.i); moveCursors(state.i);
+  const i = state.i; $("time-live").textContent = `t ${run.t[i].toFixed(2)} s / ${run.t[run.t.length - 1].toFixed(1)} s`;
+  $("h-live").textContent = `${mm(run.pos[i][2])} mm`; $("a-live").textContent = `${(run.rpy[i][1] * 180 / Math.PI).toFixed(1)}° / ${(run.rpy[i][0] * 180 / Math.PI).toFixed(1)}°`;
+  $("t-live").textContent = `hip ${f2(run.tau[i][1])} · knee ${f2(run.tau[i][2])} N·m`;
+  const dqh = i ? (run.q[i][1] - run.q[i - 1][1]) * HZ : 0, dqk = i ? (run.q[i][2] - run.q[i - 1][2]) * HZ : 0;
+  $("v-live").textContent = `hip ${f2(dqh)} · knee ${f2(dqk)} rad/s`;
+  $("k-live").textContent = `cmd ${(run.ctrl[i][2] * 180 / Math.PI).toFixed(0)}° · rec ${(run.q[i][2] * 180 / Math.PI).toFixed(0)}°`;
+  $("c-live").textContent = run.contact[i].map((c, k) => c ? LEGS[k] : "").filter(Boolean).join(" ") || "airborne";
+}
+let last = null;
+function loop(ts) { if (last !== null) frame(Math.min(0.05, (ts - last) / 1000)); last = ts; requestAnimationFrame(loop); }
+
+$("design-name").textContent = P.name; $("tb-model").textContent = DATA.meta.model; $("tb-date").textContent = DATA.meta.generated;
+$("tb-phys").textContent = `MuJoCo · 2 ms step · ${HZ} Hz control`; $("tb-servo").textContent = `PD ${SV.gains.kp.toFixed(1)} N·m/rad · clamp ${SV.stall.toFixed(2)} N·m`;
+$("notes-model").textContent = `${P.name}: ${DATA.mass.toFixed(3)} kg of primitives with the component masses, STS3215 servos as PD position actuators (kp ${SV.gains.kp.toFixed(1)} N·m/rad, back-EMF damping ${SV.gains.kd.toFixed(2)} N·m·s/rad, clamped at the datasheet stall ${SV.stall.toFixed(2)} N·m, reflected inertia and Coulomb friction from BAM).`;
+$("notes-hold").textContent = `${DATA.stand.hold_torque_Nm.knee.toFixed(2)} N·m`;
+$("notes-commit").textContent = `Recordings from cheetah_pup.validate at commit ${DATA.meta.commit}, ${DATA.meta.generated}.`;
+allRunsTable(); loadRun(); requestAnimationFrame(loop);
+</script>

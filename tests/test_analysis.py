@@ -49,10 +49,11 @@ def test_gait_feet_are_periodic_and_stance_is_flat():
             f1 = foot_trajectory(p, gait, leg, 1.0 - 1e-9)
             assert f0 == pytest.approx(f1, abs=1e-3)
     traj = joint_trajectories(p, "trot", n=60)
+    ground = -p.stance_height - p.stance_depth
     for leg in LEGS:
-        stance_z = [f[2] for f in traj[leg]["foot"] if f[2] <= -p.stance_height + 1e-9]
+        stance_z = [f[2] for f in traj[leg]["foot"] if f[2] <= ground + 1e-9]
         assert len(stance_z) >= 25
-        assert max(traj[leg]["foot"], key=lambda f: f[2])[2] > -p.stance_height + 0.02
+        assert max(traj[leg]["foot"], key=lambda f: f[2])[2] > ground + 0.02
 
 
 def test_size_presets_scale_geometry():
