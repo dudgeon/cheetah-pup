@@ -15,8 +15,10 @@ Dated record of decisions, milestones, and findings. Newest first. The decision 
   `docs/design/03-rl-environment.md`.
 - **Model variant** `sim/cheetah_pup_rl.xml`: feet-only collisions, IMU frame sensors, foot
   contact sensors (work under the MJX JAX backend), `home` keyframe.
-- **Verified on CPU**: 4 env tests pass (obs 49 / privileged 116, finite reset/step, slew limit,
-  fall termination); PPO smoke run — see below.
+- **Verified on CPU**: 4 env tests pass (obs 49 / privileged 121, finite reset/step, slew limit,
+  fall termination). PPO smoke run: 8 envs, 5,120 steps in 133 s (JIT-dominated), all reward
+  terms finite, episodes run full length, checkpoint saved. Brax 0.14.2 needed a shim for the
+  `jax.device_put_replicated` call JAX 0.10 removed (`cheetah_pup/rl/compat.py`).
 - **Licensing note**: Open Duck Playground's env files carry Apache-2.0 headers even though the
   repo lacks a LICENSE file; ours is written against mujoco_playground's own Apache-2.0 code.
 

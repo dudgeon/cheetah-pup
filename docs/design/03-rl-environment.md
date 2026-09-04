@@ -60,9 +60,19 @@ Playground's Go1 PPO hyperparameters are the starting point (policy 512-256-128,
 observation normalization on). Expect a first walking policy within tens of millions of steps —
 Microduck reports 1–2 hours on one GPU at 4096 environments for a comparable task.
 
-## Smoke test result
+## Smoke test result (CPU, 2026-09-04)
 
-See the design log entry for the numbers of the CPU run.
+`--smoke`: 8 environments, 100-step episodes, 64-64 networks, 2,048 requested timesteps → 5,120
+executed (Brax rounds up to whole batches), 133 s wall time of which nearly all is JIT compile.
+Evaluation with the barely-trained policy: episode reward 0.78, average episode length 99.7 of
+100 (the robot mostly stays upright for 2 s from the standing pose), every reward term finite and
+of the expected sign (tracking +34.8/+20.0, pose +27.5, orientation −8.2, energy −16.2, torques
+−3.4, action rate −6.5, feet air time +0.35). Checkpoint `sim/checkpoints/smoke_params` (87 KB)
+saved with `brax.io.model`. This proves environment, randomization, PPO, evaluation, and
+checkpointing run together; it says nothing about walking quality — that needs the GPU run.
+
+One compatibility fix was needed: Brax 0.14.2 calls `jax.device_put_replicated`, removed in
+JAX 0.10; `cheetah_pup/rl/compat.py` restores it with the documented replacement.
 
 ## Next steps
 
