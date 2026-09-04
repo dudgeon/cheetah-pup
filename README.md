@@ -23,6 +23,10 @@ and nonmotor mass without shrinking motor envelopes.
 
 ![Neutral primitive model](reports/primitive-preview.png)
 
+**[Watch the planned crawl animation](reports/gait-demo.md)** — body weight shifts,
+one-foot-at-a-time steps and a top view of the support polygon. This is a prescribed
+kinematic demonstration, not a trained gait or validated motor performance.
+
 The initial geometry has useful four-foot static margin, but lifting a foot requires
 body weight shifts and further load checks. Motor selection remains open. The
 screening model uses ideal PD, not BAM; no learned walking policy, manufacturing CAD,

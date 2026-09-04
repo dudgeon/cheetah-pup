@@ -1,0 +1,15 @@
+{
+  "kind": "prescribed kinematic crawl; not learned or dynamically validated",
+  "frames": 96,
+  "stride_per_cycle_m": 0.02,
+  "playback_fps": 15,
+  "cycle_duration_s": 6.4,
+  "foot_clearance_m": 0.012,
+  "base_height_m": 0.124,
+  "max_ik_foot_error_m": 8.326672684688674e-17,
+  "minimum_swing_support_load_fraction": 0.32595654498913623,
+  "joint_limits_checked": true,
+  "stance_feet_world_locked": true,
+  "torque_speed_thermal_validation": false,
+  "notes": "Body shifts use the modeled COM; support fractions check vertical static balance only. No contact impulses, actuator dynamics, or terrain traversal are simulated."
+}
