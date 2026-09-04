@@ -1,0 +1,638 @@
+{
+  "task": {
+    "name": "stand-small-reset-perturbations-v1",
+    "policy_dt_s": 0.02,
+    "episode_s": 5.0,
+    "action_scale_rad": 0.15,
+    "reset_joint_uniform_rad": 0.03,
+    "reset_joint_velocity_uniform_rad_s": 0.05,
+    "reset_base_xy_velocity_uniform_m_s": 0.005,
+    "reset_base_angular_velocity_uniform_rad_s": 0.05,
+    "minimum_height_m": 0.105,
+    "maximum_tilt_rad": 0.35,
+    "maximum_xy_displacement_m": 0.04,
+    "loaded_contact_force_threshold_n": 1e-05,
+    "physics": "Current assembly MJCF, full enabled collisions; current pinned BAM config unchanged.",
+    "observation": [
+      {
+        "name": "body_gyro_rad_s",
+        "slice": [
+          0,
+          3
+        ],
+        "scale": 0.25
+      },
+      {
+        "name": "projected_gravity",
+        "slice": [
+          3,
+          6
+        ],
+        "scale": 1.0
+      },
+      {
+        "name": "zero_velocity_commands",
+        "slice": [
+          6,
+          9
+        ],
+        "scale": 1.0
+      },
+      {
+        "name": "joint_position_minus_home_rad",
+        "slice": [
+          9,
+          21
+        ],
+        "scale": 1.0
+      },
+      {
+        "name": "joint_velocity_rad_s",
+        "slice": [
+          21,
+          33
+        ],
+        "scale": 0.05
+      },
+      {
+        "name": "previous_action",
+        "slice": [
+          33,
+          45
+        ],
+        "scale": 1.0
+      }
+    ],
+    "observation_notes": "45 float32 values. No base position/linear velocity/contact/torque/height in actor or critic observations. Perfect simulated orientation and gyro stand in for IMU; hardware noise/latency not identified.",
+    "reward": "dt*(1.5*exp(-(height_error/.012)^2) + exp(-(tilt/.15)^2) + .5*exp(-sum(base_velocity_xy^2)/.02^2) + .5*exp(-mean(joint_offset^2)/.1^2) - .02*mean(action_delta^2) - .005*mean((motor_torque/.1)^2)); -1 on failure. Privileged state allowed only in reward and termination.",
+    "limitations": "No push recovery, walking, terrain, domain randomization, or stock-servo fidelity validation. Narrow reset perturbations are deliberately an installation/task smoke test."
+  },
+  "runtime": {
+    "python": "3.12.13",
+    "platform": "Linux-6.18.35-x86_64-with-glibc2.39",
+    "mujoco": "3.10.0",
+    "numpy": "2.4.1",
+    "torch": "2.9.1+cpu",
+    "gymnasium": "1.2.3",
+    "stable_baselines3": "2.7.1",
+    "cuda_available": false,
+    "torch_threads": 1,
+    "cpu_quota": "800000 100000",
+    "memory_limit_bytes": 21474836480
+  },
+  "source_commit_before_experiment": "283466ed529ab5da9285a2ad43f022e16696648a",
+  "source_hashes_sha256": {
+    "config/robot.json": "32d3f57b43889be327cdb196419c7bcbba1373ef2e8acb6401949955130d9e94",
+    "config/actuator.json": "5bb9d0256b3c957cf9ca7efb9764535d3edf30341144c2a74e1308bcf81af6f0",
+    "src/cheetah_pup/model.py": "f27b960ff107b14c6b3280ef9e623699f80fe4762cc2b12d4e6528552cf0dbb1",
+    "src/cheetah_pup/actuator.py": "720c59bc2f72d82de9e57de98b7e92f69147d272b1566ad92fd638dd3bf5b556",
+    "src/cheetah_pup/assembly.py": "6ad36731fa681527f60546727cf869c7e3590eda3318c144b31b83865dda7225",
+    "training_cpu/run_smoke.py": "476fee306df1ac5be359ae71dde5b68e462d9a0b60026f0e9eabc5aee29dece1",
+    "training_cpu/stand_env.py": "df62766140cc95735cbd307905942301fbbcb938ea04cb0f7f65c26e9a331657",
+    "training_cpu/uv.lock": "383fbfe4d8160c1e0f22efd82802353069a5aabebd3ce813dbb7f569ed30764f",
+    "models/policies/cpu-stand-smoke.zip": "04d3a74aa843a80a8e733213802a12e8b34ed7e05d9169357705b5b95172236a",
+    "models/policies/cpu-stand-smoke-untrained.zip": "1fab2d1e3b9dd3c7be4ddbd82d95e6e51171d4b39f741bc74840d9bbc91c59c4",
+    "models/policies/cpu-stand-smoke-config.json": "0484b22ae1366e194d755339265c2f9672035bb71f8c49fecba80ae83e0d1f08",
+    "training_cpu/check_geometry.py": "ac7ceb5e1725ab78d5b2ca4449963a09cbed5e57b80093eb5806a79a84761b60"
+  },
+  "compiled_mjcf_sha256": "497acf97a973f9d3f2a9ca73f7674ee85ae95963deb27d01fd43f5e271d738ca",
+  "actuator": {
+    "candidate": "ROBOTIS XL330-M288-T",
+    "status": "Published BAM reuse for simulation screening; stock 5V calibration and firmware parity remain unverified.",
+    "bam_commit": "62bd8ce12154340be97e06f7f41a0ca8f116d967",
+    "bam_submodule": "vendor/bam_microduck",
+    "parameter_file": "bam/params/xl330/m6.json",
+    "supply_v": 5.0,
+    "firmware_p_gain": 400,
+    "gain_notes": "Explicit stock XL330 control-table default and BAM constructor default. P400 selected after the P200 Microduck reference slowly crouched onto its rear knee brackets in a 60s stand simulation; retain that failed comparison. This does not resolve BAM's divisor256 versus manual128 fidelity gap.",
+    "max_pwm": 1.0,
+    "max_current_a": 1.75,
+    "command_delay_s": 0.02,
+    "delay_notes": "Assumed fixed command delay, not identified hardware latency. One physics-step queue only. At 2ms timestep, 20ms is 10 steps. Microduck's 3-6 actuation steps at 5ms imply 15-30ms; observation delay is separate.",
+    "firmware_notes": "P-only BAM voltage controller. Its empirical P divisor is 256, whereas the manual documents 128. No profile generator, PWM slew, I/D/feedforward, thermal protection, backlash or sensor/communication model is implemented here. The 1.75A BAM winding-current limiter is not a validated model of the XL330 input-current register.",
+    "fidelity_gate": "OPEN: establish exact actuator variant, fit acquisition voltage, firmware version/mode/PWM slope and gain scaling from existing published evidence. Do not ask the owner to characterize servos."
+  },
+  "environment_checks": {
+    "gymnasium_sb3_check_env": "passed",
+    "repeated_seed_trajectory_max_abs_error": 0.0,
+    "body_on_ground_rejected_as": "loaded_self_or_nonfoot_ground_contact",
+    "base_xy_translation_observation_max_abs_error": 0.0,
+    "single_env_hold_policy_steps": 250,
+    "single_env_hold_wall_s": 0.91541251200033,
+    "single_env_hold_policy_steps_per_wall_s": 273.1009208664933,
+    "single_env_hold_sim_seconds_per_wall_s": 5.462018417329866
+  },
+  "training": {
+    "algorithm": "Stable-Baselines3 PPO",
+    "seed": 20260904,
+    "parallel_envs": 8,
+    "requested_policy_transitions": 16384,
+    "actual_policy_transitions": 16384,
+    "wall_budget_s": 480.0,
+    "wall_s": 19.95930613100063,
+    "policy_transitions_per_wall_s": 820.8702192583993,
+    "nominal_simulation_seconds_collected": 327.68,
+    "optimizer_epochs": 40,
+    "parameter_l2_change": 3.067427158355713,
+    "hyperparameters": {
+      "learning_rate": 0.0003,
+      "n_steps": 256,
+      "batch_size": 256,
+      "n_epochs": 5,
+      "gamma": 0.99,
+      "gae_lambda": 0.95,
+      "clip_range": 0.2,
+      "ent_coef": 0.0,
+      "vf_coef": 0.5,
+      "max_grad_norm": 0.5,
+      "policy_kwargs": {
+        "net_arch": {
+          "pi": [
+            64,
+            64
+          ],
+          "vf": [
+            64,
+            64
+          ]
+        },
+        "log_std_init": -1.5
+      },
+      "device": "cpu",
+      "seed": 20260904,
+      "verbose": 0
+    },
+    "rollouts": [
+      {
+        "policy_transitions": 2048,
+        "wall_s": 2.492464922997897,
+        "completed_episode_count_in_window": 8,
+        "mean_episode_return_in_window": 15.810278375,
+        "mean_episode_length_in_window": 250.0
+      },
+      {
+        "policy_transitions": 4096,
+        "wall_s": 4.9035350769991055,
+        "completed_episode_count_in_window": 16,
+        "mean_episode_return_in_window": 15.788975375,
+        "mean_episode_length_in_window": 250.0
+      },
+      {
+        "policy_transitions": 6144,
+        "wall_s": 7.3158700479980325,
+        "completed_episode_count_in_window": 24,
+        "mean_episode_return_in_window": 15.805961458333334,
+        "mean_episode_length_in_window": 250.0
+      },
+      {
+        "policy_transitions": 8192,
+        "wall_s": 9.674778840999352,
+        "completed_episode_count_in_window": 32,
+        "mean_episode_return_in_window": 15.806175374999999,
+        "mean_episode_length_in_window": 250.0
+      },
+      {
+        "policy_transitions": 10240,
+        "wall_s": 12.19903688499835,
+        "completed_episode_count_in_window": 40,
+        "mean_episode_return_in_window": 15.804734025000002,
+        "mean_episode_length_in_window": 250.0
+      },
+      {
+        "policy_transitions": 12288,
+        "wall_s": 14.749039037997136,
+        "completed_episode_count_in_window": 48,
+        "mean_episode_return_in_window": 15.8163811875,
+        "mean_episode_length_in_window": 250.0
+      },
+      {
+        "policy_transitions": 14336,
+        "wall_s": 17.169778780000343,
+        "completed_episode_count_in_window": 56,
+        "mean_episode_return_in_window": 15.811288875,
+        "mean_episode_length_in_window": 250.0
+      },
+      {
+        "policy_transitions": 16384,
+        "wall_s": 19.79991947799863,
+        "completed_episode_count_in_window": 64,
+        "mean_episode_return_in_window": 15.820235328125001,
+        "mean_episode_length_in_window": 250.0
+      }
+    ]
+  },
+  "evaluation_wall_s": 24.3575062609998,
+  "evaluation": {
+    "Fixed P400 home targets": {
+      "summary": {
+        "episodes": 8,
+        "successes": 8,
+        "mean_return": 16.686364279175585,
+        "mean_height_rmse_mm": 2.7495977715649964,
+        "worst_tilt_deg": 1.1063505464141083,
+        "mean_final_drift_mm": 10.352555836834139,
+        "failure_reasons": {}
+      },
+      "episodes": [
+        {
+          "seed": 88001,
+          "success": true,
+          "return": 16.654659249640652,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.002821768785088888,
+          "maximum_tilt_deg": 0.7061604353289772,
+          "minimum_height_m": 0.1380060617217878,
+          "final_drift_m": 0.00977769414202775,
+          "peak_motor_torque_nm": 0.06214753643215448
+        },
+        {
+          "seed": 88002,
+          "success": true,
+          "return": 16.753040286620227,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.0027028608050794775,
+          "maximum_tilt_deg": 0.46020574440783457,
+          "minimum_height_m": 0.1381368971016239,
+          "final_drift_m": 0.007932524411252409,
+          "peak_motor_torque_nm": 0.057805622855813525
+        },
+        {
+          "seed": 88003,
+          "success": true,
+          "return": 16.65642580295072,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.002818976103468759,
+          "maximum_tilt_deg": 1.1063505464141083,
+          "minimum_height_m": 0.13802275267158395,
+          "final_drift_m": 0.009483801162984962,
+          "peak_motor_torque_nm": 0.06230962325759512
+        },
+        {
+          "seed": 88004,
+          "success": true,
+          "return": 16.737017139158308,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.002630991245271872,
+          "maximum_tilt_deg": 0.4665149304534934,
+          "minimum_height_m": 0.13818043095713237,
+          "final_drift_m": 0.01233820719492616,
+          "peak_motor_torque_nm": 0.05872310367232549
+        },
+        {
+          "seed": 88005,
+          "success": true,
+          "return": 16.62401523356756,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.0028539300330019395,
+          "maximum_tilt_deg": 0.7052873759745643,
+          "minimum_height_m": 0.13798452848394055,
+          "final_drift_m": 0.011014422541726904,
+          "peak_motor_torque_nm": 0.06447335828866929
+        },
+        {
+          "seed": 88006,
+          "success": true,
+          "return": 16.576782239746667,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.0029542457678524733,
+          "maximum_tilt_deg": 0.9057273502305625,
+          "minimum_height_m": 0.13788715912073696,
+          "final_drift_m": 0.010260342858374785,
+          "peak_motor_torque_nm": 0.06346820895504234
+        },
+        {
+          "seed": 88007,
+          "success": true,
+          "return": 16.724756813107362,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.002617468656689703,
+          "maximum_tilt_deg": 0.6177899626412969,
+          "minimum_height_m": 0.13815270214241962,
+          "final_drift_m": 0.011271880361240438,
+          "peak_motor_torque_nm": 0.05789421850864574
+        },
+        {
+          "seed": 88008,
+          "success": true,
+          "return": 16.76421746861319,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.0025965407760668597,
+          "maximum_tilt_deg": 0.7320073811147692,
+          "minimum_height_m": 0.13823344351884817,
+          "final_drift_m": 0.010741574022139693,
+          "peak_motor_torque_nm": 0.054636798169071306
+        }
+      ]
+    },
+    "Untrained PPO": {
+      "summary": {
+        "episodes": 8,
+        "successes": 8,
+        "mean_return": 16.692352145400218,
+        "mean_height_rmse_mm": 2.7390078837215515,
+        "worst_tilt_deg": 1.1065959054403367,
+        "mean_final_drift_mm": 10.299066951260146,
+        "failure_reasons": {}
+      },
+      "episodes": [
+        {
+          "seed": 88001,
+          "success": true,
+          "return": 16.66075097268094,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.002810879061825997,
+          "maximum_tilt_deg": 0.7069646418132584,
+          "minimum_height_m": 0.13801917193810645,
+          "final_drift_m": 0.009725161804268688,
+          "peak_motor_torque_nm": 0.062128110473454456
+        },
+        {
+          "seed": 88002,
+          "success": true,
+          "return": 16.757941124390594,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.002694043739132931,
+          "maximum_tilt_deg": 0.45750900023651,
+          "minimum_height_m": 0.13814827510620475,
+          "final_drift_m": 0.007888352057985987,
+          "peak_motor_torque_nm": 0.05781001698620493
+        },
+        {
+          "seed": 88003,
+          "success": true,
+          "return": 16.66258365434116,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.002808585754641318,
+          "maximum_tilt_deg": 1.1065959054403367,
+          "minimum_height_m": 0.13803546332395908,
+          "final_drift_m": 0.009433959492431688,
+          "peak_motor_torque_nm": 0.062304061319638664
+        },
+        {
+          "seed": 88004,
+          "success": true,
+          "return": 16.743122064528652,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.002620183231087399,
+          "maximum_tilt_deg": 0.4629508069635195,
+          "minimum_height_m": 0.1381935255642932,
+          "final_drift_m": 0.012283850796111034,
+          "peak_motor_torque_nm": 0.058696393417871195
+        },
+        {
+          "seed": 88005,
+          "success": true,
+          "return": 16.630427123158366,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.002842769050675399,
+          "maximum_tilt_deg": 0.7015612017000308,
+          "minimum_height_m": 0.13799802791884425,
+          "final_drift_m": 0.01095646271543301,
+          "peak_motor_torque_nm": 0.06433843305919115
+        },
+        {
+          "seed": 88006,
+          "success": true,
+          "return": 16.583764288930077,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.002942485270880158,
+          "maximum_tilt_deg": 0.9058275839656482,
+          "minimum_height_m": 0.13790109407032924,
+          "final_drift_m": 0.010202590873590186,
+          "peak_motor_torque_nm": 0.06344641669146309
+        },
+        {
+          "seed": 88007,
+          "success": true,
+          "return": 16.73030671064914,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.002607237429125925,
+          "maximum_tilt_deg": 0.6144290805770037,
+          "minimum_height_m": 0.13816528354694538,
+          "final_drift_m": 0.011216737640952525,
+          "peak_motor_torque_nm": 0.05777080422781985
+        },
+        {
+          "seed": 88008,
+          "success": true,
+          "return": 16.769921224522815,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.002585879532403287,
+          "maximum_tilt_deg": 0.7318516249695785,
+          "minimum_height_m": 0.13824637719948543,
+          "final_drift_m": 0.010685420229308056,
+          "peak_motor_torque_nm": 0.05450375055412553
+        }
+      ]
+    },
+    "Trained PPO": {
+      "summary": {
+        "episodes": 8,
+        "successes": 8,
+        "mean_return": 16.67624220812951,
+        "mean_height_rmse_mm": 2.7647891107364324,
+        "worst_tilt_deg": 1.1066157693364915,
+        "mean_final_drift_mm": 10.512440523071998,
+        "failure_reasons": {}
+      },
+      "episodes": [
+        {
+          "seed": 88001,
+          "success": true,
+          "return": 16.641750988220988,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.002838732548042501,
+          "maximum_tilt_deg": 0.7512074295194378,
+          "minimum_height_m": 0.13797269379575797,
+          "final_drift_m": 0.009925869430048284,
+          "peak_motor_torque_nm": 0.061888232236482016
+        },
+        {
+          "seed": 88002,
+          "success": true,
+          "return": 16.742937700538057,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.0027220924448884834,
+          "maximum_tilt_deg": 0.5204751098276923,
+          "minimum_height_m": 0.13810206920404777,
+          "final_drift_m": 0.00816950133956369,
+          "peak_motor_torque_nm": 0.057456440451516703
+        },
+        {
+          "seed": 88003,
+          "success": true,
+          "return": 16.649187464316764,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.0028332200646394652,
+          "maximum_tilt_deg": 1.1066157693364915,
+          "minimum_height_m": 0.1379928794409239,
+          "final_drift_m": 0.009640780542528052,
+          "peak_motor_torque_nm": 0.061982743700684115
+        },
+        {
+          "seed": 88004,
+          "success": true,
+          "return": 16.73203909819479,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.002640809269198705,
+          "maximum_tilt_deg": 0.5222446492885574,
+          "minimum_height_m": 0.13815357050810648,
+          "final_drift_m": 0.012481015469879746,
+          "peak_motor_torque_nm": 0.05829181980632342
+        },
+        {
+          "seed": 88005,
+          "success": true,
+          "return": 16.607148571461323,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.002871269517112701,
+          "maximum_tilt_deg": 0.7969006680179164,
+          "minimum_height_m": 0.13795018174266407,
+          "final_drift_m": 0.011165774828442231,
+          "peak_motor_torque_nm": 0.06488151683281793
+        },
+        {
+          "seed": 88006,
+          "success": true,
+          "return": 16.56570834354726,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.002966040715941425,
+          "maximum_tilt_deg": 0.9064456332162273,
+          "minimum_height_m": 0.13785614209557132,
+          "final_drift_m": 0.010369866412755877,
+          "peak_motor_torque_nm": 0.06314921495933476
+        },
+        {
+          "seed": 88007,
+          "success": true,
+          "return": 16.711746326967106,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.0026381242562675228,
+          "maximum_tilt_deg": 0.6969407705402854,
+          "minimum_height_m": 0.1381158347307649,
+          "final_drift_m": 0.011453316593531316,
+          "peak_motor_torque_nm": 0.05848685937935619
+        },
+        {
+          "seed": 88008,
+          "success": true,
+          "return": 16.75941917178978,
+          "policy_steps": 250,
+          "duration_s": 4.999999999999671,
+          "failure_reason": null,
+          "height_rmse_m": 0.0026080240698006553,
+          "maximum_tilt_deg": 0.7314305358350705,
+          "minimum_height_m": 0.13820298520970825,
+          "final_drift_m": 0.010893399567826796,
+          "peak_motor_torque_nm": 0.055179971429559875
+        }
+      ]
+    }
+  },
+  "interpretation": "The network weights changed (L2 distance 3.0674); this run performed actual PPO updates. Held-out mean return changed by -0.016 versus the untrained network and -0.010 versus fixed home targets. One training seed and eight narrow reset seeds cannot establish statistically reliable improvement. Standing already works with fixed targets, so CPU training feasibility is the main result. No walking, motor viability, robustness, or sim-to-real claim follows from this experiment.",
+  "sampled_geometry_audit": {
+    "scope": "Independent SAT/narrow-phase assembly-envelope audit, including extra adjacent/welded bodies and connector reservations. Samples only; neither full action-box clearance nor all training trajectories are certified.",
+    "reset_seeds": [
+      20260904,
+      20260905,
+      20260906,
+      20260907,
+      20260908,
+      20260909,
+      20260910,
+      20260911,
+      20260912,
+      20260913,
+      20260914,
+      20260915,
+      20260916,
+      20260917,
+      20260918,
+      20260919,
+      20260920,
+      20260921,
+      20260922,
+      20260923,
+      20260924,
+      20260925,
+      20260926,
+      20260927,
+      88001,
+      88002,
+      88003,
+      88004,
+      88005,
+      88006,
+      88007,
+      88008
+    ],
+    "reset_pose_audit": {
+      "poses_checked": 32,
+      "pairs_per_pose": 5235,
+      "minimum_motor_casing_separation_bound_m": 0.016999999999999994,
+      "solid_interference_pairs": 0,
+      "cable_allowance_interference_pairs": 0,
+      "worst_interferences": [],
+      "sampled_solid_clearance_pass": true,
+      "sampled_cable_allowance_pass": true
+    },
+    "trained_evaluation_sample_every_policy_steps": 25,
+    "trained_evaluation_pose_audit": {
+      "poses_checked": 88,
+      "pairs_per_pose": 5235,
+      "minimum_motor_casing_separation_bound_m": 0.01699999999999996,
+      "solid_interference_pairs": 0,
+      "cable_allowance_interference_pairs": 0,
+      "worst_interferences": [],
+      "sampled_solid_clearance_pass": true,
+      "sampled_cable_allowance_pass": true
+    },
+    "replay_failures": []
+  }
+}

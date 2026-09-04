@@ -1,0 +1,83 @@
+{
+  "kind": "Fixed-geometry mass sensitivity; static hypotheses, not hardware selection",
+  "config_sha256": "dd33c5482622efff164d2a07d5c68eb4f882d450b0fbcd53efcfdbeaf6da86a1",
+  "method": "Selected 140 mm / 25% shift / 20 mm stride / 12 mm lift crawl, 192 poses; exact static minimax foot-load allocation with link gravity. Recompute COM shifts for every mass allowance.",
+  "rows": [
+    {
+      "nonmotor_mass_scale": 0.5,
+      "mass_kg": 0.4145,
+      "motor_mass_kg": 0.21599999999999997,
+      "static_peak_nm": 0.06274999824052167,
+      "worst_joint_static_rms_nm": 0.036168978405547024,
+      "margin_to_0_10_nm_estimate": 1.593625542692424,
+      "continuous_estimate_needed_for_1_5_margin_nm": 0.0941249973607825,
+      "passes_proposed_static_screen": true
+    },
+    {
+      "nonmotor_mass_scale": 0.6,
+      "mass_kg": 0.4542,
+      "motor_mass_kg": 0.21599999999999997,
+      "static_peak_nm": 0.06887763936710696,
+      "worst_joint_static_rms_nm": 0.03973695689190405,
+      "margin_to_0_10_nm_estimate": 1.4518499896173236,
+      "continuous_estimate_needed_for_1_5_margin_nm": 0.10331645905066045,
+      "passes_proposed_static_screen": false
+    },
+    {
+      "nonmotor_mass_scale": 0.7,
+      "mass_kg": 0.49389999999999995,
+      "motor_mass_kg": 0.21599999999999997,
+      "static_peak_nm": 0.07500208201112396,
+      "worst_joint_static_rms_nm": 0.04330311895872098,
+      "margin_to_0_10_nm_estimate": 1.3332963208297133,
+      "continuous_estimate_needed_for_1_5_margin_nm": 0.11250312301668594,
+      "passes_proposed_static_screen": false
+    },
+    {
+      "nonmotor_mass_scale": 0.8,
+      "mass_kg": 0.5336,
+      "motor_mass_kg": 0.21599999999999997,
+      "static_peak_nm": 0.08112403718190483,
+      "worst_joint_static_rms_nm": 0.04686786405926508,
+      "margin_to_0_10_nm_estimate": 1.2326802692988454,
+      "continuous_estimate_needed_for_1_5_margin_nm": 0.12168605577285725,
+      "passes_proposed_static_screen": false
+    },
+    {
+      "nonmotor_mass_scale": 1.0,
+      "mass_kg": 0.613,
+      "motor_mass_kg": 0.21599999999999997,
+      "static_peak_nm": 0.09336243809253346,
+      "worst_joint_static_rms_nm": 0.05399424383971428,
+      "margin_to_0_10_nm_estimate": 1.0710945648279657,
+      "continuous_estimate_needed_for_1_5_margin_nm": 0.14004365713880018,
+      "passes_proposed_static_screen": false
+    },
+    {
+      "nonmotor_mass_scale": 1.2,
+      "mass_kg": 0.6924,
+      "motor_mass_kg": 0.21599999999999997,
+      "static_peak_nm": 0.10559557635863742,
+      "worst_joint_static_rms_nm": 0.06111762775462573,
+      "margin_to_0_10_nm_estimate": 0.9470093677065317,
+      "continuous_estimate_needed_for_1_5_margin_nm": 0.15839336453795613,
+      "passes_proposed_static_screen": false
+    }
+  ],
+  "approximate_passing_mass_boundary": {
+    "nonmotor_mass_scale": 0.5625,
+    "mass_kg": 0.4393125,
+    "motor_mass_kg": 0.21599999999999997,
+    "static_peak_nm": 0.06658019508154037,
+    "worst_joint_static_rms_nm": 0.03839920378035463,
+    "margin_to_0_10_nm_estimate": 1.5019481375434633,
+    "continuous_estimate_needed_for_1_5_margin_nm": 0.09987029262231055,
+    "passes_proposed_static_screen": true
+  },
+  "limitations": [
+    "Motor masses, casing geometry and source tensors never shrink. Only other provisional mass allowances change.",
+    "Uniform allowance scaling is not a new BOM, structural analysis or verified battery/compute package.",
+    "The 1.5\u00d7 static reserve is a project screening choice against a manufacturer estimate, not a proven thermal boundary.",
+    "No horizontal gait forces, contact transients, loaded speed envelope, actuator tracking, mass-dependent cable clearance or carpet/threshold performance is established."
+  ]
+}

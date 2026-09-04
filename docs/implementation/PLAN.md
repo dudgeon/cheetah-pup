@@ -10,8 +10,10 @@ provisional choices are separated in [DECISIONS.md](DECISIONS.md).
 
 The research and requirements interview are complete. The refined shaft-anchored
 assembly study, STEP export, full-cycle load screens and pinned BAM CPU adapter
-are implemented. Detailed manufacturing CAD, an electrical design, a learned quadruped policy,
-and demonstrated hardware performance remain future work. A geometric or quasi-static
+are implemented. A bounded CPU PPO standing experiment now runs with saved research
+weights, but does not improve on fixed home targets. Detailed manufacturing CAD,
+an electrical design, learned walking, and demonstrated hardware performance remain
+future work. A geometric or quasi-static
 result is not proof that the robot can walk or that a published servo fit transfers.
 
 ## Proposed success targets
@@ -51,6 +53,29 @@ Stages 4–5 may use an existing adapter indefinitely if it meets the need. The 
 board earns its place through packaging, protection and serviceability; it is not a
 prerequisite to the first supported stand. A board revision must not silently change
 motor settings, observation timing or supply assumptions used in training.
+
+### Current CPU result and next refinement
+
+The [CPU experiment](../../reports/cpu-rl-smoke.md) collected 16,384 actual PPO
+transitions in 20 seconds on eight workers using the unchanged 613 g assembly and
+BAM settings. Fixed P400 targets, the initial network and the trained network each
+passed eight five-second held-out episodes; the trained network did not improve
+return. This completes a reproducible local reset/step/learn/checkpoint/evaluation
+path, not stage 3's standing or walking acceptance gate. No paid compute was used.
+
+The [mass sweep](../../reports/motor-viability.md) suggests roughly 440 g would meet
+the proposed static reserve for the selected crawl, keeping all twelve motors at
+their real mass. It does not establish that the battery, compute and structure can
+actually fit that allowance. The [parallel actuator review](../../reports/pre-cloud-review.md)
+prioritizes the exact 7.4 V STS3215 for the next packaging/load study, with XC330 as
+the compact comparison and XL430 as a larger Dynamixel fallback. This is a study
+priority, not a hardware selection. There is no owner motor-identification task.
+
+Before substantial cloud training, refine component-based mass and joint support,
+the collision-free action workspace, and a useful slow movement task. Cosmetic CAD
+detail can wait. CPU is adequate for task debugging; a GPU run should follow CPU/GPU
+actuator parity and a concrete capped job. Hardware selection also requires credible
+stock-voltage/model provenance, contact assumptions and whole-robot power estimates.
 
 ## Stage 1: the first implementation slice
 

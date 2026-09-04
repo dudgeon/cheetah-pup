@@ -1,0 +1,122 @@
+{
+  "task": {
+    "name": "stand-small-reset-perturbations-v1",
+    "policy_dt_s": 0.02,
+    "episode_s": 5.0,
+    "action_scale_rad": 0.15,
+    "reset_joint_uniform_rad": 0.03,
+    "reset_joint_velocity_uniform_rad_s": 0.05,
+    "reset_base_xy_velocity_uniform_m_s": 0.005,
+    "reset_base_angular_velocity_uniform_rad_s": 0.05,
+    "minimum_height_m": 0.105,
+    "maximum_tilt_rad": 0.35,
+    "maximum_xy_displacement_m": 0.04,
+    "loaded_contact_force_threshold_n": 1e-05,
+    "physics": "Current assembly MJCF, full enabled collisions; current pinned BAM config unchanged.",
+    "observation": [
+      {
+        "name": "body_gyro_rad_s",
+        "slice": [
+          0,
+          3
+        ],
+        "scale": 0.25
+      },
+      {
+        "name": "projected_gravity",
+        "slice": [
+          3,
+          6
+        ],
+        "scale": 1.0
+      },
+      {
+        "name": "zero_velocity_commands",
+        "slice": [
+          6,
+          9
+        ],
+        "scale": 1.0
+      },
+      {
+        "name": "joint_position_minus_home_rad",
+        "slice": [
+          9,
+          21
+        ],
+        "scale": 1.0
+      },
+      {
+        "name": "joint_velocity_rad_s",
+        "slice": [
+          21,
+          33
+        ],
+        "scale": 0.05
+      },
+      {
+        "name": "previous_action",
+        "slice": [
+          33,
+          45
+        ],
+        "scale": 1.0
+      }
+    ],
+    "observation_notes": "45 float32 values. No base position/linear velocity/contact/torque/height in actor or critic observations. Perfect simulated orientation and gyro stand in for IMU; hardware noise/latency not identified.",
+    "reward": "dt*(1.5*exp(-(height_error/.012)^2) + exp(-(tilt/.15)^2) + .5*exp(-sum(base_velocity_xy^2)/.02^2) + .5*exp(-mean(joint_offset^2)/.1^2) - .02*mean(action_delta^2) - .005*mean((motor_torque/.1)^2)); -1 on failure. Privileged state allowed only in reward and termination.",
+    "limitations": "No push recovery, walking, terrain, domain randomization, or stock-servo fidelity validation. Narrow reset perturbations are deliberately an installation/task smoke test."
+  },
+  "ppo": {
+    "learning_rate": 0.0003,
+    "n_steps": 256,
+    "batch_size": 256,
+    "n_epochs": 5,
+    "gamma": 0.99,
+    "gae_lambda": 0.95,
+    "clip_range": 0.2,
+    "ent_coef": 0.0,
+    "vf_coef": 0.5,
+    "max_grad_norm": 0.5,
+    "policy_kwargs": {
+      "net_arch": {
+        "pi": [
+          64,
+          64
+        ],
+        "vf": [
+          64,
+          64
+        ]
+      },
+      "log_std_init": -1.5
+    },
+    "device": "cpu",
+    "seed": 20260904,
+    "verbose": 0
+  },
+  "heldout_seeds": [
+    88001,
+    88002,
+    88003,
+    88004,
+    88005,
+    88006,
+    88007,
+    88008
+  ],
+  "joint_order": [
+    "FL_hip_roll",
+    "FL_hip_pitch",
+    "FL_knee",
+    "FR_hip_roll",
+    "FR_hip_pitch",
+    "FR_knee",
+    "RL_hip_roll",
+    "RL_hip_pitch",
+    "RL_knee",
+    "RR_hip_roll",
+    "RR_hip_pitch",
+    "RR_knee"
+  ]
+}

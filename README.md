@@ -7,7 +7,8 @@ owner servo characterization or motor-model fitting**.
 This branch is `codex/microduck-research-20260904`; the parallel agent's branch is
 separate. [Implementation plan](docs/implementation/PLAN.md) ·
 [decisions](docs/implementation/DECISIONS.md) ·
-[current milestone](reports/refinement-summary.md) ·
+[motor and cloud readiness](reports/pre-cloud-review.md) ·
+[CPU training](reports/cpu-rl-smoke.md) ·
 [research](docs/microduck-review/RESEARCH.md).
 
 ## Current milestone
@@ -38,10 +39,19 @@ shows the revised, shallower posture; it is a kinematic illustration, not a poli
   0.0934 N·m peak static torque, only 1.07× margin to the 0.10 N·m estimate.
   Retiming that illustration to 0.05 m/s exceeds unloaded motor speed. A smoother
   walking controller and more load margin are needed before choosing hardware.
+- **[Mass sensitivity](reports/motor-viability.md):** reducing the unchanged-motor
+  assembly allowance toward 440 g reaches the proposed 1.5× static reserve for this
+  crawl. This is a sizing hypothesis, not a verified lighter build.
+- **[Actual CPU PPO](reports/cpu-rl-smoke.md):** 16,384 transitions in 20 seconds on
+  eight workers, with saved initial/trained checkpoints. Fixed home targets and both
+  networks passed all eight five-second held-out standing episodes. Training did
+  not improve on fixed targets. The isolated [training environment](training_cpu/README.md)
+  uses the pinned BAM controller and documents exact reset/action/observation rules.
 
 **55 tests pass**, covering kinematics, reference frames, force allocation, geometry,
-actuator integration and reset/delay behavior. No trained quadruped weights, real
-terrain traversal, thermal capability or battery runtime have been demonstrated.
+actuator integration and reset/delay behavior. Sampled CPU resets and evaluated poses
+also clear the independent solid/connector audit. Learned walking, real terrain
+traversal, thermal capability and battery runtime remain unproven.
 
 ## Reproduce
 
@@ -94,6 +104,8 @@ traversal is not demonstrated. Geometry/mass assumptions live in
 
 1. Build a smoother contact-aware walking controller; compare lighter assemblies
    with stronger model-supported servos, including their extra mass and size.
+   The [alternative review](reports/pre-cloud-review.md) prioritizes an exact
+   7.4 V STS3215 packaging/load study, with XC330 as the compact comparison.
 2. Establish the quadruped RL task and CPU/GPU actuator parity. Begin exploratory
    standing/very slow flat-ground learning, with explicit model uncertainty and a
    concrete capped cloud job before any spend.
