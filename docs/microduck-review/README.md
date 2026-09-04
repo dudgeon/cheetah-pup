@@ -20,6 +20,9 @@ authorized an independent branch while another agent works on the project.
   smart servos, $600–$1,500 hardware budget, cloud GPU training, scriptable CAD with
   STEP export, and primitive simulation before detailed CAD. Exact motor SKU,
   dimensions, compute, sensor, and power choices remain provisional on this branch.
+- Interview answers: choose the smallest size that keeps the build straightforward;
+  handle carpet and small doorway thresholds; target 10–15 minutes of active walking
+  with low weight prioritized. These answers now inform the [implementation plan](../implementation/PLAN.md).
 
 Read [RESEARCH.md](RESEARCH.md) for evidence and corrections, and
 [NEXT_STEPS.md](NEXT_STEPS.md) for the remaining interview and proposed sequence.
@@ -30,7 +33,9 @@ Four additional upstreams are pinned as real git submodules: Microduck runtime,
 Microduck RL, MIT Cheetah software, and Pollen's open robot HAT. Existing submodule
 pins are retained. See [REFERENCES.md](REFERENCES.md) for scope and licenses.
 
-No CAD, PCB, runtime, learned quadruped policy, or hardware validation is claimed.
+The first primitive MJCF, analytical kinematics, component budget, static support
+analysis and parameter sweep are implemented; see [results](../../reports/primitive-validation.md).
+No manufacturing CAD, PCB, hardware runtime, learned quadruped policy, or hardware validation is claimed.
 The existing plan's servo-characterization steps are **not adopted** on this branch.
 The next selection pass must identify a usable published motor model before freezing
 the actuator, geometry, or battery rail.

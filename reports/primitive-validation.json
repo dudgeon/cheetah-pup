@@ -1,0 +1,754 @@
+{
+  "stage": "Primitive geometry and load screening, before BAM integration and RL",
+  "config_sha256": "ceb728f8e50ab888acb399f34a56118b42bf82591630efa628d7f9ff5860b30f",
+  "environment": {
+    "python": "3.12.13",
+    "mujoco": "3.10.0",
+    "numpy": "2.4.1"
+  },
+  "user_requirements": {
+    "size": "smallest that keeps construction straightforward",
+    "terrain": "carpet and small doorway thresholds",
+    "active_walking_minutes": [
+      10,
+      15
+    ],
+    "owner_servo_characterization": false
+  },
+  "structure": {
+    "actuators": 12,
+    "hinge_joints": 12,
+    "free_joints": 1,
+    "config_mass_kg": 0.613,
+    "mujoco_mass_kg": 0.6130000000000001,
+    "mass_error_kg": 1.1102230246251565e-16,
+    "foot_sole_height_m": [
+      -4.183528523604707e-13,
+      -4.183528523604707e-13,
+      -4.183528523604707e-13,
+      -4.183528523604707e-13
+    ],
+    "positive_body_inertias": true,
+    "body_envelope_m": [
+      0.16,
+      0.07,
+      0.045
+    ]
+  },
+  "kinematics": {
+    "samples": 32,
+    "legs_per_sample": 4,
+    "seed": 731,
+    "fk_max_error_m": 8.326672684688674e-17,
+    "jacobian_mujoco_max_error_m_per_rad": 9.71445146547012e-17,
+    "jacobian_finite_difference_max_error_m_per_rad": 2.3088822520556107e-11,
+    "passed": true
+  },
+  "static_support": {
+    "method": "Neutral-pose vertical force/moment equilibrium and qfrc_bias - J^T F; excludes dynamic gait loads, friction-model fidelity and thermals.",
+    "com_world_m": [
+      -0.00485280588055117,
+      0.0,
+      0.12278918135108524
+    ],
+    "foot_centers_world_m": {
+      "FL": [
+        0.061947091711543244,
+        0.060000000000000005,
+        0.007999999999581647
+      ],
+      "FR": [
+        0.061947091711543244,
+        -0.060000000000000005,
+        0.007999999999581647
+      ],
+      "RL": [
+        -0.05805290828845675,
+        0.060000000000000005,
+        0.007999999999581647
+      ],
+      "RR": [
+        -0.05805290828845675,
+        -0.060000000000000005,
+        0.007999999999581647
+      ]
+    },
+    "cases": [
+      {
+        "case": "four_feet",
+        "support_feet": [
+          "FL",
+          "FR",
+          "RL",
+          "RR"
+        ],
+        "vertical_static_equilibrium": true,
+        "vertical_foot_load_n": {
+          "FL": 1.3330017159708851,
+          "FR": 1.3330017159708851,
+          "RL": 1.6737632840291146,
+          "RR": 1.6737632840291143
+        },
+        "joint_torque_nm": {
+          "FL_hip_roll": -0.017874292899266238,
+          "FL_hip_pitch": 0.01019766252935737,
+          "FL_knee": 0.03664003252677122,
+          "FR_hip_roll": 0.017874292899266238,
+          "FR_hip_pitch": 0.01019766252935737,
+          "FR_knee": 0.03664003252677122,
+          "RL_hip_roll": -0.026393332100721978,
+          "RL_hip_pitch": 0.010861156554136024,
+          "RL_knee": 0.04659244289845112,
+          "RR_hip_roll": 0.02639333210072197,
+          "RR_hip_pitch": 0.010861156554136024,
+          "RR_knee": 0.04659244289845111
+        },
+        "peak_abs_joint_torque_nm": 0.04659244289845112,
+        "estimated_continuous_limit_nm": 0.1,
+        "static_margin_ratio": 2.146270806575895,
+        "within_estimated_limit": true,
+        "meets_proposed_1_5_static_margin": true
+      },
+      {
+        "case": "three_feet_lift_FL",
+        "support_feet": [
+          "FR",
+          "RL",
+          "RR"
+        ],
+        "vertical_static_equilibrium": true,
+        "vertical_foot_load_n": {
+          "FR": 2.666003431941767,
+          "RL": 3.0067649999999992,
+          "RR": 0.34076156805822894
+        },
+        "joint_torque_nm": {
+          "FL_hip_roll": 0.01545075000000589,
+          "FL_hip_pitch": 0.007602185936717545,
+          "FL_knee": -0.0022921163628264237,
+          "FR_hip_roll": 0.0511993357985383,
+          "FR_hip_pitch": 0.012793139121997189,
+          "FR_knee": 0.07557218141636879,
+          "RL_hip_roll": -0.0597183749999941,
+          "RL_hip_pitch": 0.013456633146775858,
+          "RL_knee": 0.08552459178804875,
+          "RR_hip_roll": -0.006931710798550166,
+          "RR_hip_pitch": 0.008265679961496188,
+          "RR_knee": 0.007660294008853466
+        },
+        "peak_abs_joint_torque_nm": 0.08552459178804875,
+        "estimated_continuous_limit_nm": 0.1,
+        "static_margin_ratio": 1.1692543385395504,
+        "within_estimated_limit": true,
+        "meets_proposed_1_5_static_margin": false
+      },
+      {
+        "case": "three_feet_lift_FR",
+        "support_feet": [
+          "FL",
+          "RL",
+          "RR"
+        ],
+        "vertical_static_equilibrium": true,
+        "vertical_foot_load_n": {
+          "FL": 2.666003431941767,
+          "RL": 0.34076156805822855,
+          "RR": 3.0067649999999992
+        },
+        "joint_torque_nm": {
+          "FL_hip_roll": -0.0511993357985383,
+          "FL_hip_pitch": 0.012793139121997189,
+          "FL_knee": 0.07557218141636879,
+          "FR_hip_roll": -0.01545075000000589,
+          "FR_hip_pitch": 0.007602185936717545,
+          "FR_knee": -0.0022921163628264237,
+          "RL_hip_roll": 0.006931710798550176,
+          "RL_hip_pitch": 0.008265679961496188,
+          "RL_knee": 0.007660294008853454,
+          "RR_hip_roll": 0.0597183749999941,
+          "RR_hip_pitch": 0.013456633146775858,
+          "RR_knee": 0.08552459178804875
+        },
+        "peak_abs_joint_torque_nm": 0.08552459178804875,
+        "estimated_continuous_limit_nm": 0.1,
+        "static_margin_ratio": 1.1692543385395504,
+        "within_estimated_limit": true,
+        "meets_proposed_1_5_static_margin": false
+      },
+      {
+        "case": "three_feet_lift_RL",
+        "support_feet": [
+          "FL",
+          "FR",
+          "RR"
+        ],
+        "vertical_static_equilibrium": false,
+        "reason": "The current COM projection is outside this support polygon/line; body shift or dynamic motion is required."
+      },
+      {
+        "case": "three_feet_lift_RR",
+        "support_feet": [
+          "FL",
+          "FR",
+          "RL"
+        ],
+        "vertical_static_equilibrium": false,
+        "reason": "The current COM projection is outside this support polygon/line; body shift or dynamic motion is required."
+      },
+      {
+        "case": "diagonal_FL_RR",
+        "support_feet": [
+          "FL",
+          "RR"
+        ],
+        "vertical_static_equilibrium": false,
+        "reason": "The current COM projection is outside this support polygon/line; body shift or dynamic motion is required."
+      },
+      {
+        "case": "diagonal_FR_RL",
+        "support_feet": [
+          "FR",
+          "RL"
+        ],
+        "vertical_static_equilibrium": false,
+        "reason": "The current COM projection is outside this support polygon/line; body shift or dynamic motion is required."
+      }
+    ]
+  },
+  "sizing_sweep": {
+    "variant_count": 45,
+    "notes": "Parameter sensitivity only. Twelve servo masses and envelopes remain unchanged. Nonmotor allowances vary \u00b120%; link lengths vary \u00b110mm. No hardware packaging, singularity reserve, or complete gait validation. Three-foot rows use the unchanged body pose, not an optimized crawl.",
+    "variants": [
+      {
+        "nonmotor_mass_scale": 0.8,
+        "mass_kg": 0.5336,
+        "upper_length_m": 0.060000000000000005,
+        "lower_length_m": 0.065,
+        "home_hip_pitch_rad": 0.25,
+        "four_foot_peak_torque_nm": 0.02142848572646008,
+        "four_foot_static_margin": 4.666685330756673,
+        "worst_statically_supported_three_foot_margin": 1.9490783782890646,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 0.8,
+        "mass_kg": 0.5336,
+        "upper_length_m": 0.060000000000000005,
+        "lower_length_m": 0.065,
+        "home_hip_pitch_rad": 0.35,
+        "four_foot_peak_torque_nm": 0.03048007740079759,
+        "four_foot_static_margin": 3.2808315636817658,
+        "worst_statically_supported_three_foot_margin": 1.75635357037907,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 0.8,
+        "mass_kg": 0.5336,
+        "upper_length_m": 0.060000000000000005,
+        "lower_length_m": 0.065,
+        "home_hip_pitch_rad": 0.4,
+        "four_foot_peak_torque_nm": 0.03504711162691486,
+        "four_foot_static_margin": 2.853302179778027,
+        "worst_statically_supported_three_foot_margin": 1.5465367779779562,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 0.8,
+        "mass_kg": 0.5336,
+        "upper_length_m": 0.060000000000000005,
+        "lower_length_m": 0.065,
+        "home_hip_pitch_rad": 0.5,
+        "four_foot_peak_torque_nm": 0.04417626372254413,
+        "four_foot_static_margin": 2.263659068771988,
+        "worst_statically_supported_three_foot_margin": 1.256190461094175,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 0.8,
+        "mass_kg": 0.5336,
+        "upper_length_m": 0.060000000000000005,
+        "lower_length_m": 0.065,
+        "home_hip_pitch_rad": 0.6,
+        "four_foot_peak_torque_nm": 0.05317549717867455,
+        "four_foot_static_margin": 1.8805653977054664,
+        "worst_statically_supported_three_foot_margin": 1.06660376570395,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 0.8,
+        "mass_kg": 0.5336,
+        "upper_length_m": 0.07,
+        "lower_length_m": 0.075,
+        "home_hip_pitch_rad": 0.25,
+        "four_foot_peak_torque_nm": 0.024926329112090122,
+        "four_foot_static_margin": 4.011822180085739,
+        "worst_statically_supported_three_foot_margin": 1.9490783782890646,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 0.8,
+        "mass_kg": 0.5336,
+        "upper_length_m": 0.07,
+        "lower_length_m": 0.075,
+        "home_hip_pitch_rad": 0.35,
+        "four_foot_peak_torque_nm": 0.0355557255167538,
+        "four_foot_static_margin": 2.8124865558679195,
+        "worst_statically_supported_three_foot_margin": 1.522173094328489,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 0.8,
+        "mass_kg": 0.5336,
+        "upper_length_m": 0.07,
+        "lower_length_m": 0.075,
+        "home_hip_pitch_rad": 0.4,
+        "four_foot_peak_torque_nm": 0.040937338907002796,
+        "four_foot_static_margin": 2.4427577040894044,
+        "worst_statically_supported_three_foot_margin": 1.3403318742475285,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 0.8,
+        "mass_kg": 0.5336,
+        "upper_length_m": 0.07,
+        "lower_length_m": 0.075,
+        "home_hip_pitch_rad": 0.5,
+        "four_foot_peak_torque_nm": 0.05172797574610828,
+        "four_foot_static_margin": 1.9331898949771573,
+        "worst_statically_supported_three_foot_margin": 1.0886983996149244,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 0.8,
+        "mass_kg": 0.5336,
+        "upper_length_m": 0.07,
+        "lower_length_m": 0.075,
+        "home_hip_pitch_rad": 0.6,
+        "four_foot_peak_torque_nm": 0.06240410069526104,
+        "four_foot_static_margin": 1.602458794948935,
+        "worst_statically_supported_three_foot_margin": 0.9243899302767336,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 0.8,
+        "mass_kg": 0.5336,
+        "upper_length_m": 0.08,
+        "lower_length_m": 0.08499999999999999,
+        "home_hip_pitch_rad": 0.25,
+        "four_foot_peak_torque_nm": 0.028477813370747635,
+        "four_foot_static_margin": 3.511505560420585,
+        "worst_statically_supported_three_foot_margin": 1.8615060050884045,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 0.8,
+        "mass_kg": 0.5336,
+        "upper_length_m": 0.08,
+        "lower_length_m": 0.08499999999999999,
+        "home_hip_pitch_rad": 0.35,
+        "four_foot_peak_torque_nm": 0.040734415083080504,
+        "four_foot_static_margin": 2.454926621532271,
+        "worst_statically_supported_three_foot_margin": 1.3430939067604704,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 0.8,
+        "mass_kg": 0.5336,
+        "upper_length_m": 0.08,
+        "lower_length_m": 0.08499999999999999,
+        "home_hip_pitch_rad": 0.4,
+        "four_foot_peak_torque_nm": 0.04696046324118292,
+        "four_foot_static_margin": 2.1294508848094793,
+        "worst_statically_supported_three_foot_margin": 1.1826457713949106,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 0.8,
+        "mass_kg": 0.5336,
+        "upper_length_m": 0.08,
+        "lower_length_m": 0.08499999999999999,
+        "home_hip_pitch_rad": 0.5,
+        "four_foot_peak_torque_nm": 0.05948111810527901,
+        "four_foot_static_margin": 1.6812057874064226,
+        "worst_statically_supported_three_foot_margin": 0.9606162349543719,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 0.8,
+        "mass_kg": 0.5336,
+        "upper_length_m": 0.08,
+        "lower_length_m": 0.08499999999999999,
+        "home_hip_pitch_rad": 0.6,
+        "four_foot_peak_torque_nm": 0.07191210629098062,
+        "four_foot_static_margin": 1.3905864416676421,
+        "worst_statically_supported_three_foot_margin": 0.8156381737736111,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.0,
+        "mass_kg": 0.613,
+        "upper_length_m": 0.060000000000000005,
+        "lower_length_m": 0.065,
+        "home_hip_pitch_rad": 0.25,
+        "four_foot_peak_torque_nm": 0.024500107184309824,
+        "four_foot_static_margin": 4.081614796527962,
+        "worst_statically_supported_three_foot_margin": 1.6745264753103184,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.0,
+        "mass_kg": 0.613,
+        "upper_length_m": 0.060000000000000005,
+        "lower_length_m": 0.065,
+        "home_hip_pitch_rad": 0.35,
+        "four_foot_peak_torque_nm": 0.03472660831080429,
+        "four_foot_static_margin": 2.8796362462177907,
+        "worst_statically_supported_three_foot_margin": 1.5321757779789267,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.0,
+        "mass_kg": 0.613,
+        "upper_length_m": 0.060000000000000005,
+        "lower_length_m": 0.065,
+        "home_hip_pitch_rad": 0.4,
+        "four_foot_peak_torque_nm": 0.03991274600892483,
+        "four_foot_static_margin": 2.505465296164768,
+        "worst_statically_supported_three_foot_margin": 1.349139621391824,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.0,
+        "mass_kg": 0.613,
+        "upper_length_m": 0.060000000000000005,
+        "lower_length_m": 0.065,
+        "home_hip_pitch_rad": 0.5,
+        "four_foot_peak_torque_nm": 0.050268885239862546,
+        "four_foot_static_margin": 1.9893021204437085,
+        "worst_statically_supported_three_foot_margin": 1.095852583145471,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.0,
+        "mass_kg": 0.613,
+        "upper_length_m": 0.060000000000000005,
+        "lower_length_m": 0.065,
+        "home_hip_pitch_rad": 0.6,
+        "four_foot_peak_torque_nm": 0.060465232160453845,
+        "four_foot_static_margin": 1.6538429842563829,
+        "worst_statically_supported_three_foot_margin": 0.9304643905839479,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.0,
+        "mass_kg": 0.613,
+        "upper_length_m": 0.07,
+        "lower_length_m": 0.075,
+        "home_hip_pitch_rad": 0.25,
+        "four_foot_peak_torque_nm": 0.02841344688091369,
+        "four_foot_static_margin": 3.5194603604103207,
+        "worst_statically_supported_three_foot_margin": 1.6745264753103182,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.0,
+        "mass_kg": 0.613,
+        "upper_length_m": 0.07,
+        "lower_length_m": 0.075,
+        "home_hip_pitch_rad": 0.35,
+        "four_foot_peak_torque_nm": 0.040487288723917755,
+        "four_foot_static_margin": 2.469911005449107,
+        "worst_statically_supported_three_foot_margin": 1.3278856742483673,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.0,
+        "mass_kg": 0.613,
+        "upper_length_m": 0.07,
+        "lower_length_m": 0.075,
+        "home_hip_pitch_rad": 0.4,
+        "four_foot_peak_torque_nm": 0.04659244289845112,
+        "four_foot_static_margin": 2.146270806575895,
+        "worst_statically_supported_three_foot_margin": 1.1692543385395504,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.0,
+        "mass_kg": 0.613,
+        "upper_length_m": 0.07,
+        "lower_length_m": 0.075,
+        "home_hip_pitch_rad": 0.5,
+        "four_foot_peak_torque_nm": 0.05881993112342589,
+        "four_foot_static_margin": 1.7001039968945757,
+        "worst_statically_supported_three_foot_margin": 0.9497389053927161,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.0,
+        "mass_kg": 0.613,
+        "upper_length_m": 0.07,
+        "lower_length_m": 0.075,
+        "home_hip_pitch_rad": 0.6,
+        "four_foot_peak_torque_nm": 0.07090134333494098,
+        "four_foot_static_margin": 1.410410512641428,
+        "worst_statically_supported_three_foot_margin": 0.8064024718393993,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.0,
+        "mass_kg": 0.613,
+        "upper_length_m": 0.08,
+        "lower_length_m": 0.08499999999999999,
+        "home_hip_pitch_rad": 0.25,
+        "four_foot_peak_torque_nm": 0.032448594435221696,
+        "four_foot_static_margin": 3.081797586013583,
+        "worst_statically_supported_three_foot_margin": 1.6239067461474728,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.0,
+        "mass_kg": 0.613,
+        "upper_length_m": 0.08,
+        "lower_length_m": 0.08499999999999999,
+        "home_hip_pitch_rad": 0.35,
+        "four_foot_peak_torque_nm": 0.04635946921392403,
+        "four_foot_static_margin": 2.157056620699296,
+        "worst_statically_supported_three_foot_margin": 1.171663830219184,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.0,
+        "mass_kg": 0.613,
+        "upper_length_m": 0.08,
+        "lower_length_m": 0.08499999999999999,
+        "home_hip_pitch_rad": 0.4,
+        "four_foot_peak_torque_nm": 0.05341594630173313,
+        "four_foot_static_margin": 1.8721001297089332,
+        "worst_statically_supported_three_foot_margin": 1.031695004593751,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.0,
+        "mass_kg": 0.613,
+        "upper_length_m": 0.08,
+        "lower_length_m": 0.08499999999999999,
+        "home_hip_pitch_rad": 0.5,
+        "four_foot_peak_torque_nm": 0.0675889426686521,
+        "four_foot_static_margin": 1.4795319478548408,
+        "worst_statically_supported_three_foot_margin": 0.8380049165230105,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.0,
+        "mass_kg": 0.613,
+        "upper_length_m": 0.08,
+        "lower_length_m": 0.08499999999999999,
+        "home_hip_pitch_rad": 0.6,
+        "four_foot_peak_torque_nm": 0.08163979258013057,
+        "four_foot_static_margin": 1.224892871963738,
+        "worst_statically_supported_three_foot_margin": 0.7115315927994921,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.2,
+        "mass_kg": 0.6924,
+        "upper_length_m": 0.060000000000000005,
+        "lower_length_m": 0.065,
+        "home_hip_pitch_rad": 0.25,
+        "four_foot_peak_torque_nm": 0.02824418742665463,
+        "four_foot_static_margin": 3.5405514943449186,
+        "worst_statically_supported_three_foot_margin": 1.467772486457811,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.2,
+        "mass_kg": 0.6924,
+        "upper_length_m": 0.060000000000000005,
+        "lower_length_m": 0.065,
+        "home_hip_pitch_rad": 0.35,
+        "four_foot_peak_torque_nm": 0.038973139220811984,
+        "four_foot_static_margin": 2.5658697759352975,
+        "worst_statically_supported_three_foot_margin": 1.3587476818975328,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.2,
+        "mass_kg": 0.6924,
+        "upper_length_m": 0.060000000000000005,
+        "lower_length_m": 0.065,
+        "home_hip_pitch_rad": 0.4,
+        "four_foot_peak_torque_nm": 0.044778380390936054,
+        "four_foot_static_margin": 2.233220565972989,
+        "worst_statically_supported_three_foot_margin": 1.1964295216442646,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.2,
+        "mass_kg": 0.6924,
+        "upper_length_m": 0.060000000000000005,
+        "lower_length_m": 0.065,
+        "home_hip_pitch_rad": 0.5,
+        "four_foot_peak_torque_nm": 0.056361506757182905,
+        "four_foot_static_margin": 1.7742605858785998,
+        "worst_statically_supported_three_foot_margin": 0.9718122283687552,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.2,
+        "mass_kg": 0.6924,
+        "upper_length_m": 0.060000000000000005,
+        "lower_length_m": 0.065,
+        "home_hip_pitch_rad": 0.6,
+        "four_foot_peak_torque_nm": 0.06775496714223603,
+        "four_foot_static_margin": 1.475906552947962,
+        "worst_statically_supported_three_foot_margin": 0.8251444461952124,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.2,
+        "mass_kg": 0.6924,
+        "upper_length_m": 0.07,
+        "lower_length_m": 0.075,
+        "home_hip_pitch_rad": 0.25,
+        "four_foot_peak_torque_nm": 0.031900564649735584,
+        "four_foot_static_margin": 3.1347407513938434,
+        "worst_statically_supported_three_foot_margin": 1.4677724864578119,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.2,
+        "mass_kg": 0.6924,
+        "upper_length_m": 0.07,
+        "lower_length_m": 0.075,
+        "home_hip_pitch_rad": 0.35,
+        "four_foot_peak_torque_nm": 0.04541885193107849,
+        "four_foot_static_margin": 2.2017289241865137,
+        "worst_statically_supported_three_foot_margin": 1.1775813243111624,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.2,
+        "mass_kg": 0.6924,
+        "upper_length_m": 0.07,
+        "lower_length_m": 0.075,
+        "home_hip_pitch_rad": 0.4,
+        "four_foot_peak_torque_nm": 0.05224754688989536,
+        "four_foot_static_margin": 1.9139654577608494,
+        "worst_statically_supported_three_foot_margin": 1.0369055854250002,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.2,
+        "mass_kg": 0.6924,
+        "upper_length_m": 0.07,
+        "lower_length_m": 0.075,
+        "home_hip_pitch_rad": 0.5,
+        "four_foot_peak_torque_nm": 0.06591188650073734,
+        "four_foot_static_margin": 1.5171770269218636,
+        "worst_statically_supported_three_foot_margin": 0.842237264586231,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.2,
+        "mass_kg": 0.6924,
+        "upper_length_m": 0.07,
+        "lower_length_m": 0.075,
+        "home_hip_pitch_rad": 0.6,
+        "four_foot_peak_torque_nm": 0.0793985859746124,
+        "four_foot_static_margin": 1.2594682735530691,
+        "worst_statically_supported_three_foot_margin": 0.7151251867024967,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.2,
+        "mass_kg": 0.6924,
+        "upper_length_m": 0.08,
+        "lower_length_m": 0.08499999999999999,
+        "home_hip_pitch_rad": 0.25,
+        "four_foot_peak_torque_nm": 0.036419375499694026,
+        "four_foot_static_margin": 2.745791179226567,
+        "worst_statically_supported_three_foot_margin": 1.4400955547386243,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.2,
+        "mass_kg": 0.6924,
+        "upper_length_m": 0.08,
+        "lower_length_m": 0.08499999999999999,
+        "home_hip_pitch_rad": 0.35,
+        "four_foot_peak_torque_nm": 0.051984523344764354,
+        "four_foot_static_margin": 1.9236494549886367,
+        "worst_statically_supported_three_foot_margin": 1.0390423449804704,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.2,
+        "mass_kg": 0.6924,
+        "upper_length_m": 0.08,
+        "lower_length_m": 0.08499999999999999,
+        "home_hip_pitch_rad": 0.4,
+        "four_foot_peak_torque_nm": 0.05987142936227917,
+        "four_foot_static_margin": 1.6702457426714297,
+        "worst_statically_supported_three_foot_margin": 0.9149166930220888,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.2,
+        "mass_kg": 0.6924,
+        "upper_length_m": 0.08,
+        "lower_length_m": 0.08499999999999999,
+        "home_hip_pitch_rad": 0.5,
+        "four_foot_peak_torque_nm": 0.07569676723201908,
+        "four_foot_static_margin": 1.321060378886311,
+        "worst_statically_supported_three_foot_margin": 0.7431505275761107,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      },
+      {
+        "nonmotor_mass_scale": 1.2,
+        "mass_kg": 0.6924,
+        "upper_length_m": 0.08,
+        "lower_length_m": 0.08499999999999999,
+        "home_hip_pitch_rad": 0.6,
+        "four_foot_peak_torque_nm": 0.09136747886927205,
+        "four_foot_static_margin": 1.0944813322810332,
+        "worst_statically_supported_three_foot_margin": 0.6309928117963415,
+        "three_foot_cases_statically_possible_without_body_shift": 2
+      }
+    ]
+  },
+  "pd_sanity": {
+    "model_type": "Unidentified ideal position PD; no BAM and no policy",
+    "duration_s": 4.999999999999671,
+    "finite": true,
+    "initial_base_height_m": 0.14155384413,
+    "minimum_base_height_m": 0.13939416925380782,
+    "final_base_height_m": 0.13939416925380782,
+    "peak_abs_actuator_torque_nm": 0.06477828728436674,
+    "fraction_steps_any_actuator_at_limit": 0.0,
+    "final_max_joint_speed_rad_s": 2.8370995612775692e-06,
+    "interpretation": "Numerical/standing sanity observation only. This does not validate real-motor control, walking or sim-to-real transfer."
+  },
+  "battery_screen": {
+    "status": "Sizing assumptions, no selected battery or measured endurance",
+    "nominal_voltage_v": 7.4,
+    "candidate_capacity_ah": 0.65,
+    "nominal_energy_wh": 4.8100000000000005,
+    "usable_fraction": 0.8,
+    "assumed_conversion_efficiency": 0.88,
+    "allowable_average_output_power_w": {
+      "10_minutes": 20.317440000000005,
+      "15_minutes": 13.544960000000003
+    },
+    "notes": "2S pack must feed a regulated 5V servo rail; 8.4V full charge cannot feed stock XL330 directly. Energy sizing does not establish transient-current capability, rail sizing, or purchased-pack mass."
+  },
+  "gates": {
+    "geometry_implementation": "pass",
+    "motor_selection": "open: conservative gait load, model provenance and budget must converge",
+    "realistic_actuator_physics": "not implemented: published BAM integration is next",
+    "manufacturing_and_self_collision": "not assessed; primitive motor housings are visual-only",
+    "rl_training": "not started",
+    "carpet_and_threshold_traversal": "not demonstrated",
+    "battery_runtime": "not demonstrated",
+    "hardware_validation": "not performed"
+  }
+}

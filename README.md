@@ -1,48 +1,73 @@
 # Cheetah Pup
 
-> **Independent Microduck research branch:** see
-> [`docs/microduck-review/README.md`](docs/microduck-review/README.md) for updated
-> sources, additional submodules, and the owner's requirement to avoid custom servo
-> characterization. The original handoff below is retained for comparison.
+A compact, original 12-joint quadruped project for learning robotics reinforcement
+learning. It uses MIT Cheetah-inspired leg kinematics and practical Microduck software
+references, with **no custom servo-characterization work required from the owner**.
 
-An experimental, hobbyist-scale quadruped robot for reinforcement-learning research:
-Mini-Cheetah-style 12-DOF body geometry and leg kinematics, built with Feetech
-STS3215-class smart servos and much of the surrounding stack (power, sensors, training
-approach) drawn from Hugging Face/Pollen Robotics' open-source **Open Duck Mini v2**
-project.
+This independent branch is `codex/microduck-research-20260904`. The parallel agent's
+branch is kept separate; [its original handoff](docs/HANDOFF.md) is historical context.
 
-**Status**: pre-design. Research is done, key architecture decisions are made, and the
-repo is scaffolded — no CAD, PCB, firmware, or training code exists yet.
+**Start here:** [implementation plan](docs/implementation/PLAN.md) ·
+[decisions](docs/implementation/DECISIONS.md) ·
+[current results](reports/primitive-validation.md) ·
+[research](docs/microduck-review/RESEARCH.md).
 
-**Start here**: [`docs/HANDOFF.md`](docs/HANDOFF.md) is the comprehensive project plan —
-decisions made and why, architecture, phased build sequence, budget, safety, and open
-questions. [`docs/research-appendix.md`](docs/research-appendix.md) is the research
-backing those decisions (MIT Cheetah, prior-art scaled QDD quadrupeds, the Hugging Face
-duck robot family, current legged-RL training stacks).
+## Current milestone
 
-## Repo layout
+The original primitive MuJoCo model, analytical kinematics and static load screening
+are implemented. The component allowance totals **613 g**, including twelve 18 g
+XL330 motors as a provisional candidate. **26 tests pass**: FK/Jacobians, transformed
+base poses, mirrored legs, masses/inertias, joint limits, terrain dimensions, and
+support-force balance. A 45-variant sensitivity screen varies stance, link lengths
+and nonmotor mass without shrinking motor envelopes.
 
+![Neutral primitive model](reports/primitive-preview.png)
+
+The initial geometry has useful four-foot static margin, but lifting a foot requires
+body weight shifts and further load checks. Motor selection remains open. The
+screening model uses ideal PD, not BAM; no learned walking policy, manufacturing CAD,
+real carpet traversal or hardware performance is claimed. The image is a software
+projection of the compiled MuJoCo neutral pose. Self-collision and packaging remain
+unvalidated.
+
+## Reproduce the first milestone
+
+Requires Python 3.12 and `uv`. Run from the repository root:
+
+```sh
+uv sync --locked
+uv run pytest -q
+uv run cheetah-pup build
+uv run cheetah-pup validate
+uv run cheetah-pup render
 ```
-docs/                   Planning and research documents — read HANDOFF.md first
-vendor/                 Git submodules: external reference repos (see vendor/README.md)
+
+These commands use CPU MuJoCo; no CUDA, cloud account, hardware or submodule
+initialization is needed. Rendering uses Matplotlib's software backend. An optional
+`render --renderer mujoco` uses MuJoCo's native renderer and needs a working OpenGL
+installation; it was unavailable in this cloud environment. The software preview was
+generated successfully instead.
+
+Other scenes:
+
+```sh
+uv run cheetah-pup build --terrain threshold --output models/cheetah_pup_threshold.xml
+uv run cheetah-pup build --terrain carpet --output models/cheetah_pup_carpet_placeholder.xml
 ```
 
-Mechanical CAD, PCB design, firmware, and training code directories will be added as
-each build phase starts (see `docs/HANDOFF.md` §5).
+The carpet scene is explicitly a rigid friction placeholder. The 10 mm threshold
+exists in the scene; traversal is not demonstrated. Edit [config/robot.json](config/robot.json)
+to change geometry, mass allowances or diagnostic gains, then regenerate and validate.
 
-## Getting the code
+## Next implementation slice
 
-This repo uses git submodules for vendored reference material:
+1. Evaluate body shifts, useful foot workspace and mechanical clearance against the
+   desired crawl and threshold motion; keep rejected designs in the report.
+2. Integrate a coherent published BAM model with explicit voltage/controller settings
+   and CPU/GPU parity. Resolve the calibration-provenance gap before hardware purchase.
+3. Build the quadruped RL task and prepare a capped cloud smoke-training job. Detailed
+   CAD and PCB work follow the evidence gates in the plan.
 
-```
-git clone --recurse-submodules <this-repo-url>
-# or, if already cloned:
-git submodule update --init --recursive
-```
-
-## License
-
-This repo's own code is MIT licensed (see `LICENSE`) unless noted otherwise. Vendored
-reference material under `vendor/` keeps its own upstream license — see
-`vendor/README.md` for exact terms per repo, including a few that are reference-only
-pending license clarification from their authors.
+Our original code is [MIT licensed](LICENSE). Pinned upstream references retain their
+own licenses; see [reference scope](docs/microduck-review/REFERENCES.md). In particular,
+Microduck model assets are not treated as Apache-licensed manufacturing CAD.

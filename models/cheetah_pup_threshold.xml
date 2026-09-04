@@ -1,0 +1,127 @@
+<mujoco model="cheetah_pup_primitive_v0">
+  <!-- Original primitive geometry. Ideal PD only; no BAM or hardware validation. -->
+  <compiler angle="radian" autolimits="true" inertiafromgeom="false" />
+  <option timestep="0.002" integrator="implicitfast" gravity="0 0 -9.81" />
+  <visual>
+    <global azimuth="135" elevation="-25" />
+    <headlight diffuse="0.8 0.8 0.8" ambient="0.3 0.3 0.3" />
+  </visual>
+  <default>
+    <joint type="hinge" limited="true" damping="0.003" armature="8e-06" />
+    <geom contype="1" conaffinity="2" condim="3" friction="0.8 0.005 0.0001" />
+  </default>
+  <worldbody>
+    <geom name="ground" type="plane" size="2 2 0.1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" rgba="0.83 0.85 0.86 1" />
+    <light pos="0 -0.4 1" dir="0 0 -1" directional="true" />
+    <geom name="threshold" type="box" pos="0.55 0 0.005" size="0.04 0.4 0.005" contype="2" conaffinity="1" rgba="0.6 0.35 0.15 1" />
+    <body name="base" pos="0 0 0.14155384413">
+      <freejoint name="floating_base" />
+      <geom name="FL_roll_motor_envelope" type="box" pos="0.06 0.018 0" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
+      <geom name="FR_roll_motor_envelope" type="box" pos="0.06 -0.018 0" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
+      <geom name="RL_roll_motor_envelope" type="box" pos="-0.06 0.018 0" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
+      <geom name="RR_roll_motor_envelope" type="box" pos="-0.06 -0.018 0" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
+      <inertial mass="0.353" pos="0.000354107648725 0 0.00070821529745" fullinertia="0.000133897946176 0.000612050099386 0.000669725986544 0 -1.16147308782e-06 0" />
+      <geom name="torso_collision" type="box" size="0.08 0.035 0.0225" rgba="0.15 0.28 0.39 0.65" />
+      <site name="imu" pos="0 0 0" size="0.003" rgba="1 0.4 0 1" />
+      <camera name="follow" mode="trackcom" pos="0.38 -0.43 0.24" xyaxes="0.75 0.66 0 -0.26 0.30 0.92" />
+      <body name="FL_roll_link" pos="0.06 0.035 0">
+        <joint name="FL_hip_roll" axis="1 0 0" range="-0.7 0.7" />
+        <inertial mass="0.022" pos="0 0.0227272727273 0" fullinertia="3.5156969697e-06 1.71e-06 3.1016969697e-06 0 0 0" />
+        <geom name="FL_roll_bar" type="capsule" fromto="0 0 0 0 0.025 0" size="0.006" rgba="0.8 0.45 0.12 1" />
+        <geom name="FL_hip_motor_envelope" type="box" pos="0 0.025 0" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
+        <body name="FL_upper_link" pos="0 0.025 0">
+          <joint name="FL_hip_pitch" axis="0 1 0" range="-1.2 1.2" />
+          <inertial mass="0.03" pos="0 0 -0.056" fullinertia="1.6549e-05 1.5415e-05 2.496e-06 0 0 0" />
+          <geom name="FL_upper_bar" type="capsule" fromto="0 0 0 0 0 -0.07" size="0.0045" rgba="0.2 0.47 0.61 1" />
+          <geom name="FL_knee_motor_envelope" type="box" pos="0 0 -0.07" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
+          <body name="FL_lower_link" pos="0 0 -0.07">
+            <joint name="FL_knee" axis="0 1 0" range="-2.1 -0.1" />
+            <inertial mass="0.013" pos="0 0 -0.0461538461538" fullinertia="8.07699230769e-06 8.07699230769e-06 2.118e-07 0 0 0" />
+            <geom name="FL_lower_bar" type="capsule" fromto="0 0 0 0 0 -0.075" size="0.0045" rgba="0.2 0.47 0.61 1" />
+            <geom name="FL_foot_collision" type="sphere" pos="0 0 -0.075" size="0.008" rgba="0.08 0.08 0.08 1" />
+            <site name="FL_foot" pos="0 0 -0.075" size="0.002" rgba="1 0.2 0.1 1" />
+          </body>
+        </body>
+      </body>
+      <body name="FR_roll_link" pos="0.06 -0.035 0">
+        <joint name="FR_hip_roll" axis="1 0 0" range="-0.7 0.7" />
+        <inertial mass="0.022" pos="0 -0.0227272727273 0" fullinertia="3.5156969697e-06 1.71e-06 3.1016969697e-06 0 0 0" />
+        <geom name="FR_roll_bar" type="capsule" fromto="0 0 0 0 -0.025 0" size="0.006" rgba="0.8 0.45 0.12 1" />
+        <geom name="FR_hip_motor_envelope" type="box" pos="0 -0.025 0" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
+        <body name="FR_upper_link" pos="0 -0.025 0">
+          <joint name="FR_hip_pitch" axis="0 1 0" range="-1.2 1.2" />
+          <inertial mass="0.03" pos="0 0 -0.056" fullinertia="1.6549e-05 1.5415e-05 2.496e-06 0 0 0" />
+          <geom name="FR_upper_bar" type="capsule" fromto="0 0 0 0 0 -0.07" size="0.0045" rgba="0.2 0.47 0.61 1" />
+          <geom name="FR_knee_motor_envelope" type="box" pos="0 0 -0.07" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
+          <body name="FR_lower_link" pos="0 0 -0.07">
+            <joint name="FR_knee" axis="0 1 0" range="-2.1 -0.1" />
+            <inertial mass="0.013" pos="0 0 -0.0461538461538" fullinertia="8.07699230769e-06 8.07699230769e-06 2.118e-07 0 0 0" />
+            <geom name="FR_lower_bar" type="capsule" fromto="0 0 0 0 0 -0.075" size="0.0045" rgba="0.2 0.47 0.61 1" />
+            <geom name="FR_foot_collision" type="sphere" pos="0 0 -0.075" size="0.008" rgba="0.08 0.08 0.08 1" />
+            <site name="FR_foot" pos="0 0 -0.075" size="0.002" rgba="1 0.2 0.1 1" />
+          </body>
+        </body>
+      </body>
+      <body name="RL_roll_link" pos="-0.06 0.035 0">
+        <joint name="RL_hip_roll" axis="1 0 0" range="-0.7 0.7" />
+        <inertial mass="0.022" pos="0 0.0227272727273 0" fullinertia="3.5156969697e-06 1.71e-06 3.1016969697e-06 0 0 0" />
+        <geom name="RL_roll_bar" type="capsule" fromto="0 0 0 0 0.025 0" size="0.006" rgba="0.8 0.45 0.12 1" />
+        <geom name="RL_hip_motor_envelope" type="box" pos="0 0.025 0" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
+        <body name="RL_upper_link" pos="0 0.025 0">
+          <joint name="RL_hip_pitch" axis="0 1 0" range="-1.2 1.2" />
+          <inertial mass="0.03" pos="0 0 -0.056" fullinertia="1.6549e-05 1.5415e-05 2.496e-06 0 0 0" />
+          <geom name="RL_upper_bar" type="capsule" fromto="0 0 0 0 0 -0.07" size="0.0045" rgba="0.2 0.47 0.61 1" />
+          <geom name="RL_knee_motor_envelope" type="box" pos="0 0 -0.07" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
+          <body name="RL_lower_link" pos="0 0 -0.07">
+            <joint name="RL_knee" axis="0 1 0" range="-2.1 -0.1" />
+            <inertial mass="0.013" pos="0 0 -0.0461538461538" fullinertia="8.07699230769e-06 8.07699230769e-06 2.118e-07 0 0 0" />
+            <geom name="RL_lower_bar" type="capsule" fromto="0 0 0 0 0 -0.075" size="0.0045" rgba="0.2 0.47 0.61 1" />
+            <geom name="RL_foot_collision" type="sphere" pos="0 0 -0.075" size="0.008" rgba="0.08 0.08 0.08 1" />
+            <site name="RL_foot" pos="0 0 -0.075" size="0.002" rgba="1 0.2 0.1 1" />
+          </body>
+        </body>
+      </body>
+      <body name="RR_roll_link" pos="-0.06 -0.035 0">
+        <joint name="RR_hip_roll" axis="1 0 0" range="-0.7 0.7" />
+        <inertial mass="0.022" pos="0 -0.0227272727273 0" fullinertia="3.5156969697e-06 1.71e-06 3.1016969697e-06 0 0 0" />
+        <geom name="RR_roll_bar" type="capsule" fromto="0 0 0 0 -0.025 0" size="0.006" rgba="0.8 0.45 0.12 1" />
+        <geom name="RR_hip_motor_envelope" type="box" pos="0 -0.025 0" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
+        <body name="RR_upper_link" pos="0 -0.025 0">
+          <joint name="RR_hip_pitch" axis="0 1 0" range="-1.2 1.2" />
+          <inertial mass="0.03" pos="0 0 -0.056" fullinertia="1.6549e-05 1.5415e-05 2.496e-06 0 0 0" />
+          <geom name="RR_upper_bar" type="capsule" fromto="0 0 0 0 0 -0.07" size="0.0045" rgba="0.2 0.47 0.61 1" />
+          <geom name="RR_knee_motor_envelope" type="box" pos="0 0 -0.07" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
+          <body name="RR_lower_link" pos="0 0 -0.07">
+            <joint name="RR_knee" axis="0 1 0" range="-2.1 -0.1" />
+            <inertial mass="0.013" pos="0 0 -0.0461538461538" fullinertia="8.07699230769e-06 8.07699230769e-06 2.118e-07 0 0 0" />
+            <geom name="RR_lower_bar" type="capsule" fromto="0 0 0 0 0 -0.075" size="0.0045" rgba="0.2 0.47 0.61 1" />
+            <geom name="RR_foot_collision" type="sphere" pos="0 0 -0.075" size="0.008" rgba="0.08 0.08 0.08 1" />
+            <site name="RR_foot" pos="0 0 -0.075" size="0.002" rgba="1 0.2 0.1 1" />
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  <actuator>
+    <position name="FL_hip_roll_pd" joint="FL_hip_roll" kp="1.5" kv="0.04" ctrllimited="true" forcelimited="true" ctrlrange="-0.7 0.7" forcerange="-0.1 0.1" />
+    <position name="FL_hip_pitch_pd" joint="FL_hip_pitch" kp="1.5" kv="0.04" ctrllimited="true" forcelimited="true" ctrlrange="-1.2 1.2" forcerange="-0.1 0.1" />
+    <position name="FL_knee_pd" joint="FL_knee" kp="1.5" kv="0.04" ctrllimited="true" forcelimited="true" ctrlrange="-2.1 -0.1" forcerange="-0.1 0.1" />
+    <position name="FR_hip_roll_pd" joint="FR_hip_roll" kp="1.5" kv="0.04" ctrllimited="true" forcelimited="true" ctrlrange="-0.7 0.7" forcerange="-0.1 0.1" />
+    <position name="FR_hip_pitch_pd" joint="FR_hip_pitch" kp="1.5" kv="0.04" ctrllimited="true" forcelimited="true" ctrlrange="-1.2 1.2" forcerange="-0.1 0.1" />
+    <position name="FR_knee_pd" joint="FR_knee" kp="1.5" kv="0.04" ctrllimited="true" forcelimited="true" ctrlrange="-2.1 -0.1" forcerange="-0.1 0.1" />
+    <position name="RL_hip_roll_pd" joint="RL_hip_roll" kp="1.5" kv="0.04" ctrllimited="true" forcelimited="true" ctrlrange="-0.7 0.7" forcerange="-0.1 0.1" />
+    <position name="RL_hip_pitch_pd" joint="RL_hip_pitch" kp="1.5" kv="0.04" ctrllimited="true" forcelimited="true" ctrlrange="-1.2 1.2" forcerange="-0.1 0.1" />
+    <position name="RL_knee_pd" joint="RL_knee" kp="1.5" kv="0.04" ctrllimited="true" forcelimited="true" ctrlrange="-2.1 -0.1" forcerange="-0.1 0.1" />
+    <position name="RR_hip_roll_pd" joint="RR_hip_roll" kp="1.5" kv="0.04" ctrllimited="true" forcelimited="true" ctrlrange="-0.7 0.7" forcerange="-0.1 0.1" />
+    <position name="RR_hip_pitch_pd" joint="RR_hip_pitch" kp="1.5" kv="0.04" ctrllimited="true" forcelimited="true" ctrlrange="-1.2 1.2" forcerange="-0.1 0.1" />
+    <position name="RR_knee_pd" joint="RR_knee" kp="1.5" kv="0.04" ctrllimited="true" forcelimited="true" ctrlrange="-2.1 -0.1" forcerange="-0.1 0.1" />
+  </actuator>
+  <sensor>
+    <accelerometer name="imu_accel" site="imu" />
+    <gyro name="imu_gyro" site="imu" />
+    <framequat name="imu_orientation" objtype="site" objname="imu" />
+  </sensor>
+  <keyframe>
+    <key name="stand" qpos="0 0 0.14155384413 1 0 0 0 0 0.4 -0.8 0 0.4 -0.8 0 0.4 -0.8 0 0.4 -0.8" ctrl="0 0.4 -0.8 0 0.4 -0.8 0 0.4 -0.8 0 0.4 -0.8" />
+  </keyframe>
+</mujoco>

@@ -1,16 +1,14 @@
 # Interview and implementation sequence
 
-Status: research baseline saved; requirements interview remains open. This is a proposed
-sequence, not the final comprehensive plan or a claim that implementation is complete.
+Status: the interview below is answered. The active comprehensive plan is
+[PLAN.md](../implementation/PLAN.md), and the first primitive model is implemented.
+The original proposed sequence below is retained as research history.
 
-## Questions that still affect the design
+## Interview answers
 
-1. Maximum acceptable overall robot length / preference for compactness versus easier
-   component packaging. STS3215 and XL330 are materially different size and mass choices.
-2. Required first-version terrain: smooth indoor floor, carpet/thresholds, or outdoor
-   uneven surfaces. This changes foot design, stance, sensors and training objectives.
-3. Desired walking runtime per charge. Battery mass feeds directly into motor and geometry
-   selection; avoid specifying a battery independently of the load model.
+1. Size: smallest that keeps the project straightforward; no fixed length limit.
+2. Terrain: carpet and small doorway thresholds.
+3. Runtime: 10–15 minutes of active walking; prioritize low weight.
 
 Do not re-interview the owner about motor characterization: they explicitly do not want
 to do it. Do not ask them to choose obscure simulation libraries. Make those engineering
@@ -36,7 +34,6 @@ latency and conservative randomization are the baseline path. If that path fails
 first simplify behavior, adjust geometry, or select a better-supported component.
 Do not silently turn the project into a servo-identification exercise.
 
-The comprehensive plan after the interview will set numerical acceptance thresholds,
-file/module ownership, dependencies, budget ranges, assembly checkpoints and the first
-implementation issue. Paid compute, purchases and manufacturing orders are not launched
-by this research branch.
+The active comprehensive plan sets proposed acceptance thresholds, dependencies,
+budget ranges, assembly checkpoints and implementation stages. Paid compute, purchases
+and manufacturing orders have not been launched by this research branch.
