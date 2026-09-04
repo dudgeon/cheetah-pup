@@ -31,3 +31,6 @@
 [submodule "vendor/pollen_robot_hat"]
 	path = vendor/pollen_robot_hat
 	url = https://github.com/pollen-robotics/elec_RPI_Robot_HAT.git
+[submodule "vendor/bam_microduck"]
+	path = vendor/bam_microduck
+	url = https://github.com/Rhoban/bam.git

@@ -1,0 +1,16 @@
+{
+  "candidate": "ROBOTIS XL330-M288-T",
+  "status": "Published BAM reuse for simulation screening; stock 5V calibration and firmware parity remain unverified.",
+  "bam_commit": "62bd8ce12154340be97e06f7f41a0ca8f116d967",
+  "bam_submodule": "vendor/bam_microduck",
+  "parameter_file": "bam/params/xl330/m6.json",
+  "supply_v": 5.0,
+  "firmware_p_gain": 400,
+  "gain_notes": "Explicit stock XL330 control-table default and BAM constructor default. P400 selected after the P200 Microduck reference slowly crouched onto its rear knee brackets in a 60s stand simulation; retain that failed comparison. This does not resolve BAM's divisor256 versus manual128 fidelity gap.",
+  "max_pwm": 1.0,
+  "max_current_a": 1.75,
+  "command_delay_s": 0.02,
+  "delay_notes": "Assumed fixed command delay, not identified hardware latency. One physics-step queue only. At 2ms timestep, 20ms is 10 steps. Microduck's 3-6 actuation steps at 5ms imply 15-30ms; observation delay is separate.",
+  "firmware_notes": "P-only BAM voltage controller. Its empirical P divisor is 256, whereas the manual documents 128. No profile generator, PWM slew, I/D/feedforward, thermal protection, backlash or sensor/communication model is implemented here. The 1.75A BAM winding-current limiter is not a validated model of the XL330 input-current register.",
+  "fidelity_gate": "OPEN: establish exact actuator variant, fit acquisition voltage, firmware version/mode/PWM slope and gain scaling from existing published evidence. Do not ask the owner to characterize servos."
+}

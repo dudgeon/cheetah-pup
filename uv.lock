@@ -16,6 +16,7 @@ name = "cheetah-pup"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "colorama" },
     { name = "matplotlib" },
     { name = "mujoco" },
     { name = "numpy" },
@@ -29,6 +30,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "colorama", specifier = "==0.4.6" },
     { name = "matplotlib", specifier = "==3.10.9" },
     { name = "mujoco", specifier = "==3.10.0" },
     { name = "numpy", specifier = "==2.4.1" },

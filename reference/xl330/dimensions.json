@@ -1,0 +1,265 @@
+{
+  "model": "ROBOTIS XL330-M288-T",
+  "status": "Manufacturer reference geometry and mass properties, not a manufacturing release or measured assembly",
+  "source_frame": {
+    "origin": "Center of stock output horn outer/front mounting face",
+    "handedness": "right",
+    "x": "Right when looking at the output horn, with casing long direction down",
+    "y": "Toward the short top end of the casing above the output shaft",
+    "z": "Outward from the output horn toward the viewer",
+    "joint_axis": [
+      0,
+      0,
+      1
+    ]
+  },
+  "case_size_m": [
+    0.02,
+    0.034,
+    0.023
+  ],
+  "case_center_m": [
+    0,
+    -0.0075,
+    -0.0145
+  ],
+  "case_bounds_m": [
+    [
+      -0.01,
+      0.01
+    ],
+    [
+      -0.0245,
+      0.0095
+    ],
+    [
+      -0.026,
+      -0.003
+    ]
+  ],
+  "stock_horn": {
+    "radius_m": 0.008,
+    "depth_m": 0.003,
+    "center_m": [
+      0,
+      0,
+      -0.0015
+    ],
+    "axis": [
+      0,
+      0,
+      1
+    ],
+    "holes_count": 4,
+    "hole_diameter_m": 0.0016,
+    "hole_max_depth_m": 0.003,
+    "hole_pitch_circle_diameter_m": 0.012,
+    "attachment": "M2 tapping screws"
+  },
+  "overall_stock_size_m": [
+    0.02,
+    0.034,
+    0.026
+  ],
+  "shaft_from_case_top_m": 0.0095,
+  "case_corner_hole_spacing_m": [
+    0.016,
+    0.03
+  ],
+  "case_corner_hole_xy_m": [
+    [
+      -0.008,
+      0.0075
+    ],
+    [
+      0.008,
+      0.0075
+    ],
+    [
+      -0.008,
+      -0.0225
+    ],
+    [
+      0.008,
+      -0.0225
+    ]
+  ],
+  "case_corner_hole_note": "Front and rear frame attachment locations; use manufacturer section details for screw engagement, not these coordinates alone.",
+  "optional_rear_idler": {
+    "installed": false,
+    "additional_depth_m": 0.003,
+    "assembly_depth_m": 0.029,
+    "radius_m": 0.008,
+    "note": "Separate passive support accessory. Its mounting face is at source Z=-.029 m when installed; not a second powered shaft."
+  },
+  "connectors": {
+    "count": 2,
+    "exit_direction": "Opposite side walls: source +X and -X; rearward portion of casing",
+    "housing": "JST EHR-03",
+    "header": "JST B3B-EH-A",
+    "pinout": [
+      "GND",
+      "VDD",
+      "DATA"
+    ],
+    "position_status": "Bare PCB header bounds extracted from official STEP with OpenCascade; mated connector, wire and service-access envelopes remain design allowances.",
+    "header_bounds_m": [
+      [
+        [
+          0.0061,
+          0.0099
+        ],
+        [
+          -0.014,
+          -0.004
+        ],
+        [
+          -0.0229,
+          -0.0137
+        ]
+      ],
+      [
+        [
+          -0.0099,
+          -0.0061
+        ],
+        [
+          -0.014,
+          -0.004
+        ],
+        [
+          -0.0229,
+          -0.0137
+        ]
+      ]
+    ],
+    "proposed_external_keepout_bounds_m": [
+      [
+        [
+          0.01,
+          0.02
+        ],
+        [
+          -0.015,
+          -0.003
+        ],
+        [
+          -0.025,
+          -0.012
+        ]
+      ],
+      [
+        [
+          -0.02,
+          -0.01
+        ],
+        [
+          -0.015,
+          -0.003
+        ],
+        [
+          -0.025,
+          -0.012
+        ]
+      ]
+    ],
+    "keepout_status": "Project design allowance only, not a manufacturer specification or verified plugged cable envelope; bend radius and unplugging access require final CAD review."
+  },
+  "mass_kg": 0.018,
+  "center_of_mass_m": [
+    -0.00029100243,
+    -0.0092403727,
+    -0.013121748
+  ],
+  "inertia_kg_m2": [
+    [
+      2.555525e-06,
+      -2.0247808e-08,
+      -1.1076849e-08
+    ],
+    [
+      -2.0247808e-08,
+      1.2711372e-06,
+      -2.2979973e-07
+    ],
+    [
+      -1.1076849e-08,
+      -2.2979973e-07,
+      2.2712629e-06
+    ]
+  ],
+  "inertia_reference": "About center of mass, expressed in source-frame axes; COM interpretation is inferred from physical consistency, since PDF table does not explicitly name tensor origin.",
+  "inertia_inference_check": {
+    "origin_interpretation_parallel_axis_xx_kg_m2": 4.636165647787367e-06,
+    "reported_xx_kg_m2": 2.555525e-06,
+    "result": "Subtracting the origin-to-COM shift under a horn-origin interpretation gives negative Ixx, which is physically impossible."
+  },
+  "sources": {
+    "drawing": {
+      "url": "https://www.robotis.com/service/download.php?no=1986",
+      "resolved_download_url": "https://www.dropbox.com/s/gxgye7wt5sbt4i4/XL,XC-330.pdf?dl=1",
+      "sha256": "948b707cb26a64501c03fc45b1a9557b69a554dd5d6934f02e8e6f86cf2b46c2",
+      "bytes": 149731,
+      "retrieved_date": "2026-09-04",
+      "scope": "X330 drawing dated 2020-05-28, reference only"
+    },
+    "step": {
+      "url": "https://www.robotis.com/service/download.php?no=1987",
+      "resolved_download_url": "https://www.dropbox.com/s/qlzmp8mlvzrxmzu/XL,XC-330.stp?dl=1",
+      "sha256": "e2f7b060801a1d6a21f23bca2554f29a402f7d73b8498cb201c9e6adf3139eb6",
+      "bytes": 791238,
+      "retrieved_date": "2026-09-04",
+      "scope": "Manufacturer reference dummy assembly, includes optional rear idler; not redistributed"
+    },
+    "mass_properties": {
+      "url": "https://www.robotis.com/service/download.php?no=2136",
+      "resolved_download_url": "https://www.dropbox.com/s/88jbmlyv8v1o73t/XL330%2CXC330%20Moment%20of%20Inertia.pdf?dl=1",
+      "sha256": "dacd173dfde3de78effa6ccb94baeea98edf378d63424aa3b26af81adc0c3df2",
+      "bytes": 137692,
+      "retrieved_date": "2026-09-04",
+      "scope": "Manufacturer reference mass properties released 2023-02; XL330-M288 row"
+    },
+    "optional_horn": {
+      "url": "https://www.robotis.com/service/download.php?no=2163",
+      "resolved_download_url": "https://www.dropbox.com/scl/fi/aw1bmzftsohk0iah1w9ue/HNX330-N101.pdf?rlkey=ega0yp5ufs5cc6p1fb2e8kabu&dl=1",
+      "sha256": "41b69529bcc290f8ee3e3d7ae1270c15cccffb39b2d2e5439cd6ae618b520a36",
+      "bytes": 196067,
+      "retrieved_date": "2026-09-04",
+      "scope": "HNX330-N101 aluminum replacement horn dated 2022-12-21; not used in baseline envelope"
+    },
+    "optional_bracket": {
+      "url": "https://www.robotis.com/service/download.php?no=2016",
+      "resolved_download_url": "https://www.dropbox.com/scl/fi/sh1c6jnlwfzivh3cou5b0/fpx330-h101.pdf?rlkey=d6q47aq7djfc0i3g6fd8nlknc&dl=1",
+      "sha256": "3a2fea7f8002adc2e7e76b3f170a72aec9309e2bf5f26ee63b769980c34e775a",
+      "bytes": 113037,
+      "retrieved_date": "2026-09-04",
+      "scope": "FPX330-H101 frame dated 2021-03-19; reference for support arrangement only"
+    }
+  },
+  "redistribution": "Original ROBOTIS PDF/STEP assets were inspected locally and are not redistributed. This file records factual dimensions, numerical properties, links and hashes.",
+  "step_to_source_frame": {
+    "rotation_matrix": [
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        1
+      ]
+    ],
+    "translation_m": [
+      0,
+      0,
+      -0.0065
+    ],
+    "note": "STEP assembly origin differs from the source frame drawn on the inertia sheet: horn front face is at STEP Z=+6.5mm."
+  }
+}

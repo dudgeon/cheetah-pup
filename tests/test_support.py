@@ -1,4 +1,5 @@
 """Check static balance independently of the robot model's geometry."""
+
 import numpy as np
 import pytest
 
@@ -27,7 +28,9 @@ def test_outside_support_triangle_is_rejected():
 
 
 def test_diagonal_support_requires_com_on_line():
-    np.testing.assert_allclose(solve_vertical_support([[1, 1], [-1, -1]], [0, 0], 12), [6, 6])
+    np.testing.assert_allclose(
+        solve_vertical_support([[1, 1], [-1, -1]], [0, 0], 12), [6, 6]
+    )
     assert solve_vertical_support([[1, 1], [-1, -1]], [0.1, 0], 12) is None
 
 

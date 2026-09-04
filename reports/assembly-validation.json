@@ -1,0 +1,748 @@
+{
+  "kind": "Manufacturer-anchored assembly-envelope audit; not manufacturing approval",
+  "config_sha256": "dd33c5482622efff164d2a07d5c68eb4f882d450b0fbcd53efcfdbeaf6da86a1",
+  "joint_shaft_alignment": [
+    {
+      "joint": "FL_hip_roll",
+      "axis_alignment_abs_cosine": 1.0,
+      "shaft_axis_offset_m": 0.0,
+      "physical_positive_to_joint_sign": 1
+    },
+    {
+      "joint": "FL_hip_pitch",
+      "axis_alignment_abs_cosine": 1.0000000000000002,
+      "shaft_axis_offset_m": 0.0,
+      "physical_positive_to_joint_sign": 1
+    },
+    {
+      "joint": "FL_knee",
+      "axis_alignment_abs_cosine": 1.0000000000000002,
+      "shaft_axis_offset_m": 0.0,
+      "physical_positive_to_joint_sign": 1
+    },
+    {
+      "joint": "FR_hip_roll",
+      "axis_alignment_abs_cosine": 1.0,
+      "shaft_axis_offset_m": 0.0,
+      "physical_positive_to_joint_sign": 1
+    },
+    {
+      "joint": "FR_hip_pitch",
+      "axis_alignment_abs_cosine": 1.0000000000000002,
+      "shaft_axis_offset_m": 0.0,
+      "physical_positive_to_joint_sign": -1
+    },
+    {
+      "joint": "FR_knee",
+      "axis_alignment_abs_cosine": 1.0000000000000002,
+      "shaft_axis_offset_m": 0.0,
+      "physical_positive_to_joint_sign": -1
+    },
+    {
+      "joint": "RL_hip_roll",
+      "axis_alignment_abs_cosine": 1.0,
+      "shaft_axis_offset_m": 0.0,
+      "physical_positive_to_joint_sign": -1
+    },
+    {
+      "joint": "RL_hip_pitch",
+      "axis_alignment_abs_cosine": 1.0000000000000002,
+      "shaft_axis_offset_m": 0.0,
+      "physical_positive_to_joint_sign": 1
+    },
+    {
+      "joint": "RL_knee",
+      "axis_alignment_abs_cosine": 1.0000000000000002,
+      "shaft_axis_offset_m": 0.0,
+      "physical_positive_to_joint_sign": 1
+    },
+    {
+      "joint": "RR_hip_roll",
+      "axis_alignment_abs_cosine": 1.0,
+      "shaft_axis_offset_m": 0.0,
+      "physical_positive_to_joint_sign": -1
+    },
+    {
+      "joint": "RR_hip_pitch",
+      "axis_alignment_abs_cosine": 1.0000000000000002,
+      "shaft_axis_offset_m": 0.0,
+      "physical_positive_to_joint_sign": -1
+    },
+    {
+      "joint": "RR_knee",
+      "axis_alignment_abs_cosine": 1.0000000000000002,
+      "shaft_axis_offset_m": 0.0,
+      "physical_positive_to_joint_sign": -1
+    }
+  ],
+  "alignment_pass": true,
+  "neutral": {
+    "poses_checked": 1,
+    "pairs_per_pose": 5235,
+    "minimum_motor_casing_separation_bound_m": 0.016999999999999994,
+    "solid_interference_pairs": 0,
+    "cable_allowance_interference_pairs": 0,
+    "worst_interferences": [],
+    "sampled_solid_clearance_pass": true,
+    "sampled_cable_allowance_pass": true
+  },
+  "prescribed_crawl": {
+    "poses_checked": 192,
+    "pairs_per_pose": 5235,
+    "minimum_motor_casing_separation_bound_m": 0.01644820704737622,
+    "solid_interference_pairs": 0,
+    "cable_allowance_interference_pairs": 0,
+    "worst_interferences": [],
+    "sampled_solid_clearance_pass": true,
+    "sampled_cable_allowance_pass": true
+  },
+  "rejected_original_crawl": {
+    "poses_checked": 96,
+    "pairs_per_pose": 5235,
+    "minimum_motor_casing_separation_bound_m": 0.00498380364072671,
+    "solid_interference_pairs": 6,
+    "cable_allowance_interference_pairs": 2,
+    "worst_interferences": [
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FR_knee_cheek_top",
+        "kind": "solid",
+        "signed_distance_m": -0.010059485949866817,
+        "pose_index": 57
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FL_knee_cheek_top",
+        "kind": "solid",
+        "signed_distance_m": -0.00976662581916689,
+        "pose_index": 26
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FL_knee_port_keepout_b",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.005556970711234028,
+        "pose_index": 9
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FL_knee_motor_envelope",
+        "kind": "solid",
+        "signed_distance_m": -0.004641788004207451,
+        "pose_index": 9
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FR_knee_port_keepout_a",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.0039171952794191285,
+        "pose_index": 57
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FR_knee_motor_envelope",
+        "kind": "solid",
+        "signed_distance_m": -0.0033709239432234937,
+        "pose_index": 57
+      },
+      {
+        "geom_a": "FR_roll_motor_envelope",
+        "geom_b": "FR_knee_cheek_top",
+        "kind": "solid",
+        "signed_distance_m": -0.0018356755321331589,
+        "pose_index": 55
+      },
+      {
+        "geom_a": "FL_roll_motor_envelope",
+        "geom_b": "FL_knee_cheek_top",
+        "kind": "solid",
+        "signed_distance_m": -0.0018142954260009121,
+        "pose_index": 27
+      }
+    ],
+    "sampled_solid_clearance_pass": false,
+    "sampled_cable_allowance_pass": false
+  },
+  "sampled_joint_box": {
+    "poses_checked": 96,
+    "pairs_per_pose": 5235,
+    "minimum_motor_casing_separation_bound_m": -0.014339474826938467,
+    "solid_interference_pairs": 54,
+    "cable_allowance_interference_pairs": 26,
+    "worst_interferences": [
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FL_knee_motor_envelope",
+        "kind": "solid",
+        "signed_distance_m": -0.020184365958264,
+        "pose_index": 53
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FR_knee_motor_envelope",
+        "kind": "solid",
+        "signed_distance_m": -0.018803207129651254,
+        "pose_index": 88
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "RR_knee_motor_envelope",
+        "kind": "solid",
+        "signed_distance_m": -0.01800302628889525,
+        "pose_index": 56
+      },
+      {
+        "geom_a": "RL_knee_motor_envelope",
+        "geom_b": "RR_knee_motor_envelope",
+        "kind": "solid",
+        "signed_distance_m": -0.014339474826938467,
+        "pose_index": 26
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FR_knee_cheek_bottom",
+        "kind": "solid",
+        "signed_distance_m": -0.013274173160253576,
+        "pose_index": 88
+      },
+      {
+        "geom_a": "RL_knee_port_keepout_b",
+        "geom_b": "RR_knee_motor_envelope",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.011576354856224162,
+        "pose_index": 53
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FL_knee_cheek_bottom",
+        "kind": "solid",
+        "signed_distance_m": -0.011520195027997426,
+        "pose_index": 53
+      },
+      {
+        "geom_a": "RL_knee_motor_envelope",
+        "geom_b": "RR_knee_port_keepout_a",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.011365214464100224,
+        "pose_index": 26
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "RL_knee_motor_envelope",
+        "kind": "solid",
+        "signed_distance_m": -0.011054430399678235,
+        "pose_index": 36
+      },
+      {
+        "geom_a": "RL_knee_port_keepout_a",
+        "geom_b": "RR_knee_motor_envelope",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.010652620629423494,
+        "pose_index": 26
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "RL_knee_port_keepout_a",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.010432781285331125,
+        "pose_index": 43
+      },
+      {
+        "geom_a": "RL_knee_motor_envelope",
+        "geom_b": "RR_knee_cheek_bottom",
+        "kind": "solid",
+        "signed_distance_m": -0.010331116772192832,
+        "pose_index": 26
+      },
+      {
+        "geom_a": "RL_knee_cheek_bottom",
+        "geom_b": "RR_knee_motor_envelope",
+        "kind": "solid",
+        "signed_distance_m": -0.01031302809454493,
+        "pose_index": 53
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FR_knee_cheek_top",
+        "kind": "solid",
+        "signed_distance_m": -0.010309055176268414,
+        "pose_index": 17
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FR_knee_port_keepout_a",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.010008072233428608,
+        "pose_index": 44
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FL_knee_cheek_top",
+        "kind": "solid",
+        "signed_distance_m": -0.009806222007529177,
+        "pose_index": 50
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "RR_knee_port_keepout_b",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.008794271224801512,
+        "pose_index": 68
+      },
+      {
+        "geom_a": "chassis_right_center_rail",
+        "geom_b": "FR_knee_motor_envelope",
+        "kind": "solid",
+        "signed_distance_m": -0.008788446605655687,
+        "pose_index": 88
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FL_knee_port_keepout_b",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.008573192900013918,
+        "pose_index": 62
+      },
+      {
+        "geom_a": "chassis_left_center_rail",
+        "geom_b": "FL_knee_motor_envelope",
+        "kind": "solid",
+        "signed_distance_m": -0.008425807022818858,
+        "pose_index": 53
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FL_knee_cheek_front",
+        "kind": "solid",
+        "signed_distance_m": -0.008159340407613142,
+        "pose_index": 53
+      },
+      {
+        "geom_a": "chassis_right_center_rail",
+        "geom_b": "FR_knee_cheek_bottom",
+        "kind": "solid",
+        "signed_distance_m": -0.007487090671031423,
+        "pose_index": 88
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FR_knee_cheek_front",
+        "kind": "solid",
+        "signed_distance_m": -0.007365096508708193,
+        "pose_index": 88
+      },
+      {
+        "geom_a": "FL_lower_bar",
+        "geom_b": "RL_foot_collision",
+        "kind": "solid",
+        "signed_distance_m": -0.0069963439645304,
+        "pose_index": 53
+      },
+      {
+        "geom_a": "FR_roll_port_keepout_a",
+        "geom_b": "RR_foot_collision",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.00690807225440092,
+        "pose_index": 4
+      },
+      {
+        "geom_a": "chassis_right_center_rail",
+        "geom_b": "RR_knee_motor_envelope",
+        "kind": "solid",
+        "signed_distance_m": -0.006897498882056964,
+        "pose_index": 56
+      },
+      {
+        "geom_a": "FL_knee_motor_envelope",
+        "geom_b": "RL_knee_motor_envelope",
+        "kind": "solid",
+        "signed_distance_m": -0.006861724734606202,
+        "pose_index": 36
+      },
+      {
+        "geom_a": "FR_knee_cheek_bottom",
+        "geom_b": "RR_knee_motor_envelope",
+        "kind": "solid",
+        "signed_distance_m": -0.0060288098727653075,
+        "pose_index": 9
+      },
+      {
+        "geom_a": "FL_knee_cheek_bottom",
+        "geom_b": "RL_knee_motor_envelope",
+        "kind": "solid",
+        "signed_distance_m": -0.005783749102534088,
+        "pose_index": 36
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "RR_knee_cheek_top",
+        "kind": "solid",
+        "signed_distance_m": -0.00576169286717053,
+        "pose_index": 56
+      },
+      {
+        "geom_a": "chassis_left_center_rail",
+        "geom_b": "FL_knee_cheek_bottom",
+        "kind": "solid",
+        "signed_distance_m": -0.005285196616484989,
+        "pose_index": 53
+      },
+      {
+        "geom_a": "FR_knee_port_keepout_a",
+        "geom_b": "RR_knee_motor_envelope",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.005200404175583123,
+        "pose_index": 9
+      },
+      {
+        "geom_a": "RL_knee_motor_envelope",
+        "geom_b": "RR_knee_port_keepout_b",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.004611468442730377,
+        "pose_index": 53
+      },
+      {
+        "geom_a": "chassis_left_center_rail",
+        "geom_b": "RL_knee_motor_envelope",
+        "kind": "solid",
+        "signed_distance_m": -0.0045851496846346235,
+        "pose_index": 43
+      },
+      {
+        "geom_a": "FR_knee_cheek_bottom",
+        "geom_b": "RR_knee_port_keepout_b",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.004535674769940328,
+        "pose_index": 76
+      },
+      {
+        "geom_a": "FL_knee_motor_envelope",
+        "geom_b": "RL_lower_bar",
+        "kind": "solid",
+        "signed_distance_m": -0.004520108055549112,
+        "pose_index": 36
+      },
+      {
+        "geom_a": "chassis_right_center_rail",
+        "geom_b": "FR_knee_port_keepout_a",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.0038456500722806857,
+        "pose_index": 88
+      },
+      {
+        "geom_a": "FR_knee_port_keepout_a",
+        "geom_b": "RR_foot_collision",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.003652369664794976,
+        "pose_index": 37
+      },
+      {
+        "geom_a": "chassis_left_center_rail",
+        "geom_b": "RL_knee_port_keepout_a",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.003585149684634633,
+        "pose_index": 43
+      },
+      {
+        "geom_a": "FL_knee_cheek_top",
+        "geom_b": "RL_foot_collision",
+        "kind": "solid",
+        "signed_distance_m": -0.003474967735216803,
+        "pose_index": 60
+      },
+      {
+        "geom_a": "RL_knee_motor_envelope",
+        "geom_b": "RR_knee_cheek_top",
+        "kind": "solid",
+        "signed_distance_m": -0.0033780168937387993,
+        "pose_index": 26
+      },
+      {
+        "geom_a": "RL_knee_motor_envelope",
+        "geom_b": "RR_knee_cheek_front",
+        "kind": "solid",
+        "signed_distance_m": -0.0033317220969904145,
+        "pose_index": 26
+      },
+      {
+        "geom_a": "FL_knee_cheek_bottom",
+        "geom_b": "RL_lower_bar",
+        "kind": "solid",
+        "signed_distance_m": -0.003306514433797268,
+        "pose_index": 36
+      },
+      {
+        "geom_a": "FL_knee_cheek_bottom",
+        "geom_b": "FR_knee_motor_envelope",
+        "kind": "solid",
+        "signed_distance_m": -0.0029205419240738023,
+        "pose_index": 38
+      },
+      {
+        "geom_a": "FR_knee_motor_envelope",
+        "geom_b": "RR_knee_motor_envelope",
+        "kind": "solid",
+        "signed_distance_m": -0.002711455530495975,
+        "pose_index": 9
+      },
+      {
+        "geom_a": "chassis_right_center_rail",
+        "geom_b": "RR_knee_port_keepout_b",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.0026666125278460764,
+        "pose_index": 56
+      },
+      {
+        "geom_a": "RL_knee_cheek_bottom",
+        "geom_b": "RR_knee_port_keepout_a",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.002602681003426442,
+        "pose_index": 26
+      },
+      {
+        "geom_a": "FL_roll_motor_envelope",
+        "geom_b": "FL_knee_cheek_top",
+        "kind": "solid",
+        "signed_distance_m": -0.0024215239504499185,
+        "pose_index": 50
+      },
+      {
+        "geom_a": "FR_lower_bar",
+        "geom_b": "RR_lower_bar",
+        "kind": "solid",
+        "signed_distance_m": -0.002293142568074928,
+        "pose_index": 76
+      },
+      {
+        "geom_a": "FR_roll_motor_envelope",
+        "geom_b": "FR_knee_cheek_top",
+        "kind": "solid",
+        "signed_distance_m": -0.0021661668748986715,
+        "pose_index": 71
+      },
+      {
+        "geom_a": "FL_knee_cheek_bottom",
+        "geom_b": "RL_knee_port_keepout_a",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.002057891088987176,
+        "pose_index": 81
+      },
+      {
+        "geom_a": "RL_knee_cheek_front",
+        "geom_b": "RR_knee_motor_envelope",
+        "kind": "solid",
+        "signed_distance_m": -0.001968371969173984,
+        "pose_index": 53
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FR_upper_bar",
+        "kind": "solid",
+        "signed_distance_m": -0.0019491076208919336,
+        "pose_index": 88
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FR_upper_bridge",
+        "kind": "solid",
+        "signed_distance_m": -0.0019491076208919336,
+        "pose_index": 88
+      },
+      {
+        "geom_a": "chassis_left_center_rail",
+        "geom_b": "FL_knee_port_keepout_b",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.0018897587917139618,
+        "pose_index": 53
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FL_knee_output_horn",
+        "kind": "solid",
+        "signed_distance_m": -0.001872577709145681,
+        "pose_index": 53
+      },
+      {
+        "geom_a": "chassis_left_center_rail",
+        "geom_b": "FL_knee_cheek_top",
+        "kind": "solid",
+        "signed_distance_m": -0.0018626700905764355,
+        "pose_index": 50
+      },
+      {
+        "geom_a": "RL_knee_cheek_bottom",
+        "geom_b": "RR_knee_port_keepout_b",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.0017683147370837204,
+        "pose_index": 53
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FL_upper_bar",
+        "kind": "solid",
+        "signed_distance_m": -0.00173837863449737,
+        "pose_index": 53
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FL_upper_bridge",
+        "kind": "solid",
+        "signed_distance_m": -0.0017383786344973631,
+        "pose_index": 53
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FL_knee_port_keepout_a",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.0015705794208949828,
+        "pose_index": 53
+      },
+      {
+        "geom_a": "chassis_right_center_rail",
+        "geom_b": "FR_knee_cheek_top",
+        "kind": "solid",
+        "signed_distance_m": -0.0014744897397001126,
+        "pose_index": 88
+      },
+      {
+        "geom_a": "FR_knee_motor_envelope",
+        "geom_b": "RR_lower_bar",
+        "kind": "solid",
+        "signed_distance_m": -0.0014306431229015384,
+        "pose_index": 7
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "RR_lower_bar",
+        "kind": "solid",
+        "signed_distance_m": -0.0014299019063226392,
+        "pose_index": 72
+      },
+      {
+        "geom_a": "FR_knee_motor_envelope",
+        "geom_b": "RR_knee_port_keepout_b",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.001189779244843904,
+        "pose_index": 76
+      },
+      {
+        "geom_a": "FL_knee_cheek_front",
+        "geom_b": "RL_lower_bar",
+        "kind": "solid",
+        "signed_distance_m": -0.0011215742889103437,
+        "pose_index": 60
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "RR_knee_output_horn",
+        "kind": "solid",
+        "signed_distance_m": -0.0009760607772346183,
+        "pose_index": 81
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "RR_upper_bar",
+        "kind": "solid",
+        "signed_distance_m": -0.0008116909388445614,
+        "pose_index": 56
+      },
+      {
+        "geom_a": "FR_roll_motor_envelope",
+        "geom_b": "RR_foot_collision",
+        "kind": "solid",
+        "signed_distance_m": -0.0007516899058609815,
+        "pose_index": 81
+      },
+      {
+        "geom_a": "FL_knee_motor_envelope",
+        "geom_b": "FR_knee_port_keepout_a",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.0005960797394912384,
+        "pose_index": 63
+      },
+      {
+        "geom_a": "FR_knee_cheek_bottom",
+        "geom_b": "RR_foot_collision",
+        "kind": "solid",
+        "signed_distance_m": -0.0005157800301209166,
+        "pose_index": 37
+      },
+      {
+        "geom_a": "FR_knee_motor_envelope",
+        "geom_b": "RR_knee_cheek_bottom",
+        "kind": "solid",
+        "signed_distance_m": -0.000493770309161392,
+        "pose_index": 9
+      },
+      {
+        "geom_a": "FL_knee_motor_envelope",
+        "geom_b": "FR_knee_motor_envelope",
+        "kind": "solid",
+        "signed_distance_m": -0.0003281889687354461,
+        "pose_index": 38
+      },
+      {
+        "geom_a": "FR_knee_cheek_top",
+        "geom_b": "RR_lower_bar",
+        "kind": "solid",
+        "signed_distance_m": -0.0002829150604855713,
+        "pose_index": 4
+      },
+      {
+        "geom_a": "FR_knee_port_keepout_a",
+        "geom_b": "RR_lower_bar",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.00027879499915923166,
+        "pose_index": 37
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FR_knee_port_keepout_b",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.0002742223399934702,
+        "pose_index": 88
+      },
+      {
+        "geom_a": "FL_roll_port_keepout_b",
+        "geom_b": "RL_foot_collision",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.00022764727366284942,
+        "pose_index": 43
+      },
+      {
+        "geom_a": "FL_roll_port_keepout_b",
+        "geom_b": "FL_knee_cheek_top",
+        "kind": "cable_allowance",
+        "signed_distance_m": -0.0002265851204907958,
+        "pose_index": 23
+      },
+      {
+        "geom_a": "chassis_bottom",
+        "geom_b": "FR_knee_output_horn",
+        "kind": "solid",
+        "signed_distance_m": -0.00018564474049698873,
+        "pose_index": 88
+      },
+      {
+        "geom_a": "FL_knee_cheek_top",
+        "geom_b": "RL_lower_bar",
+        "kind": "solid",
+        "signed_distance_m": -0.00017069369493239415,
+        "pose_index": 60
+      }
+    ],
+    "sampled_solid_clearance_pass": false,
+    "sampled_cable_allowance_pass": false
+  },
+  "workspace_seed": 330,
+  "penetration_tolerance_m": 1e-06,
+  "distance_method": "Independent15-axis SAT for box pairs; separated gaps are lower bounds, not Euclidean distances. Other shapes use MuJoCo narrow phase behind a sphere bound.",
+  "self_contacts": "Enabled, with explicit adjacent motor/link pairs; audit checks additional adjacent and welded housing pairs.",
+  "limits": [
+    "Casing boxes omit rounded corners and small recesses; may conservatively flag actual-clear areas.",
+    "Cable volumes are design allowances around STEP-verified bare socket locations, not mated-plug or flexible-wire CAD.",
+    "Printed cradles have socket slots, but fastener engagement, service access, support bearings and stiffness are not validated.",
+    "Random joint-box sampling is not a proof that every pose within rectangular joint limits is collision-free.",
+    "Reference servo mass is lumped on housing; horn/rotor mass motion is not split from it."
+  ]
+}

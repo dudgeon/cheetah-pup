@@ -4,17 +4,19 @@
 
 [MP4 version](crawl-gait.mp4)
 
-This is a prescribed inverse-kinematics demonstration on the current primitive
-robot. It is **not a learned policy, a dynamics rollout, or proof that the motors
+This is a prescribed inverse-kinematics demonstration on the refined assembly
+model. It is **not a learned policy, a dynamics rollout, or proof that the motors
 can execute this gait**. Playback timing is illustrative and deliberately slow.
 
 The cycle moves rear right → front right → rear left → front left. Before each
 step the torso shifts toward the support triangle's centroid; the modeled center
 of mass, including moving links, is used to refine that shift. The remaining three
 feet stay planted while the moving foot advances 20 mm and lifts up to 12 mm. All
-four feet remain down during the body-shift phase. The animation uses a 124 mm hip
-height for swing clearance; that is a demonstration choice, not a torque-optimized
-stance or a replacement for the baseline configuration.
+four feet remain down during the body-shift phase. The revised animation uses a 140 mm body-axis
+height and moves the COM only 25% of the way from the four-foot center toward
+the support triangle centroid. This clears the sampled assembly envelopes while
+reducing the original exaggerated shifts. The earlier 124 mm/full-shift version
+is retained as a rejected case in the assembly audit.
 
 The right-hand panel shows planted feet in green, the swinging foot in orange,
 and projected center of mass with a red cross. Its shaded polygon is the current
@@ -32,6 +34,8 @@ ffmpeg -y -i reports/crawl-gait.mp4 -filter_complex '[0:v]fps=12,scale=800:-1:fl
 
 Stance-foot locations are fixed in world coordinates. The camera follows average
 forward progress so the cycle can loop. The first cycle is discarded as warm-up;
-the displayed cycle is from the periodic footprint pattern. Static support checks
-do not establish acceleration, friction, actuator torque/speed, thermal limits,
-mechanical clearance, or carpet/threshold performance.
+the displayed cycle is from the periodic footprint pattern. The separate [assembly audit](assembly-validation.md) checks 192 sampled poses
+for solid and reserved-port interference. The [load and timing report](gait-load-validation.md)
+shows why this slow illustration cannot simply be sped up to the walking goal.
+It does not establish successful forward dynamics, loaded servo speed, thermals
+or carpet/threshold performance.

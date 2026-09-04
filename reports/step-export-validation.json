@@ -1,0 +1,79 @@
+{
+  "scope": "Original assembly envelope study; not manufacturing CAD, not a physics rollout.",
+  "pose": "MuJoCo stand keyframe",
+  "units": "millimeters",
+  "mujoco_version": "3.10.0",
+  "cadquery_ocp_version": "7.9.3.1.1",
+  "config_sha256": "32d3f57b43889be327cdb196419c7bcbba1373ef2e8acb6401949955130d9e94",
+  "generated_mjcf_sha256": "a3e9906838db174784bef5879096bea6ea8d1f237a15d6126a0de0b2140934e0",
+  "step_sha256": "6b8abc3d432afe223ed2a42ed2ac6becbcb04a4fda8ee85e34f3d3000332c6de",
+  "step_bytes": 1299989,
+  "part_count": 83,
+  "part_types": {
+    "box": 67,
+    "cylinder": 12,
+    "sphere": 4
+  },
+  "part_names_preserved_on_readback": true,
+  "all_solids_valid": true,
+  "bounds_min_xyz_max_xyz_mm": [
+    -133.35795378366797,
+    -68.0,
+    -4.183524637824121e-10,
+    93.99999999999999,
+    68.0,
+    156.55384413000002
+  ],
+  "size_xyz_mm": [
+    227.35795378366794,
+    136.0,
+    156.55384413041836
+  ],
+  "maximum_errors_before_export": {
+    "bounds_mm": 1.4210854715202004e-14,
+    "center_mm": 2.842170943040401e-14,
+    "relative_volume": 2.220446049250313e-15
+  },
+  "maximum_errors_after_step_readback": {
+    "bounds_mm": 9.632117325963918e-11,
+    "center_mm": 7.628386811120436e-11,
+    "relative_volume": 5.931033442152511e-12
+  },
+  "excluded_world_and_group5_geom_count": 25,
+  "excluded_geoms": [
+    "ground",
+    "FL_roll_port_keepout_a",
+    "FL_roll_port_keepout_b",
+    "FR_roll_port_keepout_a",
+    "FR_roll_port_keepout_b",
+    "RL_roll_port_keepout_a",
+    "RL_roll_port_keepout_b",
+    "RR_roll_port_keepout_a",
+    "RR_roll_port_keepout_b",
+    "FL_hip_port_keepout_a",
+    "FL_hip_port_keepout_b",
+    "FL_knee_port_keepout_a",
+    "FL_knee_port_keepout_b",
+    "FR_hip_port_keepout_a",
+    "FR_hip_port_keepout_b",
+    "FR_knee_port_keepout_a",
+    "FR_knee_port_keepout_b",
+    "RL_hip_port_keepout_a",
+    "RL_hip_port_keepout_b",
+    "RL_knee_port_keepout_a",
+    "RL_knee_port_keepout_b",
+    "RR_hip_port_keepout_a",
+    "RR_hip_port_keepout_b",
+    "RR_knee_port_keepout_a",
+    "RR_knee_port_keepout_b"
+  ],
+  "manufacturer_cad_copied": false,
+  "manufacturing_ready": false,
+  "limitations": [
+    "Mounting holes, screws, bearings, cable routing and tolerances are absent.",
+    "Electronics and battery solids are provisional package allowances.",
+    "STEP solids do not encode joint motion or servo reference mass properties.",
+    "Geometric agreement with MuJoCo does not validate hardware or actuator behavior."
+  ],
+  "reproduce": "uv run --locked --with cadquery-ocp==7.9.3.1.1 python scripts/export_assembly_step.py"
+}

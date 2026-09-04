@@ -1,10 +1,10 @@
 {
-  "name": "cheetah_pup_primitive_v0",
-  "status": "Original provisional geometry and estimated component masses; not manufacturing CAD or a validated actuator simulation.",
+  "name": "cheetah_pup_assembly_v1",
+  "status": "Original shaft-anchored assembly envelopes using manufacturer reference servo mass properties; not released manufacturing CAD or calibrated simulation.",
   "frame": "Body x forward, y left, z up; roll about +x, pitch and knee about +y; meters, kilograms, radians.",
   "geometry_m": {
-    "body_length": 0.16,
-    "body_width": 0.07,
+    "body_length": 0.112,
+    "body_width": 0.09,
     "body_height": 0.045,
     "hip_x": 0.06,
     "hip_y": 0.035,
@@ -14,19 +14,49 @@
     "lower_length": 0.075,
     "foot_radius": 0.008,
     "link_radius": 0.0045,
-    "servo_envelope": [0.02, 0.034, 0.026]
+    "servo_envelope": [
+      0.02,
+      0.034,
+      0.026
+    ],
+    "hip_fore_aft_offset": 0.024
   },
   "legs": {
-    "FL": {"front": 1, "side": 1},
-    "FR": {"front": 1, "side": -1},
-    "RL": {"front": -1, "side": 1},
-    "RR": {"front": -1, "side": -1}
+    "FL": {
+      "front": 1,
+      "side": 1
+    },
+    "FR": {
+      "front": 1,
+      "side": -1
+    },
+    "RL": {
+      "front": -1,
+      "side": 1
+    },
+    "RR": {
+      "front": -1,
+      "side": -1
+    }
   },
-  "home_q_rad": [0.0, 0.4, -0.8],
+  "home_q_rad": [
+    0.0,
+    0.4,
+    -0.8
+  ],
   "joint_limits_rad": {
-    "hip_roll": [-0.7, 0.7],
-    "hip_pitch": [-1.2, 1.2],
-    "knee": [-2.1, -0.1]
+    "hip_roll": [
+      -0.7,
+      0.7
+    ],
+    "hip_pitch": [
+      -1.2,
+      1.2
+    ],
+    "knee": [
+      -2.1,
+      -0.1
+    ]
   },
   "mass_kg": {
     "servo": 0.018,
@@ -52,7 +82,7 @@
     "lower_link": 4,
     "foot": 4
   },
-  "mass_notes": "Total 0.613 kg. Servo mass is the published XL330-M288-T 18 g value. All other entries are design allowances, not measured parts. Four roll motors are in the torso; four hip motors move with the roll brackets; four knee motors move with the upper links. Battery mass does not establish 10-15 minute runtime. Component inertias use simple envelopes, not measured CAD tensors.",
+  "mass_notes": "Total 0.613 kg remains a provisional budget. Twelve 18 g XL330 servo masses now use manufacturer reference COM/full tensors transformed into each parent frame, including knee casing tails below their shafts. Servo horn mass is lumped on housing parent; visible rotating horn is massless to avoid double counting. Printed-piece mass allowances distributed by envelope volume. Electronics/battery are size allowances, not selected parts.",
   "actuator": {
     "candidate": "ROBOTIS XL330-M288-T",
     "supply_v": 5.0,
@@ -62,17 +92,99 @@
     "kp_nm_per_rad": 1.5,
     "kv_nm_s_per_rad": 0.04,
     "joint_damping_nm_s_per_rad": 0.003,
-    "joint_armature_kg_m2": 0.000008,
+    "joint_armature_kg_m2": 8e-06,
     "notes": "The 0.10 Nm value is a manufacturer-estimated continuous figure, not a thermal guarantee. Gains, damping and armature are arbitrary screening settings, not an identified XL330 model or BAM. Published BAM voltage/controller compatibility is still an open gate; do not use this model for sim-to-real training claims."
   },
   "simulation": {
     "timestep_s": 0.002,
     "gravity_m_s2": 9.81,
-    "ground_friction": [0.8, 0.005, 0.0001],
-    "carpet_placeholder_friction": [1.0, 0.005, 0.0001],
+    "ground_friction": [
+      0.8,
+      0.005,
+      0.0001
+    ],
+    "carpet_placeholder_friction": [
+      1.0,
+      0.005,
+      0.0001
+    ],
     "threshold_height_m": 0.01,
     "threshold_center_x_m": 0.55,
     "threshold_depth_m": 0.08,
-    "notes": "Flat and carpet-placeholder surfaces are rigid planes. Friction values are assumptions. A threshold is a rigid 10 mm box. No measured carpet compliance or contact calibration. Robot self-collision is disabled: torso and links collide with terrain, motor envelopes are visual-only. Mechanical interference and collision-free joint workspace remain unvalidated."
+    "notes": "Original boxes/cylinders with robot self contacts enabled, plus explicit adjacent motor/body pairs. Assembly audit separately checks signed distances including adjacent bodies. Carpet remains a rigid friction placeholder. Fastener fit, cable bend radii, support bearings and compliance remain unvalidated."
+  },
+  "servo_reference": {
+    "model": "ROBOTIS XL330-M288-T",
+    "source_frame": {
+      "origin": "Center of stock output horn outer/front mounting face",
+      "handedness": "right",
+      "x": "Right when looking at the output horn, with casing long direction down",
+      "y": "Toward the short top end of the casing above the output shaft",
+      "z": "Outward from the output horn toward the viewer",
+      "joint_axis": [
+        0,
+        0,
+        1
+      ]
+    },
+    "case_size_m": [
+      0.02,
+      0.034,
+      0.023
+    ],
+    "case_center_m": [
+      0,
+      -0.0075,
+      -0.0145
+    ],
+    "stock_horn": {
+      "radius_m": 0.008,
+      "depth_m": 0.003,
+      "center_m": [
+        0,
+        0,
+        -0.0015
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "holes_count": 4,
+      "hole_diameter_m": 0.0016,
+      "hole_max_depth_m": 0.003,
+      "hole_pitch_circle_diameter_m": 0.012,
+      "attachment": "M2 tapping screws"
+    },
+    "mass_kg": 0.018,
+    "center_of_mass_m": [
+      -0.00029100243,
+      -0.0092403727,
+      -0.013121748
+    ],
+    "inertia_kg_m2": [
+      [
+        2.555525e-06,
+        -2.0247808e-08,
+        -1.1076849e-08
+      ],
+      [
+        -2.0247808e-08,
+        1.2711372e-06,
+        -2.2979973e-07
+      ],
+      [
+        -1.1076849e-08,
+        -2.2979973e-07,
+        2.2712629e-06
+      ]
+    ],
+    "inertia_reference": "About center of mass, expressed in source-frame axes; COM interpretation is inferred from physical consistency, since PDF table does not explicitly name tensor origin.",
+    "provenance": "reference/xl330/dimensions.json (manufacturer source URLs and hashes)"
+  },
+  "gait": {
+    "base_height_m": 0.14,
+    "notes": "Revised geometric demonstration: shallower stance and smaller COM shifts pass sampled clearance checks. Not a dynamically validated walking controller. Original0.124m/full-centroid gait is retained as an explicit rejected regression case.",
+    "support_shift_fraction": 0.25
   }
 }

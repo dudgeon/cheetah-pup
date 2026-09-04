@@ -4,11 +4,11 @@ Environment: MuJoCo 3.10.0, Python 3.12.13.
 
 This is an original parametric geometry model and load screen. It is not a trained walking robot, manufacturing CAD, or a calibrated digital twin.
 
-The model has **12 joints** and an estimated **613 g** component budget. The torso envelope is **160 × 70 × 45 mm**; that is not the full robot's exterior size.
+The diagnostic model has **12 joints** and an estimated **613 g** component budget. The central chassis envelope is **112 × 90 × 45 mm**; that is not the full robot's exterior size.
 
 ## Geometry checks
 
-Analytical forward kinematics were checked at 32 asymmetric poses on all four legs, including rotated/transformed floating bases. Maximum foot-position error: 8.33e-17 m. Jacobians agree with MuJoCo within 9.71e-17 m/rad and independent finite differences within 2.31e-11 m/rad.
+Analytical forward kinematics were checked at 32 asymmetric poses on all four legs, including rotated/transformed floating bases. Maximum foot-position error: 1.11e-16 m. Jacobians agree with MuJoCo within 9.71e-17 m/rad and independent finite differences within 2.31e-11 m/rad.
 
 ## Neutral-pose static load screen
 
@@ -16,7 +16,7 @@ Loads satisfy vertical force and roll/pitch moment balance. Equal sharing is not
 
 | Supports | Static equilibrium | Peak joint torque | Margin to 0.10 N·m estimate |
 |---|---|---:|---:|
-| four_feet | Yes | 0.0466 N·m | 2.15× |
+| four_feet | Yes | 0.0461 N·m | 2.17× |
 | three_feet_lift_FL | Yes | 0.0855 N·m | 1.17× |
 | three_feet_lift_FR | Yes | 0.0855 N·m | 1.17× |
 | three_feet_lift_RL | No; shift body or use dynamics | — | — |
@@ -42,8 +42,8 @@ A hypothetical 2S 650 mAh pack stores 4.81 Wh. At an assumed 80% usable energy a
 
 - **geometry implementation:** pass.
 - **motor selection:** open: conservative gait load, model provenance and budget must converge.
-- **realistic actuator physics:** not implemented: published BAM integration is next.
-- **manufacturing and self collision:** not assessed; primitive motor housings are visual-only.
+- **realistic actuator physics:** CPU published BAM adapter implemented separately; see actuator-validation.json; stock-5V calibration remains open.
+- **manufacturing and self collision:** sampled casing/cable clearance audited separately; see assembly-validation.json; detailed manufacturing design remains open.
 - **rl training:** not started.
 - **carpet and threshold traversal:** not demonstrated.
 - **battery runtime:** not demonstrated.

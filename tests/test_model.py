@@ -55,11 +55,13 @@ def _pose(model, config, seed, rotated):
     axis /= np.linalg.norm(axis)
     angle = 0.62 if rotated else 0.0
     quaternion = np.r_[np.cos(angle / 2), axis * np.sin(angle / 2)]
-    cross = np.array([
-        [0.0, -axis[2], axis[1]],
-        [axis[2], 0.0, -axis[0]],
-        [-axis[1], axis[0], 0.0],
-    ])
+    cross = np.array(
+        [
+            [0.0, -axis[2], axis[1]],
+            [axis[2], 0.0, -axis[0]],
+            [-axis[1], axis[0], 0.0],
+        ]
+    )
     rotation = (
         np.eye(3) * np.cos(angle)
         + (1 - np.cos(angle)) * np.outer(axis, axis)
@@ -70,8 +72,8 @@ def _pose(model, config, seed, rotated):
     free_id = model.body_jntadr[base_id]
     assert model.jnt_type[free_id] == mujoco.mjtJoint.mjJNT_FREE
     free_adr = model.jnt_qposadr[free_id]
-    data.qpos[free_adr:free_adr + 3] = base_pos
-    data.qpos[free_adr + 3:free_adr + 7] = quaternion
+    data.qpos[free_adr : free_adr + 3] = base_pos
+    data.qpos[free_adr + 3 : free_adr + 7] = quaternion
 
     limits = np.array([config["joint_limits_rad"][name] for name in JOINT_NAMES])
     rng = np.random.default_rng(seed)
@@ -90,12 +92,12 @@ def _pose(model, config, seed, rotated):
 def test_analytical_fk_matches_mujoco_all_legs(flat_model, config, seed, rotated):
     data, poses, base_pos, rotation = _pose(flat_model, config, seed, rotated)
     for leg, q in poses.items():
-        site_id = mujoco.mj_name2id(
-            flat_model, mujoco.mjtObj.mjOBJ_SITE, f"{leg}_foot"
-        )
+        site_id = mujoco.mj_name2id(flat_model, mujoco.mjtObj.mjOBJ_SITE, f"{leg}_foot")
         assert site_id >= 0
         expected = base_pos + rotation @ foot_position(config, leg, q)
-        np.testing.assert_allclose(data.site_xpos[site_id], expected, atol=1e-11, rtol=0)
+        np.testing.assert_allclose(
+            data.site_xpos[site_id], expected, atol=1e-11, rtol=0
+        )
 
 
 @pytest.mark.parametrize("seed", [19, 73, 211])
@@ -107,18 +109,19 @@ def test_leg_jacobians_match_finite_difference_and_mujoco(
     epsilon = 1e-7
     for leg, q in poses.items():
         analytic = leg_jacobian(config, leg, q)
-        finite_difference = np.column_stack([
-            (
-                foot_position(config, leg, q + step)
-                - foot_position(config, leg, q - step)
-            ) / (2 * epsilon)
-            for step in np.eye(3) * epsilon
-        ])
+        finite_difference = np.column_stack(
+            [
+                (
+                    foot_position(config, leg, q + step)
+                    - foot_position(config, leg, q - step)
+                )
+                / (2 * epsilon)
+                for step in np.eye(3) * epsilon
+            ]
+        )
         np.testing.assert_allclose(analytic, finite_difference, atol=2e-9, rtol=0)
 
-        site_id = mujoco.mj_name2id(
-            flat_model, mujoco.mjtObj.mjOBJ_SITE, f"{leg}_foot"
-        )
+        site_id = mujoco.mj_name2id(flat_model, mujoco.mjtObj.mjOBJ_SITE, f"{leg}_foot")
         assert site_id >= 0
         translation_jacobian = np.zeros((3, flat_model.nv))
         rotation_jacobian = np.zeros((3, flat_model.nv))
@@ -127,8 +130,10 @@ def test_leg_jacobians_match_finite_difference_and_mujoco(
         )
         joint_dofs = flat_model.jnt_dofadr[_joint_ids(flat_model, leg)]
         np.testing.assert_allclose(
-            translation_jacobian[:, joint_dofs], rotation @ analytic,
-            atol=1e-11, rtol=0,
+            translation_jacobian[:, joint_dofs],
+            rotation @ analytic,
+            atol=1e-11,
+            rtol=0,
         )
 
 
@@ -141,14 +146,14 @@ def test_left_right_mirror_in_body_frame(config, seed):
         np.testing.assert_allclose(
             foot_position(config, right, right_q),
             foot_position(config, left, left_q) * np.array([1, -1, 1]),
-            atol=1e-12, rtol=0,
+            atol=1e-12,
+            rtol=0,
         )
 
 
 def test_mass_budget_and_physical_inertias(flat_model, config):
     itemized_mass = sum(
-        mass * config["mass_counts"][name]
-        for name, mass in config["mass_kg"].items()
+        mass * config["mass_counts"][name] for name, mass in config["mass_kg"].items()
     )
     assert itemized_mass == pytest.approx(0.613, abs=1e-12)
     assert total_mass(config) == pytest.approx(itemized_mass, abs=1e-12)
@@ -172,7 +177,9 @@ def test_joint_names_order_and_limits(flat_model, config):
     assert flat_model.nq == 19
     assert flat_model.nv == 18
     assert np.all(flat_model.jnt_limited[hinge_ids])
-    expected_ranges = [config["joint_limits_rad"][joint] for _ in LEG_NAMES for joint in JOINT_NAMES]
+    expected_ranges = [
+        config["joint_limits_rad"][joint] for _ in LEG_NAMES for joint in JOINT_NAMES
+    ]
     np.testing.assert_allclose(flat_model.jnt_range[hinge_ids], expected_ranges)
 
 
@@ -198,13 +205,11 @@ def test_stand_foot_soles_align_flat_floor(flat_model, config):
     for leg in LEG_NAMES:
         joint_qpos = flat_model.jnt_qposadr[_joint_ids(flat_model, leg)]
         np.testing.assert_allclose(data.qpos[joint_qpos], config["home_q_rad"])
-        site_id = mujoco.mj_name2id(
-            flat_model, mujoco.mjtObj.mjOBJ_SITE, f"{leg}_foot"
-        )
+        site_id = mujoco.mj_name2id(flat_model, mujoco.mjtObj.mjOBJ_SITE, f"{leg}_foot")
         assert site_id >= 0
-        assert data.site_xpos[site_id, 2] - config["geometry_m"]["foot_radius"] == pytest.approx(
-            0.0, abs=1e-11
-        )
+        assert data.site_xpos[site_id, 2] - config["geometry_m"][
+            "foot_radius"
+        ] == pytest.approx(0.0, abs=1e-11)
     world_planes = np.flatnonzero(
         (flat_model.geom_bodyid == 0)
         & (flat_model.geom_type == mujoco.mjtGeom.mjGEOM_PLANE)

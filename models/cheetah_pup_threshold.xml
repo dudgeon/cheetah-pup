@@ -1,5 +1,5 @@
-<mujoco model="cheetah_pup_primitive_v0">
-  <!-- Original primitive geometry. Ideal PD only; no BAM or hardware validation. -->
+<mujoco model="cheetah_pup_assembly_v1">
+  <!-- Original shaft-anchored assembly envelopes. Ideal PD diagnostic XML; BAM adapter is separate. -->
   <compiler angle="radian" autolimits="true" inertiafromgeom="false" />
   <option timestep="0.002" integrator="implicitfast" gravity="0 0 -9.81" />
   <visual>
@@ -8,7 +8,7 @@
   </visual>
   <default>
     <joint type="hinge" limited="true" damping="0.003" armature="8e-06" />
-    <geom contype="1" conaffinity="2" condim="3" friction="0.8 0.005 0.0001" />
+    <geom contype="1" conaffinity="3" condim="3" friction="0.8 0.005 0.0001" />
   </default>
   <worldbody>
     <geom name="ground" type="plane" size="2 2 0.1" contype="2" conaffinity="1" friction="0.8 0.005 0.0001" rgba="0.83 0.85 0.86 1" />
@@ -16,28 +16,61 @@
     <geom name="threshold" type="box" pos="0.55 0 0.005" size="0.04 0.4 0.005" contype="2" conaffinity="1" rgba="0.6 0.35 0.15 1" />
     <body name="base" pos="0 0 0.14155384413">
       <freejoint name="floating_base" />
-      <geom name="FL_roll_motor_envelope" type="box" pos="0.06 0.018 0" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
-      <geom name="FR_roll_motor_envelope" type="box" pos="0.06 -0.018 0" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
-      <geom name="RL_roll_motor_envelope" type="box" pos="-0.06 0.018 0" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
-      <geom name="RR_roll_motor_envelope" type="box" pos="-0.06 -0.018 0" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
-      <inertial mass="0.353" pos="0.000354107648725 0 0.00070821529745" fullinertia="0.000133897946176 0.000612050099386 0.000669725986544 0 -1.16147308782e-06 0" />
-      <geom name="torso_collision" type="box" size="0.08 0.035 0.0225" rgba="0.15 0.28 0.39 0.65" />
+      <geom name="chassis_top" type="box" pos="0.0 0.0 0.013499999999999998" rgba="0.20 0.47 0.61 1" group="0" size="0.056 0.045 0.0015" />
+      <geom name="chassis_bottom" type="box" pos="0.0 0.0 -0.028499999999999998" rgba="0.20 0.47 0.61 1" group="0" size="0.056 0.045 0.0015" />
+      <geom name="chassis_left_center_rail" type="box" pos="0.0 0.021 -0.0075" rgba="0.20 0.47 0.61 1" group="0" size="0.031 0.0015 0.0195" />
+      <geom name="chassis_left_front_post" type="box" pos="0.0525 0.021 -0.0075" rgba="0.20 0.47 0.61 1" group="0" size="0.0035 0.0015 0.0195" />
+      <geom name="chassis_left_rear_post" type="box" pos="-0.0525 0.021 -0.0075" rgba="0.20 0.47 0.61 1" group="0" size="0.0035 0.0015 0.0195" />
+      <geom name="chassis_right_center_rail" type="box" pos="0.0 -0.021 -0.0075" rgba="0.20 0.47 0.61 1" group="0" size="0.031 0.0015 0.0195" />
+      <geom name="chassis_right_front_post" type="box" pos="0.0525 -0.021 -0.0075" rgba="0.20 0.47 0.61 1" group="0" size="0.0035 0.0015 0.0195" />
+      <geom name="chassis_right_rear_post" type="box" pos="-0.0525 -0.021 -0.0075" rgba="0.20 0.47 0.61 1" group="0" size="0.0035 0.0015 0.0195" />
+      <geom name="battery_allowance" type="box" pos="0.0 0.0 -0.012" rgba="0.25 0.31 0.35 1" group="0" size="0.03 0.013 0.012" />
+      <geom name="compute_allowance" type="box" pos="0.025 0.0 0.006" rgba="0.21 0.44 0.31 1" group="0" size="0.0225 0.013 0.004" />
+      <geom name="electronics_allowance" type="box" pos="-0.025 0.0 0.006" rgba="0.21 0.44 0.31 1" group="0" size="0.015 0.013 0.004" />
+      <geom name="FL_roll_motor_envelope" type="box" pos="0.0455 0.035 -0.0075" rgba="0.12 0.14 0.16 1" group="0" size="0.0115 0.01 0.017" />
+      <geom name="FL_roll_port_keepout_a" type="box" pos="0.041499999999999995 0.020000000000000004 -0.009" rgba="0.65 0.35 0.73 0.25" group="5" size="0.0065 0.005 0.006" contype="0" conaffinity="0" />
+      <geom name="FL_roll_port_keepout_b" type="box" pos="0.041499999999999995 0.05 -0.009" rgba="0.65 0.35 0.73 0.25" group="5" size="0.0065 0.005 0.006" contype="0" conaffinity="0" />
+      <geom name="FR_roll_motor_envelope" type="box" pos="0.0455 -0.035 -0.0075" rgba="0.12 0.14 0.16 1" group="0" size="0.0115 0.01 0.017" />
+      <geom name="FR_roll_port_keepout_a" type="box" pos="0.041499999999999995 -0.05 -0.009" rgba="0.65 0.35 0.73 0.25" group="5" size="0.0065 0.005 0.006" contype="0" conaffinity="0" />
+      <geom name="FR_roll_port_keepout_b" type="box" pos="0.041499999999999995 -0.020000000000000004 -0.009" rgba="0.65 0.35 0.73 0.25" group="5" size="0.0065 0.005 0.006" contype="0" conaffinity="0" />
+      <geom name="RL_roll_motor_envelope" type="box" pos="-0.0455 0.035 -0.0075" rgba="0.12 0.14 0.16 1" group="0" size="0.0115 0.01 0.017" />
+      <geom name="RL_roll_port_keepout_a" type="box" pos="-0.041499999999999995 0.05 -0.009" rgba="0.65 0.35 0.73 0.25" group="5" size="0.0065 0.005 0.006" contype="0" conaffinity="0" />
+      <geom name="RL_roll_port_keepout_b" type="box" pos="-0.041499999999999995 0.020000000000000004 -0.009" rgba="0.65 0.35 0.73 0.25" group="5" size="0.0065 0.005 0.006" contype="0" conaffinity="0" />
+      <geom name="RR_roll_motor_envelope" type="box" pos="-0.0455 -0.035 -0.0075" rgba="0.12 0.14 0.16 1" group="0" size="0.0115 0.01 0.017" />
+      <geom name="RR_roll_port_keepout_a" type="box" pos="-0.041499999999999995 -0.020000000000000004 -0.009" rgba="0.65 0.35 0.73 0.25" group="5" size="0.0065 0.005 0.006" contype="0" conaffinity="0" />
+      <geom name="RR_roll_port_keepout_b" type="box" pos="-0.041499999999999995 -0.05 -0.009" rgba="0.65 0.35 0.73 0.25" group="5" size="0.0065 0.005 0.006" contype="0" conaffinity="0" />
+      <inertial mass="0.353" pos="0.000354107648725 0 -0.00626149244873" fullinertia="0.000229030997878 0.00041502124359 0.000520686349457 9.37893941723e-07 -1.53268655609e-06 0" />
       <site name="imu" pos="0 0 0" size="0.003" rgba="1 0.4 0 1" />
       <camera name="follow" mode="trackcom" pos="0.38 -0.43 0.24" xyaxes="0.75 0.66 0 -0.26 0.30 0.92" />
       <body name="FL_roll_link" pos="0.06 0.035 0">
         <joint name="FL_hip_roll" axis="1 0 0" range="-0.7 0.7" />
-        <inertial mass="0.022" pos="0 0.0227272727273 0" fullinertia="3.5156969697e-06 1.71e-06 3.1016969697e-06 0 0 0" />
-        <geom name="FL_roll_bar" type="capsule" fromto="0 0 0 0 0.025 0" size="0.006" rgba="0.8 0.45 0.12 1" />
-        <geom name="FL_hip_motor_envelope" type="box" pos="0 0.025 0" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
-        <body name="FL_upper_link" pos="0 0.025 0">
+        <geom name="FL_roll_horn_spacer" type="box" pos="0.0015 0.0 0.0" rgba="0.82 0.46 0.15 1" group="0" size="0.0015 0.008 0.008" />
+        <geom name="FL_roll_bridge" type="box" pos="0.007 0.0 0.006" rgba="0.82 0.46 0.15 1" group="0" size="0.004 0.003 0.003" />
+        <geom name="FL_roll_cheek_top" type="box" pos="0.0125 0.0105 0.00375" rgba="0.82 0.46 0.15 1" group="0" size="0.0015 0.0115 0.00575" />
+        <geom name="FL_roll_cheek_bottom" type="box" pos="0.0125 0.0105 -0.02025" rgba="0.82 0.46 0.15 1" group="0" size="0.0015 0.0115 0.00425" />
+        <geom name="FL_roll_cheek_front" type="box" pos="0.0125 0.018000000000000002 -0.009" rgba="0.82 0.46 0.15 1" group="0" size="0.0015 0.004 0.007" />
+        <geom name="FL_hip_motor_envelope" type="box" pos="0.024 0.0105 -0.0075" rgba="0.12 0.14 0.16 1" group="0" size="0.01 0.0115 0.017" />
+        <geom name="FL_roll_output_horn" type="cylinder" rgba="0.72 0.75 0.77 1" group="0" fromto="-0.003 0.0 0.0 0.0 0.0 0.0" size="0.008" />
+        <geom name="FL_hip_port_keepout_a" type="box" pos="0.039 0.006500000000000002 -0.009" rgba="0.65 0.35 0.73 0.25" group="5" size="0.005 0.0065 0.006" contype="0" conaffinity="0" />
+        <geom name="FL_hip_port_keepout_b" type="box" pos="0.009000000000000001 0.006500000000000002 -0.009" rgba="0.65 0.35 0.73 0.25" group="5" size="0.005 0.0065 0.006" contype="0" conaffinity="0" />
+        <inertial mass="0.022" pos="0.0214891751484 0.0110656772562 -0.00822913610519" fullinertia="3.40822247721e-06 3.6626300734e-06 2.48517706661e-06 -3.21571276726e-07 3.67711512067e-07 -4.40612932327e-08" />
+        <body name="FL_upper_link" pos="0.024 0.025 0">
           <joint name="FL_hip_pitch" axis="0 1 0" range="-1.2 1.2" />
-          <inertial mass="0.03" pos="0 0 -0.056" fullinertia="1.6549e-05 1.5415e-05 2.496e-06 0 0 0" />
-          <geom name="FL_upper_bar" type="capsule" fromto="0 0 0 0 0 -0.07" size="0.0045" rgba="0.2 0.47 0.61 1" />
-          <geom name="FL_knee_motor_envelope" type="box" pos="0 0 -0.07" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
+          <geom name="FL_upper_bar" type="box" pos="0.0 0.0015 -0.027500000000000004" rgba="0.20 0.47 0.61 1" group="0" size="0.004 0.0015 0.027500000000000004" />
+          <geom name="FL_upper_bridge" type="box" pos="-0.00575 0.0015 -0.05500000000000001" rgba="0.20 0.47 0.61 1" group="0" size="0.00575 0.0015 0.0015" />
+          <geom name="FL_knee_cheek_top" type="box" pos="-0.0115 -0.0115 -0.063" rgba="0.20 0.47 0.61 1" group="0" size="0.0015 0.0145 0.01" />
+          <geom name="FL_knee_cheek_bottom" type="box" pos="-0.0115 -0.0115 -0.09050000000000001" rgba="0.20 0.47 0.61 1" group="0" size="0.0015 0.0145 0.0055" />
+          <geom name="FL_knee_cheek_front" type="box" pos="-0.0115 -0.004 -0.079" rgba="0.20 0.47 0.61 1" group="0" size="0.0015 0.007 0.006" />
+          <geom name="FL_knee_motor_envelope" type="box" pos="0.0 -0.0145 -0.07750000000000001" rgba="0.12 0.14 0.16 1" group="0" size="0.01 0.0115 0.017" />
+          <geom name="FL_hip_output_horn" type="cylinder" rgba="0.72 0.75 0.77 1" group="0" fromto="0.0 -0.003 0.0 0.0 0.0 0.0" size="0.008" />
+          <geom name="FL_knee_port_keepout_a" type="box" pos="0.015 -0.0185 -0.079" rgba="0.65 0.35 0.73 0.25" group="5" size="0.005 0.0065 0.006" contype="0" conaffinity="0" />
+          <geom name="FL_knee_port_keepout_b" type="box" pos="-0.015 -0.0185 -0.079" rgba="0.65 0.35 0.73 0.25" group="5" size="0.005 0.0065 0.006" contype="0" conaffinity="0" />
+          <inertial mass="0.03" pos="-0.00306091589523 -0.0105454458159 -0.0715932667598" fullinertia="1.39216344542e-05 1.32602270516e-05 3.35884136866e-06 6.4792130985e-08 -1.19212742916e-07 -2.40170136229e-06" />
           <body name="FL_lower_link" pos="0 0 -0.07">
             <joint name="FL_knee" axis="0 1 0" range="-2.1 -0.1" />
-            <inertial mass="0.013" pos="0 0 -0.0461538461538" fullinertia="8.07699230769e-06 8.07699230769e-06 2.118e-07 0 0 0" />
-            <geom name="FL_lower_bar" type="capsule" fromto="0 0 0 0 0 -0.075" size="0.0045" rgba="0.2 0.47 0.61 1" />
+            <geom name="FL_lower_bar" type="box" pos="0.0 0.0015 -0.0375" rgba="0.20 0.47 0.61 1" group="0" size="0.004 0.0015 0.0375" />
+            <geom name="FL_knee_output_horn" type="cylinder" rgba="0.72 0.75 0.77 1" group="0" fromto="0.0 -0.003 0.0 0.0 0.0 0.0" size="0.008" />
+            <inertial mass="0.013" pos="0 0.00115384615385 -0.0461538461538" fullinertia="8.02218461538e-06 8.06282564103e-06 1.42825641026e-07 0 0 -1.29807692308e-07" />
             <geom name="FL_foot_collision" type="sphere" pos="0 0 -0.075" size="0.008" rgba="0.08 0.08 0.08 1" />
             <site name="FL_foot" pos="0 0 -0.075" size="0.002" rgba="1 0.2 0.1 1" />
           </body>
@@ -45,18 +78,33 @@
       </body>
       <body name="FR_roll_link" pos="0.06 -0.035 0">
         <joint name="FR_hip_roll" axis="1 0 0" range="-0.7 0.7" />
-        <inertial mass="0.022" pos="0 -0.0227272727273 0" fullinertia="3.5156969697e-06 1.71e-06 3.1016969697e-06 0 0 0" />
-        <geom name="FR_roll_bar" type="capsule" fromto="0 0 0 0 -0.025 0" size="0.006" rgba="0.8 0.45 0.12 1" />
-        <geom name="FR_hip_motor_envelope" type="box" pos="0 -0.025 0" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
-        <body name="FR_upper_link" pos="0 -0.025 0">
+        <geom name="FR_roll_horn_spacer" type="box" pos="0.0015 0.0 0.0" rgba="0.82 0.46 0.15 1" group="0" size="0.0015 0.008 0.008" />
+        <geom name="FR_roll_bridge" type="box" pos="0.007 0.0 0.006" rgba="0.82 0.46 0.15 1" group="0" size="0.004 0.003 0.003" />
+        <geom name="FR_roll_cheek_top" type="box" pos="0.0125 -0.0105 0.00375" rgba="0.82 0.46 0.15 1" group="0" size="0.0015 0.0115 0.00575" />
+        <geom name="FR_roll_cheek_bottom" type="box" pos="0.0125 -0.0105 -0.02025" rgba="0.82 0.46 0.15 1" group="0" size="0.0015 0.0115 0.00425" />
+        <geom name="FR_roll_cheek_front" type="box" pos="0.0125 -0.018000000000000002 -0.009" rgba="0.82 0.46 0.15 1" group="0" size="0.0015 0.004 0.007" />
+        <geom name="FR_hip_motor_envelope" type="box" pos="0.024 -0.0105 -0.0075" rgba="0.12 0.14 0.16 1" group="0" size="0.01 0.0115 0.017" />
+        <geom name="FR_roll_output_horn" type="cylinder" rgba="0.72 0.75 0.77 1" group="0" fromto="-0.003 0.0 0.0 0.0 0.0 0.0" size="0.008" />
+        <geom name="FR_hip_port_keepout_a" type="box" pos="0.009000000000000001 -0.006500000000000002 -0.009" rgba="0.65 0.35 0.73 0.25" group="5" size="0.005 0.0065 0.006" contype="0" conaffinity="0" />
+        <geom name="FR_hip_port_keepout_b" type="box" pos="0.039 -0.006500000000000002 -0.009" rgba="0.65 0.35 0.73 0.25" group="5" size="0.005 0.0065 0.006" contype="0" conaffinity="0" />
+        <inertial mass="0.022" pos="0.0210129893538 -0.0110656772562 -0.00822913610519" fullinertia="3.40822247721e-06 3.60503426777e-06 2.42758126098e-06 3.35212370626e-07 3.16622093037e-07 4.40612932327e-08" />
+        <body name="FR_upper_link" pos="0.024 -0.025 0">
           <joint name="FR_hip_pitch" axis="0 1 0" range="-1.2 1.2" />
-          <inertial mass="0.03" pos="0 0 -0.056" fullinertia="1.6549e-05 1.5415e-05 2.496e-06 0 0 0" />
-          <geom name="FR_upper_bar" type="capsule" fromto="0 0 0 0 0 -0.07" size="0.0045" rgba="0.2 0.47 0.61 1" />
-          <geom name="FR_knee_motor_envelope" type="box" pos="0 0 -0.07" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
+          <geom name="FR_upper_bar" type="box" pos="0.0 -0.0015 -0.027500000000000004" rgba="0.20 0.47 0.61 1" group="0" size="0.004 0.0015 0.027500000000000004" />
+          <geom name="FR_upper_bridge" type="box" pos="-0.00575 -0.0015 -0.05500000000000001" rgba="0.20 0.47 0.61 1" group="0" size="0.00575 0.0015 0.0015" />
+          <geom name="FR_knee_cheek_top" type="box" pos="-0.0115 0.0115 -0.063" rgba="0.20 0.47 0.61 1" group="0" size="0.0015 0.0145 0.01" />
+          <geom name="FR_knee_cheek_bottom" type="box" pos="-0.0115 0.0115 -0.09050000000000001" rgba="0.20 0.47 0.61 1" group="0" size="0.0015 0.0145 0.0055" />
+          <geom name="FR_knee_cheek_front" type="box" pos="-0.0115 0.004 -0.079" rgba="0.20 0.47 0.61 1" group="0" size="0.0015 0.007 0.006" />
+          <geom name="FR_knee_motor_envelope" type="box" pos="0.0 0.0145 -0.07750000000000001" rgba="0.12 0.14 0.16 1" group="0" size="0.01 0.0115 0.017" />
+          <geom name="FR_hip_output_horn" type="cylinder" rgba="0.72 0.75 0.77 1" group="0" fromto="0.0 0.003 0.0 0.0 0.0 0.0" size="0.008" />
+          <geom name="FR_knee_port_keepout_a" type="box" pos="-0.015 0.0185 -0.079" rgba="0.65 0.35 0.73 0.25" group="5" size="0.005 0.0065 0.006" contype="0" conaffinity="0" />
+          <geom name="FR_knee_port_keepout_b" type="box" pos="0.015 0.0185 -0.079" rgba="0.65 0.35 0.73 0.25" group="5" size="0.005 0.0065 0.006" contype="0" conaffinity="0" />
+          <inertial mass="0.03" pos="-0.00341011881123 0.0105454458159 -0.0715932667598" fullinertia="1.39216344542e-05 1.31924359259e-05 3.29105024299e-06 -1.56488659294e-08 -2.39820109714e-07 2.40170136229e-06" />
           <body name="FR_lower_link" pos="0 0 -0.07">
             <joint name="FR_knee" axis="0 1 0" range="-2.1 -0.1" />
-            <inertial mass="0.013" pos="0 0 -0.0461538461538" fullinertia="8.07699230769e-06 8.07699230769e-06 2.118e-07 0 0 0" />
-            <geom name="FR_lower_bar" type="capsule" fromto="0 0 0 0 0 -0.075" size="0.0045" rgba="0.2 0.47 0.61 1" />
+            <geom name="FR_lower_bar" type="box" pos="0.0 -0.0015 -0.0375" rgba="0.20 0.47 0.61 1" group="0" size="0.004 0.0015 0.0375" />
+            <geom name="FR_knee_output_horn" type="cylinder" rgba="0.72 0.75 0.77 1" group="0" fromto="0.0 0.003 0.0 0.0 0.0 0.0" size="0.008" />
+            <inertial mass="0.013" pos="0 -0.00115384615385 -0.0461538461538" fullinertia="8.02218461538e-06 8.06282564103e-06 1.42825641026e-07 0 0 1.29807692308e-07" />
             <geom name="FR_foot_collision" type="sphere" pos="0 0 -0.075" size="0.008" rgba="0.08 0.08 0.08 1" />
             <site name="FR_foot" pos="0 0 -0.075" size="0.002" rgba="1 0.2 0.1 1" />
           </body>
@@ -64,18 +112,33 @@
       </body>
       <body name="RL_roll_link" pos="-0.06 0.035 0">
         <joint name="RL_hip_roll" axis="1 0 0" range="-0.7 0.7" />
-        <inertial mass="0.022" pos="0 0.0227272727273 0" fullinertia="3.5156969697e-06 1.71e-06 3.1016969697e-06 0 0 0" />
-        <geom name="RL_roll_bar" type="capsule" fromto="0 0 0 0 0.025 0" size="0.006" rgba="0.8 0.45 0.12 1" />
-        <geom name="RL_hip_motor_envelope" type="box" pos="0 0.025 0" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
-        <body name="RL_upper_link" pos="0 0.025 0">
+        <geom name="RL_roll_horn_spacer" type="box" pos="-0.0015 0.0 0.0" rgba="0.82 0.46 0.15 1" group="0" size="0.0015 0.008 0.008" />
+        <geom name="RL_roll_bridge" type="box" pos="-0.007 0.0 0.006" rgba="0.82 0.46 0.15 1" group="0" size="0.004 0.003 0.003" />
+        <geom name="RL_roll_cheek_top" type="box" pos="-0.0125 0.0105 0.00375" rgba="0.82 0.46 0.15 1" group="0" size="0.0015 0.0115 0.00575" />
+        <geom name="RL_roll_cheek_bottom" type="box" pos="-0.0125 0.0105 -0.02025" rgba="0.82 0.46 0.15 1" group="0" size="0.0015 0.0115 0.00425" />
+        <geom name="RL_roll_cheek_front" type="box" pos="-0.0125 0.018000000000000002 -0.009" rgba="0.82 0.46 0.15 1" group="0" size="0.0015 0.004 0.007" />
+        <geom name="RL_hip_motor_envelope" type="box" pos="-0.024 0.0105 -0.0075" rgba="0.12 0.14 0.16 1" group="0" size="0.01 0.0115 0.017" />
+        <geom name="RL_roll_output_horn" type="cylinder" rgba="0.72 0.75 0.77 1" group="0" fromto="0.003 0.0 0.0 0.0 0.0 0.0" size="0.008" />
+        <geom name="RL_hip_port_keepout_a" type="box" pos="-0.009000000000000001 0.006500000000000002 -0.009" rgba="0.65 0.35 0.73 0.25" group="5" size="0.005 0.0065 0.006" contype="0" conaffinity="0" />
+        <geom name="RL_hip_port_keepout_b" type="box" pos="-0.039 0.006500000000000002 -0.009" rgba="0.65 0.35 0.73 0.25" group="5" size="0.005 0.0065 0.006" contype="0" conaffinity="0" />
+        <inertial mass="0.022" pos="-0.0210129893538 0.0110656772562 -0.00822913610519" fullinertia="3.40822247721e-06 3.60503426777e-06 2.42758126098e-06 3.35212370626e-07 -3.16622093037e-07 -4.40612932327e-08" />
+        <body name="RL_upper_link" pos="-0.024 0.025 0">
           <joint name="RL_hip_pitch" axis="0 1 0" range="-1.2 1.2" />
-          <inertial mass="0.03" pos="0 0 -0.056" fullinertia="1.6549e-05 1.5415e-05 2.496e-06 0 0 0" />
-          <geom name="RL_upper_bar" type="capsule" fromto="0 0 0 0 0 -0.07" size="0.0045" rgba="0.2 0.47 0.61 1" />
-          <geom name="RL_knee_motor_envelope" type="box" pos="0 0 -0.07" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
+          <geom name="RL_upper_bar" type="box" pos="0.0 0.0015 -0.027500000000000004" rgba="0.20 0.47 0.61 1" group="0" size="0.004 0.0015 0.027500000000000004" />
+          <geom name="RL_upper_bridge" type="box" pos="-0.00575 0.0015 -0.05500000000000001" rgba="0.20 0.47 0.61 1" group="0" size="0.00575 0.0015 0.0015" />
+          <geom name="RL_knee_cheek_top" type="box" pos="-0.0115 -0.0115 -0.063" rgba="0.20 0.47 0.61 1" group="0" size="0.0015 0.0145 0.01" />
+          <geom name="RL_knee_cheek_bottom" type="box" pos="-0.0115 -0.0115 -0.09050000000000001" rgba="0.20 0.47 0.61 1" group="0" size="0.0015 0.0145 0.0055" />
+          <geom name="RL_knee_cheek_front" type="box" pos="-0.0115 -0.004 -0.079" rgba="0.20 0.47 0.61 1" group="0" size="0.0015 0.007 0.006" />
+          <geom name="RL_knee_motor_envelope" type="box" pos="0.0 -0.0145 -0.07750000000000001" rgba="0.12 0.14 0.16 1" group="0" size="0.01 0.0115 0.017" />
+          <geom name="RL_hip_output_horn" type="cylinder" rgba="0.72 0.75 0.77 1" group="0" fromto="0.0 -0.003 0.0 0.0 0.0 0.0" size="0.008" />
+          <geom name="RL_knee_port_keepout_a" type="box" pos="0.015 -0.0185 -0.079" rgba="0.65 0.35 0.73 0.25" group="5" size="0.005 0.0065 0.006" contype="0" conaffinity="0" />
+          <geom name="RL_knee_port_keepout_b" type="box" pos="-0.015 -0.0185 -0.079" rgba="0.65 0.35 0.73 0.25" group="5" size="0.005 0.0065 0.006" contype="0" conaffinity="0" />
+          <inertial mass="0.03" pos="-0.00306091589523 -0.0105454458159 -0.0715932667598" fullinertia="1.39216344542e-05 1.32602270516e-05 3.35884136866e-06 6.4792130985e-08 -1.19212742916e-07 -2.40170136229e-06" />
           <body name="RL_lower_link" pos="0 0 -0.07">
             <joint name="RL_knee" axis="0 1 0" range="-2.1 -0.1" />
-            <inertial mass="0.013" pos="0 0 -0.0461538461538" fullinertia="8.07699230769e-06 8.07699230769e-06 2.118e-07 0 0 0" />
-            <geom name="RL_lower_bar" type="capsule" fromto="0 0 0 0 0 -0.075" size="0.0045" rgba="0.2 0.47 0.61 1" />
+            <geom name="RL_lower_bar" type="box" pos="0.0 0.0015 -0.0375" rgba="0.20 0.47 0.61 1" group="0" size="0.004 0.0015 0.0375" />
+            <geom name="RL_knee_output_horn" type="cylinder" rgba="0.72 0.75 0.77 1" group="0" fromto="0.0 -0.003 0.0 0.0 0.0 0.0" size="0.008" />
+            <inertial mass="0.013" pos="0 0.00115384615385 -0.0461538461538" fullinertia="8.02218461538e-06 8.06282564103e-06 1.42825641026e-07 0 0 -1.29807692308e-07" />
             <geom name="RL_foot_collision" type="sphere" pos="0 0 -0.075" size="0.008" rgba="0.08 0.08 0.08 1" />
             <site name="RL_foot" pos="0 0 -0.075" size="0.002" rgba="1 0.2 0.1 1" />
           </body>
@@ -83,18 +146,33 @@
       </body>
       <body name="RR_roll_link" pos="-0.06 -0.035 0">
         <joint name="RR_hip_roll" axis="1 0 0" range="-0.7 0.7" />
-        <inertial mass="0.022" pos="0 -0.0227272727273 0" fullinertia="3.5156969697e-06 1.71e-06 3.1016969697e-06 0 0 0" />
-        <geom name="RR_roll_bar" type="capsule" fromto="0 0 0 0 -0.025 0" size="0.006" rgba="0.8 0.45 0.12 1" />
-        <geom name="RR_hip_motor_envelope" type="box" pos="0 -0.025 0" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
-        <body name="RR_upper_link" pos="0 -0.025 0">
+        <geom name="RR_roll_horn_spacer" type="box" pos="-0.0015 0.0 0.0" rgba="0.82 0.46 0.15 1" group="0" size="0.0015 0.008 0.008" />
+        <geom name="RR_roll_bridge" type="box" pos="-0.007 0.0 0.006" rgba="0.82 0.46 0.15 1" group="0" size="0.004 0.003 0.003" />
+        <geom name="RR_roll_cheek_top" type="box" pos="-0.0125 -0.0105 0.00375" rgba="0.82 0.46 0.15 1" group="0" size="0.0015 0.0115 0.00575" />
+        <geom name="RR_roll_cheek_bottom" type="box" pos="-0.0125 -0.0105 -0.02025" rgba="0.82 0.46 0.15 1" group="0" size="0.0015 0.0115 0.00425" />
+        <geom name="RR_roll_cheek_front" type="box" pos="-0.0125 -0.018000000000000002 -0.009" rgba="0.82 0.46 0.15 1" group="0" size="0.0015 0.004 0.007" />
+        <geom name="RR_hip_motor_envelope" type="box" pos="-0.024 -0.0105 -0.0075" rgba="0.12 0.14 0.16 1" group="0" size="0.01 0.0115 0.017" />
+        <geom name="RR_roll_output_horn" type="cylinder" rgba="0.72 0.75 0.77 1" group="0" fromto="0.003 0.0 0.0 0.0 0.0 0.0" size="0.008" />
+        <geom name="RR_hip_port_keepout_a" type="box" pos="-0.039 -0.006500000000000002 -0.009" rgba="0.65 0.35 0.73 0.25" group="5" size="0.005 0.0065 0.006" contype="0" conaffinity="0" />
+        <geom name="RR_hip_port_keepout_b" type="box" pos="-0.009000000000000001 -0.006500000000000002 -0.009" rgba="0.65 0.35 0.73 0.25" group="5" size="0.005 0.0065 0.006" contype="0" conaffinity="0" />
+        <inertial mass="0.022" pos="-0.0214891751484 -0.0110656772562 -0.00822913610519" fullinertia="3.40822247721e-06 3.6626300734e-06 2.48517706661e-06 -3.21571276726e-07 -3.67711512067e-07 4.40612932327e-08" />
+        <body name="RR_upper_link" pos="-0.024 -0.025 0">
           <joint name="RR_hip_pitch" axis="0 1 0" range="-1.2 1.2" />
-          <inertial mass="0.03" pos="0 0 -0.056" fullinertia="1.6549e-05 1.5415e-05 2.496e-06 0 0 0" />
-          <geom name="RR_upper_bar" type="capsule" fromto="0 0 0 0 0 -0.07" size="0.0045" rgba="0.2 0.47 0.61 1" />
-          <geom name="RR_knee_motor_envelope" type="box" pos="0 0 -0.07" size="0.01 0.017 0.013" contype="0" conaffinity="0" rgba="0.1 0.12 0.15 1" />
+          <geom name="RR_upper_bar" type="box" pos="0.0 -0.0015 -0.027500000000000004" rgba="0.20 0.47 0.61 1" group="0" size="0.004 0.0015 0.027500000000000004" />
+          <geom name="RR_upper_bridge" type="box" pos="-0.00575 -0.0015 -0.05500000000000001" rgba="0.20 0.47 0.61 1" group="0" size="0.00575 0.0015 0.0015" />
+          <geom name="RR_knee_cheek_top" type="box" pos="-0.0115 0.0115 -0.063" rgba="0.20 0.47 0.61 1" group="0" size="0.0015 0.0145 0.01" />
+          <geom name="RR_knee_cheek_bottom" type="box" pos="-0.0115 0.0115 -0.09050000000000001" rgba="0.20 0.47 0.61 1" group="0" size="0.0015 0.0145 0.0055" />
+          <geom name="RR_knee_cheek_front" type="box" pos="-0.0115 0.004 -0.079" rgba="0.20 0.47 0.61 1" group="0" size="0.0015 0.007 0.006" />
+          <geom name="RR_knee_motor_envelope" type="box" pos="0.0 0.0145 -0.07750000000000001" rgba="0.12 0.14 0.16 1" group="0" size="0.01 0.0115 0.017" />
+          <geom name="RR_hip_output_horn" type="cylinder" rgba="0.72 0.75 0.77 1" group="0" fromto="0.0 0.003 0.0 0.0 0.0 0.0" size="0.008" />
+          <geom name="RR_knee_port_keepout_a" type="box" pos="-0.015 0.0185 -0.079" rgba="0.65 0.35 0.73 0.25" group="5" size="0.005 0.0065 0.006" contype="0" conaffinity="0" />
+          <geom name="RR_knee_port_keepout_b" type="box" pos="0.015 0.0185 -0.079" rgba="0.65 0.35 0.73 0.25" group="5" size="0.005 0.0065 0.006" contype="0" conaffinity="0" />
+          <inertial mass="0.03" pos="-0.00341011881123 0.0105454458159 -0.0715932667598" fullinertia="1.39216344542e-05 1.31924359259e-05 3.29105024299e-06 -1.56488659294e-08 -2.39820109714e-07 2.40170136229e-06" />
           <body name="RR_lower_link" pos="0 0 -0.07">
             <joint name="RR_knee" axis="0 1 0" range="-2.1 -0.1" />
-            <inertial mass="0.013" pos="0 0 -0.0461538461538" fullinertia="8.07699230769e-06 8.07699230769e-06 2.118e-07 0 0 0" />
-            <geom name="RR_lower_bar" type="capsule" fromto="0 0 0 0 0 -0.075" size="0.0045" rgba="0.2 0.47 0.61 1" />
+            <geom name="RR_lower_bar" type="box" pos="0.0 -0.0015 -0.0375" rgba="0.20 0.47 0.61 1" group="0" size="0.004 0.0015 0.0375" />
+            <geom name="RR_knee_output_horn" type="cylinder" rgba="0.72 0.75 0.77 1" group="0" fromto="0.0 0.003 0.0 0.0 0.0 0.0" size="0.008" />
+            <inertial mass="0.013" pos="0 -0.00115384615385 -0.0461538461538" fullinertia="8.02218461538e-06 8.06282564103e-06 1.42825641026e-07 0 0 1.29807692308e-07" />
             <geom name="RR_foot_collision" type="sphere" pos="0 0 -0.075" size="0.008" rgba="0.08 0.08 0.08 1" />
             <site name="RR_foot" pos="0 0 -0.075" size="0.002" rgba="1 0.2 0.1 1" />
           </body>
@@ -116,6 +194,64 @@
     <position name="RR_hip_pitch_pd" joint="RR_hip_pitch" kp="1.5" kv="0.04" ctrllimited="true" forcelimited="true" ctrlrange="-1.2 1.2" forcerange="-0.1 0.1" />
     <position name="RR_knee_pd" joint="RR_knee" kp="1.5" kv="0.04" ctrllimited="true" forcelimited="true" ctrlrange="-2.1 -0.1" forcerange="-0.1 0.1" />
   </actuator>
+  <contact>
+    <pair geom1="FL_roll_motor_envelope" geom2="FL_roll_horn_spacer" condim="3" />
+    <pair geom1="FL_roll_motor_envelope" geom2="FL_roll_bridge" condim="3" />
+    <pair geom1="FL_roll_motor_envelope" geom2="FL_roll_cheek_top" condim="3" />
+    <pair geom1="FL_roll_motor_envelope" geom2="FL_roll_cheek_bottom" condim="3" />
+    <pair geom1="FL_roll_motor_envelope" geom2="FL_roll_cheek_front" condim="3" />
+    <pair geom1="FL_roll_motor_envelope" geom2="FL_hip_motor_envelope" condim="3" />
+    <pair geom1="FL_hip_motor_envelope" geom2="FL_upper_bar" condim="3" />
+    <pair geom1="FL_hip_motor_envelope" geom2="FL_upper_bridge" condim="3" />
+    <pair geom1="FL_hip_motor_envelope" geom2="FL_knee_cheek_top" condim="3" />
+    <pair geom1="FL_hip_motor_envelope" geom2="FL_knee_cheek_bottom" condim="3" />
+    <pair geom1="FL_hip_motor_envelope" geom2="FL_knee_cheek_front" condim="3" />
+    <pair geom1="FL_hip_motor_envelope" geom2="FL_knee_motor_envelope" condim="3" />
+    <pair geom1="FL_knee_motor_envelope" geom2="FL_lower_bar" condim="3" />
+    <pair geom1="FL_knee_motor_envelope" geom2="FL_foot_collision" condim="3" />
+    <pair geom1="FR_roll_motor_envelope" geom2="FR_roll_horn_spacer" condim="3" />
+    <pair geom1="FR_roll_motor_envelope" geom2="FR_roll_bridge" condim="3" />
+    <pair geom1="FR_roll_motor_envelope" geom2="FR_roll_cheek_top" condim="3" />
+    <pair geom1="FR_roll_motor_envelope" geom2="FR_roll_cheek_bottom" condim="3" />
+    <pair geom1="FR_roll_motor_envelope" geom2="FR_roll_cheek_front" condim="3" />
+    <pair geom1="FR_roll_motor_envelope" geom2="FR_hip_motor_envelope" condim="3" />
+    <pair geom1="FR_hip_motor_envelope" geom2="FR_upper_bar" condim="3" />
+    <pair geom1="FR_hip_motor_envelope" geom2="FR_upper_bridge" condim="3" />
+    <pair geom1="FR_hip_motor_envelope" geom2="FR_knee_cheek_top" condim="3" />
+    <pair geom1="FR_hip_motor_envelope" geom2="FR_knee_cheek_bottom" condim="3" />
+    <pair geom1="FR_hip_motor_envelope" geom2="FR_knee_cheek_front" condim="3" />
+    <pair geom1="FR_hip_motor_envelope" geom2="FR_knee_motor_envelope" condim="3" />
+    <pair geom1="FR_knee_motor_envelope" geom2="FR_lower_bar" condim="3" />
+    <pair geom1="FR_knee_motor_envelope" geom2="FR_foot_collision" condim="3" />
+    <pair geom1="RL_roll_motor_envelope" geom2="RL_roll_horn_spacer" condim="3" />
+    <pair geom1="RL_roll_motor_envelope" geom2="RL_roll_bridge" condim="3" />
+    <pair geom1="RL_roll_motor_envelope" geom2="RL_roll_cheek_top" condim="3" />
+    <pair geom1="RL_roll_motor_envelope" geom2="RL_roll_cheek_bottom" condim="3" />
+    <pair geom1="RL_roll_motor_envelope" geom2="RL_roll_cheek_front" condim="3" />
+    <pair geom1="RL_roll_motor_envelope" geom2="RL_hip_motor_envelope" condim="3" />
+    <pair geom1="RL_hip_motor_envelope" geom2="RL_upper_bar" condim="3" />
+    <pair geom1="RL_hip_motor_envelope" geom2="RL_upper_bridge" condim="3" />
+    <pair geom1="RL_hip_motor_envelope" geom2="RL_knee_cheek_top" condim="3" />
+    <pair geom1="RL_hip_motor_envelope" geom2="RL_knee_cheek_bottom" condim="3" />
+    <pair geom1="RL_hip_motor_envelope" geom2="RL_knee_cheek_front" condim="3" />
+    <pair geom1="RL_hip_motor_envelope" geom2="RL_knee_motor_envelope" condim="3" />
+    <pair geom1="RL_knee_motor_envelope" geom2="RL_lower_bar" condim="3" />
+    <pair geom1="RL_knee_motor_envelope" geom2="RL_foot_collision" condim="3" />
+    <pair geom1="RR_roll_motor_envelope" geom2="RR_roll_horn_spacer" condim="3" />
+    <pair geom1="RR_roll_motor_envelope" geom2="RR_roll_bridge" condim="3" />
+    <pair geom1="RR_roll_motor_envelope" geom2="RR_roll_cheek_top" condim="3" />
+    <pair geom1="RR_roll_motor_envelope" geom2="RR_roll_cheek_bottom" condim="3" />
+    <pair geom1="RR_roll_motor_envelope" geom2="RR_roll_cheek_front" condim="3" />
+    <pair geom1="RR_roll_motor_envelope" geom2="RR_hip_motor_envelope" condim="3" />
+    <pair geom1="RR_hip_motor_envelope" geom2="RR_upper_bar" condim="3" />
+    <pair geom1="RR_hip_motor_envelope" geom2="RR_upper_bridge" condim="3" />
+    <pair geom1="RR_hip_motor_envelope" geom2="RR_knee_cheek_top" condim="3" />
+    <pair geom1="RR_hip_motor_envelope" geom2="RR_knee_cheek_bottom" condim="3" />
+    <pair geom1="RR_hip_motor_envelope" geom2="RR_knee_cheek_front" condim="3" />
+    <pair geom1="RR_hip_motor_envelope" geom2="RR_knee_motor_envelope" condim="3" />
+    <pair geom1="RR_knee_motor_envelope" geom2="RR_lower_bar" condim="3" />
+    <pair geom1="RR_knee_motor_envelope" geom2="RR_foot_collision" condim="3" />
+  </contact>
   <sensor>
     <accelerometer name="imu_accel" site="imu" />
     <gyro name="imu_gyro" site="imu" />

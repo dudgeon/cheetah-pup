@@ -73,6 +73,21 @@ and [pinned references](../microduck-review/REFERENCES.md).
 | Microduck has nothing useful to vendor | Its runtime and RL code are useful references. A separate open Pollen HAT also exists, but is not proof of the production Microduck PCB. |
 | Existing Duck weights provide the base policy | A biped's action/observation spaces do not match this quadruped. Reuse infrastructure; train new weights. |
 
+## Refinement decisions,2026-09-04
+
+- Replace centered servo boxes with manufacturer-anchored casings/horns and
+  reference COM/tensors. Use24 mm fore/aft pitch offset to allow perpendicular
+  housings and side-socket access without widening the25 mm lateral moment arm.
+- Keep the613 g budget provisional.83 named STEP solids describe the assembly study;
+  they do not release printable parts or establish exact finished mass.
+- Select5 V/P400 for the exploratory BAM baseline: P400 is the documented stock
+  default and passes the simulated 60 s stand, whereas P200 crouches onto its brackets.
+- Keep XL330 as a candidate, with hardware choice open. The revised crawl has only
+  1.07× static reserve; current motion timing cannot meet0.05 m/s by simple retiming.
+  Compare smoother motion/lower mass with stronger published-model alternatives.
+- Keep manufacturing and hardware deployment gates separate from exploratory
+  simulation. No owner characterization is added to close the provenance gap.
+
 ## Open decisions and how they close
 
 1. **Exact motor and fit:** agent produces a short compatibility record from published

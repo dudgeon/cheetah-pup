@@ -1,0 +1,777 @@
+{
+  "kind": "Prescribed-crawl rigid-body load and timing screen; no learned policy or forward-dynamics walking",
+  "config_sha256": "dd33c5482622efff164d2a07d5c68eb4f882d450b0fbcd53efcfdbeaf6da86a1",
+  "mujoco_version": "3.10.0",
+  "samples": 384,
+  "frames_per_step": 96,
+  "estimated_mass_kg": 0.6130000000000001,
+  "trajectory": {
+    "stride_per_cycle_m": 0.02,
+    "foot_clearance_m": 0.012,
+    "base_height_m": 0.14,
+    "support_shift_fraction": 0.25,
+    "minimum_swing_support_load_fraction": 0.08081524785904648
+  },
+  "manufacturer_references": {
+    "candidate": "ROBOTIS XL330-M288-T",
+    "supply_v": 5.0,
+    "no_load_speed_rpm": 103.0,
+    "no_load_speed_rad_s": 10.786134777324955,
+    "speed_source": "https://emanual.robotis.com/docs/en/dxl/x/xl330-m288/",
+    "torque_source": "https://www.robotis.us/dynamixel-xl330-m288-t/",
+    "continuous_torque_screen_nm": 0.1,
+    "notes": "103 rpm is unloaded at 5 V, not a loaded speed guarantee or a torque-speed envelope. The 0.10 N m manufacturer estimate is not a thermal guarantee. Neither is a calibrated actuator model."
+  },
+  "quasistatic": {
+    "method": "At every pose set qvel=0, solve nonnegative vertical ground loads satisfying total force and roll/pitch moment balance using minimum summed squared foot forces, then compute qfrc_bias - J.T F. Includes all modeled link gravity. The alternative minimax allocation separately optimizes joint demand.",
+    "all_frames_static_equilibrium": true,
+    "max_floating_base_force_residual_n": 8.881784197001252e-15,
+    "max_floating_base_moment_residual_nm": 6.288372600415926e-16,
+    "joint_torque_nm": {
+      "FL_hip_roll": {
+        "peak_abs": 0.07398371205625037,
+        "rms": 0.037543035053069704
+      },
+      "FL_hip_pitch": {
+        "peak_abs": 0.05956558222988667,
+        "rms": 0.025618143959792426
+      },
+      "FL_knee": {
+        "peak_abs": 0.07175099170908023,
+        "rms": 0.035666824432922455
+      },
+      "FR_hip_roll": {
+        "peak_abs": 0.07395576702183715,
+        "rms": 0.03753735354401493
+      },
+      "FR_hip_pitch": {
+        "peak_abs": 0.031488359500034785,
+        "rms": 0.01732932921423697
+      },
+      "FR_knee": {
+        "peak_abs": 0.08395472342447037,
+        "rms": 0.045213817680446904
+      },
+      "RL_hip_roll": {
+        "peak_abs": 0.07399609424541154,
+        "rms": 0.03841636180888485
+      },
+      "RL_hip_pitch": {
+        "peak_abs": 0.030913350428161304,
+        "rms": 0.017170500777258662
+      },
+      "RL_knee": {
+        "peak_abs": 0.0807482296399038,
+        "rms": 0.045354894003763385
+      },
+      "RR_hip_roll": {
+        "peak_abs": 0.07396116140180539,
+        "rms": 0.0384186417023423
+      },
+      "RR_hip_pitch": {
+        "peak_abs": 0.04628809214654381,
+        "rms": 0.022343527781981145
+      },
+      "RR_knee": {
+        "peak_abs": 0.0933624458116501,
+        "rms": 0.05448748086914875
+      }
+    },
+    "peak_abs_joint_torque_nm": 0.0933624458116501,
+    "peak_frame": 181,
+    "peak_joint": "RR_knee",
+    "peak_frame_support_loads_n": {
+      "FL": 2.6431392567056418,
+      "RL": 0.6135580908241804,
+      "RR": 2.7568326524701785
+    },
+    "minimum_margin_to_estimated_continuous": 1.0710944762709038,
+    "proposed_1_5_margin_met_all_frames": false,
+    "fraction_joint_samples_above_estimated_continuous": 0.0,
+    "rms_scope": "RMS is equal-time over the prescribed cycle, not an electrical-current or motor-temperature prediction."
+  },
+  "alternative_static_allocation": {
+    "method": "Keep every pose fixed. For four feet, parameterize the one-dimensional null space of vertical force/roll/pitch balance. Nonnegative loads define an interval; enumerate its endpoints and intersections of signed affine joint-torque lines to minimize the maximum absolute joint torque. Three-foot loads are uniquely determined.",
+    "peak_abs_joint_torque_nm": 0.0933624458116501,
+    "joint_torque_nm": {
+      "FL_hip_roll": {
+        "peak_abs": 0.07398371205625037,
+        "rms": 0.03734025735295337
+      },
+      "FL_hip_pitch": {
+        "peak_abs": 0.05956558222988667,
+        "rms": 0.025690273493052276
+      },
+      "FL_knee": {
+        "peak_abs": 0.07175099170908023,
+        "rms": 0.03521469255011595
+      },
+      "FR_hip_roll": {
+        "peak_abs": 0.07395576702183715,
+        "rms": 0.03788595378115118
+      },
+      "FR_hip_pitch": {
+        "peak_abs": 0.031488359500034785,
+        "rms": 0.01743907301374278
+      },
+      "FR_knee": {
+        "peak_abs": 0.08395472342447037,
+        "rms": 0.045654328167268554
+      },
+      "RL_hip_roll": {
+        "peak_abs": 0.07399609424541154,
+        "rms": 0.03876857556356479
+      },
+      "RL_hip_pitch": {
+        "peak_abs": 0.030913350428161304,
+        "rms": 0.017152057317758516
+      },
+      "RL_knee": {
+        "peak_abs": 0.0807482296399038,
+        "rms": 0.04586761752815674
+      },
+      "RR_hip_roll": {
+        "peak_abs": 0.07396116140180539,
+        "rms": 0.0380566274306849
+      },
+      "RR_hip_pitch": {
+        "peak_abs": 0.04628809214654381,
+        "rms": 0.022224548712307158
+      },
+      "RR_knee": {
+        "peak_abs": 0.0933624458116501,
+        "rms": 0.05398149275328888
+      }
+    },
+    "minimum_margin_to_estimated_continuous": 1.0710944762709038,
+    "proposed_1_5_margin_met_all_frames": false,
+    "peak_frame": 181,
+    "peak_joint": "RR_knee",
+    "peak_frame_support_loads_n": {
+      "FL": 2.6431392567056418,
+      "RL": 0.6135580908241804,
+      "RR": 2.7568326524701785
+    },
+    "max_floating_base_force_residual_n": 8.881784197001252e-15,
+    "max_floating_base_moment_residual_nm": 6.288372600415926e-16,
+    "interpretation": "An ideal static force-allocation bound for these fixed poses, not an implemented controller. Position-controlled servos do not automatically realize these contact loads; compliance, contact sensing/estimation and tracking remain unvalidated. This prevents judging the actuator only from the arbitrary minimum-squared-foot-force allocation."
+  },
+  "timing": [
+    {
+      "case": "illustration_timing",
+      "cycle_duration_s": 6.4,
+      "average_progress_m_s": 0.0031249999999999997,
+      "joint_speed_rad_s": {
+        "FL_hip_roll": {
+          "peak_abs": 0.28374294533605404,
+          "rms": 0.07841132326067707
+        },
+        "FL_hip_pitch": {
+          "peak_abs": 0.7308890442750482,
+          "rms": 0.2212214915022741
+        },
+        "FL_knee": {
+          "peak_abs": 1.173753231862097,
+          "rms": 0.34124139865480946
+        },
+        "FR_hip_roll": {
+          "peak_abs": 0.283725648146953,
+          "rms": 0.07841145717969752
+        },
+        "FR_hip_pitch": {
+          "peak_abs": 0.7392954163845566,
+          "rms": 0.23812372404879584
+        },
+        "FR_knee": {
+          "peak_abs": 1.1559830761518197,
+          "rms": 0.33160798853965584
+        },
+        "RL_hip_roll": {
+          "peak_abs": 0.28374294533605404,
+          "rms": 0.07840998179724044
+        },
+        "RL_hip_pitch": {
+          "peak_abs": 0.7289828832014711,
+          "rms": 0.2296891321749314
+        },
+        "RL_knee": {
+          "peak_abs": 1.2700975810284276,
+          "rms": 0.3485258664396713
+        },
+        "RR_hip_roll": {
+          "peak_abs": 0.283725648146953,
+          "rms": 0.0784100047929934
+        },
+        "RR_hip_pitch": {
+          "peak_abs": 0.7308309997335882,
+          "rms": 0.24340961854895277
+        },
+        "RR_knee": {
+          "peak_abs": 1.172985048690447,
+          "rms": 0.33227635541593475
+        }
+      },
+      "peak_joint_speed_rad_s": 1.2700975810284276,
+      "peak_speed_fraction_of_published_no_load": 0.11775280091052429,
+      "fraction_joint_samples_above_published_no_load": 0.0,
+      "peak_base_translation_acceleration_m_s2": 0.3963191118121679,
+      "peak_joint_acceleration_rad_s2": 9.214850243522,
+      "vertical_only_dynamic_balance": false,
+      "fraction_frames_vertical_only_balanced": 0.0,
+      "max_floating_base_force_residual_n": 0.21049406818481467,
+      "max_floating_base_moment_residual_nm": 0.0005718461572967053,
+      "conditional_joint_torque_nm": {
+        "FL_hip_roll": {
+          "peak_abs": 0.0742242216886474,
+          "rms": 0.037541328649150225
+        },
+        "FL_hip_pitch": {
+          "peak_abs": 0.059778658504736744,
+          "rms": 0.02558001423105261
+        },
+        "FL_knee": {
+          "peak_abs": 0.07175283025406592,
+          "rms": 0.035673450736998485
+        },
+        "FR_hip_roll": {
+          "peak_abs": 0.07416406770332463,
+          "rms": 0.03753564804631519
+        },
+        "FR_hip_pitch": {
+          "peak_abs": 0.03160040246300267,
+          "rms": 0.017300456920101362
+        },
+        "FR_knee": {
+          "peak_abs": 0.0839929653230016,
+          "rms": 0.0452183686202282
+        },
+        "RL_hip_roll": {
+          "peak_abs": 0.07420384286425658,
+          "rms": 0.03841555749090997
+        },
+        "RL_hip_pitch": {
+          "peak_abs": 0.03090037680991619,
+          "rms": 0.017144106287035676
+        },
+        "RL_knee": {
+          "peak_abs": 0.08095011042816286,
+          "rms": 0.04534696057119894
+        },
+        "RR_hip_roll": {
+          "peak_abs": 0.07414155857658628,
+          "rms": 0.038417938297987876
+        },
+        "RR_hip_pitch": {
+          "peak_abs": 0.0463708214556201,
+          "rms": 0.022319596738393628
+        },
+        "RR_knee": {
+          "peak_abs": 0.0935651239944625,
+          "rms": 0.05447990685862235
+        }
+      },
+      "conditional_peak_abs_joint_torque_nm": 0.0935651239944625,
+      "interpretation": "Inverse-dynamics diagnostic under nonnegative vertical-only foot forces. Any residual is an unprovided floating-base wrench. Conditional joint torques do not constitute a feasible gait; horizontal friction forces and their joint loads must be solved before dynamic torque validation."
+    },
+    {
+      "case": "initial_speed_goal",
+      "cycle_duration_s": 0.39999999999999997,
+      "average_progress_m_s": 0.05,
+      "joint_speed_rad_s": {
+        "FL_hip_roll": {
+          "peak_abs": 4.539887125376865,
+          "rms": 1.254581172170833
+        },
+        "FL_hip_pitch": {
+          "peak_abs": 11.694224708400771,
+          "rms": 3.5395438640363857
+        },
+        "FL_knee": {
+          "peak_abs": 18.78005170979355,
+          "rms": 5.459862378476951
+        },
+        "FR_hip_roll": {
+          "peak_abs": 4.539610370351248,
+          "rms": 1.2545833148751604
+        },
+        "FR_hip_pitch": {
+          "peak_abs": 11.828726662152906,
+          "rms": 3.8099795847807334
+        },
+        "FR_knee": {
+          "peak_abs": 18.495729218429116,
+          "rms": 5.305727816634493
+        },
+        "RL_hip_roll": {
+          "peak_abs": 4.539887125376865,
+          "rms": 1.254559708755847
+        },
+        "RL_hip_pitch": {
+          "peak_abs": 11.663726131223537,
+          "rms": 3.6750261147989023
+        },
+        "RL_knee": {
+          "peak_abs": 20.321561296454842,
+          "rms": 5.576413863034741
+        },
+        "RR_hip_roll": {
+          "peak_abs": 4.539610370351248,
+          "rms": 1.2545600766878944
+        },
+        "RR_hip_pitch": {
+          "peak_abs": 11.693295995737412,
+          "rms": 3.8945538967832443
+        },
+        "RR_knee": {
+          "peak_abs": 18.76776077904715,
+          "rms": 5.316421686654956
+        }
+      },
+      "peak_joint_speed_rad_s": 20.321561296454842,
+      "peak_speed_fraction_of_published_no_load": 1.8840448145683886,
+      "fraction_joint_samples_above_published_no_load": 0.038628472222222224,
+      "peak_base_translation_acceleration_m_s2": 101.45769262391498,
+      "peak_joint_acceleration_rad_s2": 2359.001662341632,
+      "vertical_only_dynamic_balance": false,
+      "fraction_frames_vertical_only_balanced": 0.0,
+      "max_floating_base_force_residual_n": 53.91556731708856,
+      "max_floating_base_moment_residual_nm": 0.3233157270674113,
+      "conditional_joint_torque_nm": {
+        "FL_hip_roll": {
+          "peak_abs": 0.09151572954391732,
+          "rms": 0.04434759569208308
+        },
+        "FL_hip_pitch": {
+          "peak_abs": 0.2577986098372362,
+          "rms": 0.0768868943753696
+        },
+        "FL_knee": {
+          "peak_abs": 0.14402336977786814,
+          "rms": 0.04561569328965222
+        },
+        "FR_hip_roll": {
+          "peak_abs": 0.09031040669245424,
+          "rms": 0.04435335734714476
+        },
+        "FR_hip_pitch": {
+          "peak_abs": 0.24409556291745738,
+          "rms": 0.06681478101313157
+        },
+        "FR_knee": {
+          "peak_abs": 0.16825630106108433,
+          "rms": 0.05661480378410551
+        },
+        "RL_hip_roll": {
+          "peak_abs": 0.1317541772298535,
+          "rms": 0.04792441938169379
+        },
+        "RL_hip_pitch": {
+          "peak_abs": 0.29033040883851907,
+          "rms": 0.07178960938734556
+        },
+        "RL_knee": {
+          "peak_abs": 0.1368749436756279,
+          "rms": 0.0497158712360441
+        },
+        "RR_hip_roll": {
+          "peak_abs": 0.12514250471151583,
+          "rms": 0.04732572316322041
+        },
+        "RR_hip_pitch": {
+          "peak_abs": 0.25763475606832653,
+          "rms": 0.06781212651640509
+        },
+        "RR_knee": {
+          "peak_abs": 0.15086524023460565,
+          "rms": 0.06077618711606479
+        }
+      },
+      "conditional_peak_abs_joint_torque_nm": 0.29033040883851907,
+      "interpretation": "Inverse-dynamics diagnostic under nonnegative vertical-only foot forces. Any residual is an unprovided floating-base wrench. Conditional joint torques do not constitute a feasible gait; horizontal friction forces and their joint loads must be solved before dynamic torque validation."
+    }
+  ],
+  "clearance": {
+    "minimum_nonfoot_primitive_floor_clearance_m": 0.006120015107192643,
+    "limiting_geom": "FR_lower_bar",
+    "unsupported_geom_types": [],
+    "excluded_nonphysical_keepouts": [
+      "FL_hip_port_keepout_a",
+      "FL_hip_port_keepout_b",
+      "FL_knee_port_keepout_a",
+      "FL_knee_port_keepout_b",
+      "FL_roll_port_keepout_a",
+      "FL_roll_port_keepout_b",
+      "FR_hip_port_keepout_a",
+      "FR_hip_port_keepout_b",
+      "FR_knee_port_keepout_a",
+      "FR_knee_port_keepout_b",
+      "FR_roll_port_keepout_a",
+      "FR_roll_port_keepout_b",
+      "RL_hip_port_keepout_a",
+      "RL_hip_port_keepout_b",
+      "RL_knee_port_keepout_a",
+      "RL_knee_port_keepout_b",
+      "RL_roll_port_keepout_a",
+      "RL_roll_port_keepout_b",
+      "RR_hip_port_keepout_a",
+      "RR_hip_port_keepout_b",
+      "RR_knee_port_keepout_a",
+      "RR_knee_port_keepout_b",
+      "RR_roll_port_keepout_a",
+      "RR_roll_port_keepout_b"
+    ],
+    "maximum_stance_sole_height_error_m": 4.1840836351170196e-13,
+    "peak_swing_sole_height_m_by_leg": {
+      "FL": 0.011999999999581644,
+      "FR": 0.01199999999958165,
+      "RL": 0.011999999999581644,
+      "RR": 0.011999999999581672
+    },
+    "scope": "Physical component geometry against a perfectly flat plane only; group-5 non-colliding cable/port reservations are excluded. A 12 mm peak swing height gives no guaranteed clearance over a 10 mm doorway threshold along the whole foot path. No carpet deformation, obstacle placement, self-interference or manufacturing tolerance is assessed here."
+  },
+  "posture_sweep": {
+    "variant_count": 15,
+    "frames_per_step": 48,
+    "support_shift_fraction": 0.25,
+    "held_fixed": "Robot geometry, motor envelopes and mass, all mass allowances, joint limits, configured COM-shift fraction and 12 mm foot lift; only gait base height and stride vary.",
+    "assembly_clearance_assessed_for_sweep_variants": false,
+    "clearance_scope": "Sweep validity means reach, joint limits and static support only. Self-interference and assembly clearance were not audited for every variant; the separate assembly audit applies to its explicitly selected trajectory, not this whole sweep.",
+    "method": "Complete sampled cycle gravity-minus-ground joint demands, nonnegative static force/moment balance, and periodic finite-difference speeds at 0.05 m/s. Motor friction, loaded speed, dynamic wrench feasibility and interference are excluded.",
+    "valid_variants": 15,
+    "best_static_margin_variant": {
+      "base_height_m": 0.14,
+      "stride_per_cycle_m": 0.02,
+      "foot_lift_m": 0.012,
+      "target_speed_m_s": 0.05,
+      "cycle_duration_s": 0.39999999999999997,
+      "kinematically_valid": true,
+      "static_peak_abs_joint_torque_nm": 0.09336243809253346,
+      "largest_joint_static_rms_nm": 0.05450685330965101,
+      "minimum_margin_to_estimated_continuous": 1.0710945648279657,
+      "minimax_allocation_peak_joint_torque_nm": 0.09336243809253346,
+      "minimax_allocation_margin_to_estimated_continuous": 1.0710945648279657,
+      "proposed_1_5_static_margin_met": false,
+      "target_peak_joint_speed_rad_s": 20.220395621473752,
+      "target_peak_speed_fraction_of_published_no_load": 1.8746655812220963,
+      "target_peak_base_translation_acceleration_m_s2": 100.77676851231882,
+      "passes_static_margin_and_unloaded_speed_only": false,
+      "passes_minimax_static_margin_and_unloaded_speed_only": false
+    },
+    "best_minimax_static_margin_variant": {
+      "base_height_m": 0.14,
+      "stride_per_cycle_m": 0.02,
+      "foot_lift_m": 0.012,
+      "target_speed_m_s": 0.05,
+      "cycle_duration_s": 0.39999999999999997,
+      "kinematically_valid": true,
+      "static_peak_abs_joint_torque_nm": 0.09336243809253346,
+      "largest_joint_static_rms_nm": 0.05450685330965101,
+      "minimum_margin_to_estimated_continuous": 1.0710945648279657,
+      "minimax_allocation_peak_joint_torque_nm": 0.09336243809253346,
+      "minimax_allocation_margin_to_estimated_continuous": 1.0710945648279657,
+      "proposed_1_5_static_margin_met": false,
+      "target_peak_joint_speed_rad_s": 20.220395621473752,
+      "target_peak_speed_fraction_of_published_no_load": 1.8746655812220963,
+      "target_peak_base_translation_acceleration_m_s2": 100.77676851231882,
+      "passes_static_margin_and_unloaded_speed_only": false,
+      "passes_minimax_static_margin_and_unloaded_speed_only": false
+    },
+    "any_pass_static_margin_and_unloaded_speed_only": false,
+    "any_pass_minimax_static_margin_and_unloaded_speed_only": false,
+    "interpretation": "This limited posture search cannot select or reject the actuator architecture. Passing the two scalar screens is still insufficient for feasible walking; failure calls for gait/contact optimization, geometry/mass changes or a stronger actuator comparison.",
+    "variants": [
+      {
+        "base_height_m": 0.124,
+        "stride_per_cycle_m": 0.02,
+        "foot_lift_m": 0.012,
+        "target_speed_m_s": 0.05,
+        "cycle_duration_s": 0.39999999999999997,
+        "kinematically_valid": true,
+        "static_peak_abs_joint_torque_nm": 0.12723452480707967,
+        "largest_joint_static_rms_nm": 0.07510152636532745,
+        "minimum_margin_to_estimated_continuous": 0.7859501982785394,
+        "minimax_allocation_peak_joint_torque_nm": 0.12723452480707967,
+        "minimax_allocation_margin_to_estimated_continuous": 0.7859501982785394,
+        "proposed_1_5_static_margin_met": false,
+        "target_peak_joint_speed_rad_s": 14.859761240447913,
+        "target_peak_speed_fraction_of_published_no_load": 1.37767249781513,
+        "target_peak_base_translation_acceleration_m_s2": 100.20531304332437,
+        "passes_static_margin_and_unloaded_speed_only": false,
+        "passes_minimax_static_margin_and_unloaded_speed_only": false
+      },
+      {
+        "base_height_m": 0.124,
+        "stride_per_cycle_m": 0.03,
+        "foot_lift_m": 0.012,
+        "target_speed_m_s": 0.05,
+        "cycle_duration_s": 0.6,
+        "kinematically_valid": true,
+        "static_peak_abs_joint_torque_nm": 0.1351177957927209,
+        "largest_joint_static_rms_nm": 0.08014516876944583,
+        "minimum_margin_to_estimated_continuous": 0.7400949624237967,
+        "minimax_allocation_peak_joint_torque_nm": 0.1351177957927209,
+        "minimax_allocation_margin_to_estimated_continuous": 0.7400949624237967,
+        "proposed_1_5_static_margin_met": false,
+        "target_peak_joint_speed_rad_s": 10.959117463590077,
+        "target_peak_speed_fraction_of_published_no_load": 1.016037504614607,
+        "target_peak_base_translation_acceleration_m_s2": 48.87804912256636,
+        "passes_static_margin_and_unloaded_speed_only": false,
+        "passes_minimax_static_margin_and_unloaded_speed_only": false
+      },
+      {
+        "base_height_m": 0.124,
+        "stride_per_cycle_m": 0.04,
+        "foot_lift_m": 0.012,
+        "target_speed_m_s": 0.05,
+        "cycle_duration_s": 0.7999999999999999,
+        "kinematically_valid": true,
+        "static_peak_abs_joint_torque_nm": 0.14175522409100672,
+        "largest_joint_static_rms_nm": 0.08470701534733219,
+        "minimum_margin_to_estimated_continuous": 0.7054413736159741,
+        "minimax_allocation_peak_joint_torque_nm": 0.14175522409100672,
+        "minimax_allocation_margin_to_estimated_continuous": 0.7054413736159741,
+        "proposed_1_5_static_margin_met": false,
+        "target_peak_joint_speed_rad_s": 9.179645961097593,
+        "target_peak_speed_fraction_of_published_no_load": 0.8510598236168356,
+        "target_peak_base_translation_acceleration_m_s2": 29.98272703795528,
+        "passes_static_margin_and_unloaded_speed_only": false,
+        "passes_minimax_static_margin_and_unloaded_speed_only": false
+      },
+      {
+        "base_height_m": 0.13,
+        "stride_per_cycle_m": 0.02,
+        "foot_lift_m": 0.012,
+        "target_speed_m_s": 0.05,
+        "cycle_duration_s": 0.39999999999999997,
+        "kinematically_valid": true,
+        "static_peak_abs_joint_torque_nm": 0.11661706003146105,
+        "largest_joint_static_rms_nm": 0.06857126229095996,
+        "minimum_margin_to_estimated_continuous": 0.8575074690874724,
+        "minimax_allocation_peak_joint_torque_nm": 0.11661706003146105,
+        "minimax_allocation_margin_to_estimated_continuous": 0.8575074690874724,
+        "proposed_1_5_static_margin_met": false,
+        "target_peak_joint_speed_rad_s": 16.230531799372496,
+        "target_peak_speed_fraction_of_published_no_load": 1.5047588533283462,
+        "target_peak_base_translation_acceleration_m_s2": 100.46172548941048,
+        "passes_static_margin_and_unloaded_speed_only": false,
+        "passes_minimax_static_margin_and_unloaded_speed_only": false
+      },
+      {
+        "base_height_m": 0.13,
+        "stride_per_cycle_m": 0.03,
+        "foot_lift_m": 0.012,
+        "target_speed_m_s": 0.05,
+        "cycle_duration_s": 0.6,
+        "kinematically_valid": true,
+        "static_peak_abs_joint_torque_nm": 0.12419851909932615,
+        "largest_joint_static_rms_nm": 0.07345185597046006,
+        "minimum_margin_to_estimated_continuous": 0.8051625794348345,
+        "minimax_allocation_peak_joint_torque_nm": 0.12419851909932615,
+        "minimax_allocation_margin_to_estimated_continuous": 0.8051625794348345,
+        "proposed_1_5_static_margin_met": false,
+        "target_peak_joint_speed_rad_s": 11.880175389554177,
+        "target_peak_speed_fraction_of_published_no_load": 1.1014302745900373,
+        "target_peak_base_translation_acceleration_m_s2": 48.97739204497455,
+        "passes_static_margin_and_unloaded_speed_only": false,
+        "passes_minimax_static_margin_and_unloaded_speed_only": false
+      },
+      {
+        "base_height_m": 0.13,
+        "stride_per_cycle_m": 0.04,
+        "foot_lift_m": 0.012,
+        "target_speed_m_s": 0.05,
+        "cycle_duration_s": 0.7999999999999999,
+        "kinematically_valid": true,
+        "static_peak_abs_joint_torque_nm": 0.1304837727213694,
+        "largest_joint_static_rms_nm": 0.077833560474092,
+        "minimum_margin_to_estimated_continuous": 0.7663788217829706,
+        "minimax_allocation_peak_joint_torque_nm": 0.1304837727213694,
+        "minimax_allocation_margin_to_estimated_continuous": 0.7663788217829706,
+        "proposed_1_5_static_margin_met": false,
+        "target_peak_joint_speed_rad_s": 9.938075080856104,
+        "target_peak_speed_fraction_of_published_no_load": 0.9213750139436717,
+        "target_peak_base_translation_acceleration_m_s2": 30.027044638923872,
+        "passes_static_margin_and_unloaded_speed_only": false,
+        "passes_minimax_static_margin_and_unloaded_speed_only": false
+      },
+      {
+        "base_height_m": 0.135,
+        "stride_per_cycle_m": 0.02,
+        "foot_lift_m": 0.012,
+        "target_speed_m_s": 0.05,
+        "cycle_duration_s": 0.39999999999999997,
+        "kinematically_valid": true,
+        "static_peak_abs_joint_torque_nm": 0.10613620193200392,
+        "largest_joint_static_rms_nm": 0.062177881224613915,
+        "minimum_margin_to_estimated_continuous": 0.9421855896451329,
+        "minimax_allocation_peak_joint_torque_nm": 0.10613620193200392,
+        "minimax_allocation_margin_to_estimated_continuous": 0.9421855896451329,
+        "proposed_1_5_static_margin_met": false,
+        "target_peak_joint_speed_rad_s": 17.853869104046876,
+        "target_peak_speed_fraction_of_published_no_load": 1.655261080325085,
+        "target_peak_base_translation_acceleration_m_s2": 100.64100703354686,
+        "passes_static_margin_and_unloaded_speed_only": false,
+        "passes_minimax_static_margin_and_unloaded_speed_only": false
+      },
+      {
+        "base_height_m": 0.135,
+        "stride_per_cycle_m": 0.03,
+        "foot_lift_m": 0.012,
+        "target_speed_m_s": 0.05,
+        "cycle_duration_s": 0.6,
+        "kinematically_valid": true,
+        "static_peak_abs_joint_torque_nm": 0.11332489893191931,
+        "largest_joint_static_rms_nm": 0.06687747109004495,
+        "minimum_margin_to_estimated_continuous": 0.8824186118187114,
+        "minimax_allocation_peak_joint_torque_nm": 0.11332489893191931,
+        "minimax_allocation_margin_to_estimated_continuous": 0.8824186118187114,
+        "proposed_1_5_static_margin_met": false,
+        "target_peak_joint_speed_rad_s": 13.043158489984032,
+        "target_peak_speed_fraction_of_published_no_load": 1.2092523187642605,
+        "target_peak_base_translation_acceleration_m_s2": 49.04050599308931,
+        "passes_static_margin_and_unloaded_speed_only": false,
+        "passes_minimax_static_margin_and_unloaded_speed_only": false
+      },
+      {
+        "base_height_m": 0.135,
+        "stride_per_cycle_m": 0.04,
+        "foot_lift_m": 0.012,
+        "target_speed_m_s": 0.05,
+        "cycle_duration_s": 0.7999999999999999,
+        "kinematically_valid": true,
+        "static_peak_abs_joint_torque_nm": 0.11909849984809263,
+        "largest_joint_static_rms_nm": 0.07103671901450263,
+        "minimum_margin_to_estimated_continuous": 0.8396411384488275,
+        "minimax_allocation_peak_joint_torque_nm": 0.11909849984809263,
+        "minimax_allocation_margin_to_estimated_continuous": 0.8396411384488275,
+        "proposed_1_5_static_margin_met": false,
+        "target_peak_joint_speed_rad_s": 10.862435637955286,
+        "target_peak_speed_fraction_of_published_no_load": 1.007073976193097,
+        "target_peak_base_translation_acceleration_m_s2": 30.049292773154,
+        "passes_static_margin_and_unloaded_speed_only": false,
+        "passes_minimax_static_margin_and_unloaded_speed_only": false
+      },
+      {
+        "base_height_m": 0.138,
+        "stride_per_cycle_m": 0.02,
+        "foot_lift_m": 0.012,
+        "target_speed_m_s": 0.05,
+        "cycle_duration_s": 0.39999999999999997,
+        "kinematically_valid": true,
+        "static_peak_abs_joint_torque_nm": 0.09882658326338906,
+        "largest_joint_static_rms_nm": 0.05776775795460231,
+        "minimum_margin_to_estimated_continuous": 1.011873492919244,
+        "minimax_allocation_peak_joint_torque_nm": 0.09882658326338906,
+        "minimax_allocation_margin_to_estimated_continuous": 1.011873492919244,
+        "proposed_1_5_static_margin_met": false,
+        "target_peak_joint_speed_rad_s": 19.152290610625986,
+        "target_peak_speed_fraction_of_published_no_load": 1.7756398381826917,
+        "target_peak_base_translation_acceleration_m_s2": 100.72935347288522,
+        "passes_static_margin_and_unloaded_speed_only": false,
+        "passes_minimax_static_margin_and_unloaded_speed_only": false
+      },
+      {
+        "base_height_m": 0.138,
+        "stride_per_cycle_m": 0.03,
+        "foot_lift_m": 0.012,
+        "target_speed_m_s": 0.05,
+        "cycle_duration_s": 0.6,
+        "kinematically_valid": true,
+        "static_peak_abs_joint_torque_nm": 0.10566144599973568,
+        "largest_joint_static_rms_nm": 0.062320355646072675,
+        "minimum_margin_to_estimated_continuous": 0.9464189994167803,
+        "minimax_allocation_peak_joint_torque_nm": 0.10566144599973568,
+        "minimax_allocation_margin_to_estimated_continuous": 0.9464189994167803,
+        "proposed_1_5_static_margin_met": false,
+        "target_peak_joint_speed_rad_s": 14.007123885871755,
+        "target_peak_speed_fraction_of_published_no_load": 1.2986231096720664,
+        "target_peak_base_translation_acceleration_m_s2": 49.065542347086875,
+        "passes_static_margin_and_unloaded_speed_only": false,
+        "passes_minimax_static_margin_and_unloaded_speed_only": false
+      },
+      {
+        "base_height_m": 0.138,
+        "stride_per_cycle_m": 0.04,
+        "foot_lift_m": 0.012,
+        "target_speed_m_s": 0.05,
+        "cycle_duration_s": 0.7999999999999999,
+        "kinematically_valid": true,
+        "static_peak_abs_joint_torque_nm": 0.1109388869779541,
+        "largest_joint_static_rms_nm": 0.06628423398527679,
+        "minimum_margin_to_estimated_continuous": 0.9013971811333579,
+        "minimax_allocation_peak_joint_torque_nm": 0.1109388869779541,
+        "minimax_allocation_margin_to_estimated_continuous": 0.9013971811333579,
+        "proposed_1_5_static_margin_met": false,
+        "target_peak_joint_speed_rad_s": 11.690824354166827,
+        "target_peak_speed_fraction_of_published_no_load": 1.0838752338552033,
+        "target_peak_base_translation_acceleration_m_s2": 30.05179157877086,
+        "passes_static_margin_and_unloaded_speed_only": false,
+        "passes_minimax_static_margin_and_unloaded_speed_only": false
+      },
+      {
+        "base_height_m": 0.14,
+        "stride_per_cycle_m": 0.02,
+        "foot_lift_m": 0.012,
+        "target_speed_m_s": 0.05,
+        "cycle_duration_s": 0.39999999999999997,
+        "kinematically_valid": true,
+        "static_peak_abs_joint_torque_nm": 0.09336243809253346,
+        "largest_joint_static_rms_nm": 0.05450685330965101,
+        "minimum_margin_to_estimated_continuous": 1.0710945648279657,
+        "minimax_allocation_peak_joint_torque_nm": 0.09336243809253346,
+        "minimax_allocation_margin_to_estimated_continuous": 1.0710945648279657,
+        "proposed_1_5_static_margin_met": false,
+        "target_peak_joint_speed_rad_s": 20.220395621473752,
+        "target_peak_speed_fraction_of_published_no_load": 1.8746655812220963,
+        "target_peak_base_translation_acceleration_m_s2": 100.77676851231882,
+        "passes_static_margin_and_unloaded_speed_only": false,
+        "passes_minimax_static_margin_and_unloaded_speed_only": false
+      },
+      {
+        "base_height_m": 0.14,
+        "stride_per_cycle_m": 0.03,
+        "foot_lift_m": 0.012,
+        "target_speed_m_s": 0.05,
+        "cycle_duration_s": 0.6,
+        "kinematically_valid": true,
+        "static_peak_abs_joint_torque_nm": 0.09987294292065581,
+        "largest_joint_static_rms_nm": 0.05893298808737385,
+        "minimum_margin_to_estimated_continuous": 1.0012721871973387,
+        "minimax_allocation_peak_joint_torque_nm": 0.09987294292065581,
+        "minimax_allocation_margin_to_estimated_continuous": 1.0012721871973387,
+        "proposed_1_5_static_margin_met": false,
+        "target_peak_joint_speed_rad_s": 14.807507582273873,
+        "target_peak_speed_fraction_of_published_no_load": 1.3728279766541402,
+        "target_peak_base_translation_acceleration_m_s2": 49.073666461063496,
+        "passes_static_margin_and_unloaded_speed_only": false,
+        "passes_minimax_static_margin_and_unloaded_speed_only": false
+      },
+      {
+        "base_height_m": 0.14,
+        "stride_per_cycle_m": 0.04,
+        "foot_lift_m": 0.012,
+        "target_speed_m_s": 0.05,
+        "cycle_duration_s": 0.7999999999999999,
+        "kinematically_valid": true,
+        "static_peak_abs_joint_torque_nm": 0.10467032373393087,
+        "largest_joint_static_rms_nm": 0.06271908347612774,
+        "minimum_margin_to_estimated_continuous": 0.9553806316124263,
+        "minimax_allocation_peak_joint_torque_nm": 0.10467032373393087,
+        "minimax_allocation_margin_to_estimated_continuous": 0.9553806316124263,
+        "proposed_1_5_static_margin_met": false,
+        "target_peak_joint_speed_rad_s": 12.386456940776718,
+        "target_peak_speed_fraction_of_published_no_load": 1.1483684560307947,
+        "target_peak_base_translation_acceleration_m_s2": 30.045583523479007,
+        "passes_static_margin_and_unloaded_speed_only": false,
+        "passes_minimax_static_margin_and_unloaded_speed_only": false
+      }
+    ]
+  },
+  "limitations": [
+    "Masses and inertias remain assembly estimates. The derivative screen includes the compiled model's armature, which may still be a provisional value.",
+    "No actuator torque-speed coupling, delay, friction, supply droop, thermal model or tracking controller is included in these demand calculations.",
+    "The smooth IK illustration was designed to explain support transfer, not optimized for torque or speed. Its feasibility must not be equated with quadruped architecture feasibility.",
+    "Faster retiming multiplies joint speed by inverse cycle duration and inertial accelerations approximately by its square. The 0.05 m/s target needs a new gait, a longer stride, or explicit dynamic optimization if this retiming fails.",
+    "No RL training, forward walking rollout, threshold traversal or real hardware validation is performed."
+  ]
+}

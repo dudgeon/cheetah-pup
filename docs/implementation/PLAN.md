@@ -8,8 +8,9 @@ infrastructure as possible. The owner is learning robotics RL for the first time
 **motor characterization is not part of the project**. Confirmed requirements and
 provisional choices are separated in [DECISIONS.md](DECISIONS.md).
 
-The research and requirements interview are complete, and the first primitive model
-and screening tools are implemented. Detailed mechanical CAD, an electrical design, a learned quadruped policy,
+The research and requirements interview are complete. The refined shaft-anchored
+assembly study, STEP export, full-cycle load screens and pinned BAM CPU adapter
+are implemented. Detailed manufacturing CAD, an electrical design, a learned quadruped policy,
 and demonstrated hardware performance remain future work. A geometric or quasi-static
 result is not proof that the robot can walk or that a published servo fit transfers.
 
@@ -38,8 +39,8 @@ choices do not need another interview.
 | Stage | Dependency and agent deliverables | Exit evidence / owner involvement |
 |---|---|---|
 | **0 — Research and requirements** | Pinned upstreams; source corrections; active decisions and this plan | Completed baseline. Preserve the other agent's work and upstream asset boundaries. |
-| **1 — Primitive robot and sizing** | Parametric MJCF, frame/joint contract, analytical kinematics, component masses, support/load calculations, reproducible report | Validate mirrored legs and FK/Jacobian first; workspace sweeps, self-collision and packaging remain required follow-ups. Report feasible and rejected parameter sets with the assumptions that decided them. This is the first implementation slice. |
-| **2 — Actuator and training foundation** | From stage 1: exact motor/rail/fit compatibility record; coherent software lock; BAM CPU/GPU parity check; runnable local replay and cloud smoke-job package | Published model is usable without owner identification; no hidden ideal-actuator substitution. Reproduce reset/step/checkpoint/export/replay. Paid job execution waits for the exact capped job to be approved. |
+| **1 — Primitive robot and sizing** | Parametric MJCF, frame/joint contract, analytical kinematics, component masses, support/load calculations, reproducible report | Validate mirrored legs and FK/Jacobian first; sampled assembly and port-clearance audits are now implemented, including rejected poses; detailed fastener/cable design and collision-aware RL workspace remain open. Report feasible and rejected parameter sets with the assumptions that decided them. This is the first implementation slice. |
+| **2 — Actuator and training foundation** | From stage 1: exact motor/rail/fit compatibility record; coherent software lock; BAM CPU/GPU parity check; runnable local replay and cloud smoke-job package | CPU adapter and upstream parity are implemented; a 60 s constant-target stand passes at 5 V/P400. Stock 5 V fit/firmware provenance and CPU/GPU parity remain open. Published model must be usable without owner identification; no hidden ideal-actuator substitution. Reproduce reset/step/checkpoint/export/replay. Paid job execution waits for the exact capped job to be approved. |
 | **3 — Learned stand and slow walk** | From stages 1–2: quadruped task, observation/action contract, reward/curriculum, randomization, PPO training, ONNX export, fixed evaluation suite | Pass the simulation gates below using the selected actuator law; publish configuration, weights, metrics and videos together. Failures drive geometry or control changes before detailed CAD. |
 | **4 — Manufacturable design and prototype basket** | From stage 3: original parametric CAD, STEP/STL, mass/inertia update, wiring diagram, selected compute/sensor/power parts, itemized prototype basket | Packaging/DFM review; CAD-based simulation re-evaluation; documented power and bus budgets. Owner can review STEP and print plan. Approve concrete purchases only after evidence is ready. |
 | **5 — Off-the-shelf prototype and runtime** | From stage 4: assembly guide, drivers, policy runner, telemetry, motor cutoff, fault handling, progressive bring-up instructions | Owner assembles and records normal checks. Agent verifies mappings, real IO timing, rail behavior, supported stand, then short free walks. No actuator fitting. This validates interfaces before custom PCB manufacture. |
@@ -73,24 +74,52 @@ motor settings, observation timing or supply assumptions used in training.
    promising ones. No learned policy or physical feasibility claim follows from this
    slice alone.
 
-The first implemented candidate uses a 160 × 70 × 45 mm torso primitive,
-70/75 mm upper/lower links, a 25 mm hip lateral offset, 8 mm foot radius and a
-0.613 kg component allowance. These are simulated geometry assumptions, not exterior dimensions
-or verified servo packaging. Its nominal hip/knee angles are 0.4/−0.8 rad. The
-implementation paths are `config/robot.json`, `src/cheetah_pup/`,
-`models/cheetah_pup_flat.xml`, `models/cheetah_pup_threshold.xml`, and
-`reports/primitive-validation.{json,md}`. Use the generated report for actual checks
-and results; do not mark a gate passed because its file exists. The initial primitive
-position controller is an idealized diagnostic tool, not BAM or a learned policy.
+The current model has a **112 × 90 × 45 mm central chassis**, hip roll origins
+±60mm fore/aft and±35mm laterally, a24 mm fore/aft outward pitch-shaft offset,
+25 mm lateral offset,70/75 mm upper/lower links and8 mm foot radius. This chassis
+size is not the complete robot exterior. The component allowance remains613 g.
+The earlier 160 mm-long solid torso and centered motor boxes are superseded.
 
-**Current evidence:** 26 tests pass, the FK/Jacobian checks agree with MuJoCo,
-and 45 combinations of stance, link length and nonmotor mass are screened. The
-neutral four-foot pose requires approximately 0.047 N·m peak static torque. Lifting
-a front foot without a body shift raises that to about 0.086 N·m, below the 0.10
-N·m estimate but short of the proposed 1.5× margin. Lifting a rear foot in that same
-pose has no feasible vertical static equilibrium. These are reasons to design and
-evaluate body shifts; they do not reject all XL330 gaits or prove a workable one.
-Workspace/clearance checks and a realistic actuator integration remain open.
+**Physical assembly refinement:** manufacturer drawings establish20×34×23 mm
+casings plus3 mm horns, with a7.5 mm offset between shaft and casing center along
+the long direction. Manufacturer reference COM/full tensors now rotate with each
+housing. Roll shafts face fore/aft; hip/knee shafts face outward left/right. Knee
+casing tails point downward to clear the shoulder. Original cradle slots reserve
+space around the STEP-verified two side sockets.83 original solids are exported
+as a named STEP assembly, verified against MuJoCo and after STEP readback.
+
+**Current evidence:** 55tests pass. All twelve modeled axes align with physical
+shaft lines. The neutral pose and 192 sampled revised-crawl poses clear solid and
+reserved-port envelopes. The earlier deep/full-shift crawl and random broad
+joint-box samples have collisions; retain those failures. Printed-part screw
+engagement, support bearings, stiffness, mated connectors and flexible-wire routing
+remain detailed-CAD work. A collision-free sample set is not a proof of the full
+joint workspace.
+
+**Actuation and motion:** the pinned BAM CPU adapter explicitly uses5 V/P400
+(manufacturer default),1.75 A model winding-current limit and20 ms command delay.
+It matches upstream on a1,500 step loaded-joint replay. A60 s constant-target stand
+passes the defined pose/contact screen; the previous P200 setting fails and remains
+recorded. This is a forward simulation result, not learned standing or hardware validation.
+Stock 5 V calibration and firmware equivalence remain incomplete.
+
+The revised kinematic crawl uses140 mm body height and 25% of the original COM
+shift. Its full-cycle static peak is0.09336 N·m, only 1.07×the 0.10 N·m estimate,
+short of the proposed1.5× margin. Ideal minimax contact-load allocation does not
+reduce its limiting three-foot load. Retiming its20 mm stride to0.05 m/s requires
+1.88×published unloaded motor speed. None of the 15tested height/stride variants
+meets both scalar screens, and alternative variants are not all collision-audited.
+These findings require a smoother controller or geometry/mass/component changes;
+they do not prove every XL330 quadruped is infeasible.
+
+Current artifacts: [refinement summary](../../reports/refinement-summary.md),
+[assembly audit](../../reports/assembly-validation.md),
+[actuator contract](ACTUATOR.md),
+[full-cycle loads](../../reports/gait-load-validation.md),
+[STEP study](../../models/cheetah_pup_assembly.step).
+The ordinary generated XML retains ideal PD for diagnostic comparison; the BAM
+adapter converts it explicitly. No training run may silently substitute one for
+the other.
 
 The first result should answer: **what geometry and total mass are plausible enough
 to justify integrating the published actuator model?** It may answer that the leading
@@ -156,8 +185,8 @@ avoid spending the remaining margin on optional perception hardware.
 dependency lock, model/config hashes, seed, actuator parameter hash, commands and
 evaluation version with each run. Microduck's reviewed stack uses Python 3.12, mjlab
 1.3.0, Warp 1.12.0 and Torch 2.9.1; these are a starting compatibility set, not permission
-to combine arbitrary newer packages. Its BAM lock differs from this repository's
-gitlink. Record the selected dependency explicitly and verify both local CPU replay
+to combine arbitrary newer packages. Its BAM lock differs from the legacy `vendor/bam`
+gitlink; the added `vendor/bam_microduck` pins exactly 62bd8ce12154340be97e06f7f41a0ca8f116d967. Record the selected dependency explicitly and verify both local CPU replay
 and CUDA execution. [Reviewed dependency configuration](https://github.com/pollen-robotics/microduck_rl/blob/29e887ecfbf5d37144759e5a9f8a176dfb83d547/pyproject.toml),
 [lockfile](https://github.com/pollen-robotics/microduck_rl/blob/29e887ecfbf5d37144759e5a9f8a176dfb83d547/uv.lock).
 
@@ -176,8 +205,10 @@ No perfect simulated base linear velocity, terrain map or contact state goes to 
 actor unless the real robot can supply an equivalent estimate. The critic may use
 privileged information during training; deployment must not depend on it.
 
-**Learning sequence.** Start with joint-limit-respecting standing resets and stable
-standing; add commanded weight shift and slow walking; then turns, varied friction,
+**Learning sequence.** Start with collision-free standing resets and stable
+standing. Begin exploratory flat-ground commands near 0.01 m/s, then work toward
+the 0.05 m/s target; this is a learning curriculum, not a reduction of the terrain goals.
+Add add commanded weight shift and slow walking; then turns, varied friction,
 small perturbations and thresholds. Use quadruped-specific rewards for command
 tracking, upright posture and useful foot clearance, with costs for falls, slipping,
 body strikes, excessive action changes and actuator saturation. Inspect behavior for

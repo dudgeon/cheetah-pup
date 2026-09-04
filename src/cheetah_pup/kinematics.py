@@ -29,9 +29,16 @@ def _chain(config: dict, leg_name: str, q) -> tuple:
         co, si = np.cos(angle), np.sin(angle)
         return np.array([[co, 0, si], [0, 1, 0], [-si, 0, co]])
 
-    origin = np.array([leg["front"] * geom["hip_x"],
-                       leg["side"] * geom["hip_y"], geom["hip_z"]])
-    lateral = np.array([0, leg["side"] * geom["hip_offset"], 0])
+    origin = np.array(
+        [leg["front"] * geom["hip_x"], leg["side"] * geom["hip_y"], geom["hip_z"]]
+    )
+    lateral = np.array(
+        [
+            leg["front"] * geom.get("hip_fore_aft_offset", 0),
+            leg["side"] * geom["hip_offset"],
+            0,
+        ]
+    )
     upper = pitch(b) @ np.array([0, 0, -geom["upper_length"]])
     lower = pitch(b + c) @ np.array([0, 0, -geom["lower_length"]])
     return origin, roll, lateral, upper, lower
@@ -51,8 +58,10 @@ def leg_jacobian(config: dict, leg_name: str, q) -> np.ndarray:
     _, roll, lateral, upper, lower = _chain(config, leg_name, q)
     axis_x = np.array([1.0, 0.0, 0.0])
     axis_y = np.array([0.0, 1.0, 0.0])
-    return np.column_stack((
-        np.cross(axis_x, roll @ (lateral + upper + lower)),
-        roll @ np.cross(axis_y, upper + lower),
-        roll @ np.cross(axis_y, lower),
-    ))
+    return np.column_stack(
+        (
+            np.cross(axis_x, roll @ (lateral + upper + lower)),
+            roll @ np.cross(axis_y, upper + lower),
+            roll @ np.cross(axis_y, lower),
+        )
+    )
