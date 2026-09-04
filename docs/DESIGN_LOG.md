@@ -3,6 +3,23 @@
 Dated record of decisions, milestones, and findings. Newest first. The decision table in
 `docs/HANDOFF.md` §3 is the summary; this log keeps the reasoning and the state at the time.
 
+## 2026-09-04 — RL environment built (DR-03, Fable 5.1)
+
+- **Stack decision for Phase 1**: MuJoCo Playground (MJX, JAX backend on CPU here; `--impl warp`
+  for GPU) + Brax PPO — the lineage Open Duck Mini trained on, installable in this sandbox. mjlab
+  remains the alternative for Phase 5 if Warp on the cloud GPU is preferred.
+- **Environment** (`cheetah_pup/rl/`): joystick velocity-tracking task modeled on Playground's
+  Go1 env (same 12-DOF layout), with the real robot's sensor set only in the policy observation,
+  servo slew limit on motor targets, rewards rescaled for ~1 N·m torques and ~0.15 m/s speeds,
+  domain randomization including servo gain and torque-limit spread. Details in
+  `docs/design/03-rl-environment.md`.
+- **Model variant** `sim/cheetah_pup_rl.xml`: feet-only collisions, IMU frame sensors, foot
+  contact sensors (work under the MJX JAX backend), `home` keyframe.
+- **Verified on CPU**: 4 env tests pass (obs 49 / privileged 116, finite reset/step, slew limit,
+  fall termination); PPO smoke run — see below.
+- **Licensing note**: Open Duck Playground's env files carry Apache-2.0 headers even though the
+  repo lacks a LICENSE file; ours is written against mujoco_playground's own Apache-2.0 code.
+
 ## 2026-09-04 — Design locked (A · M) and first MuJoCo validation (Fable 5.1)
 
 - **Decision (owner, in chat)**: "All of the defaults look fine" on the DR-01 page → candidate

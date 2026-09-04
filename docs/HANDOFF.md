@@ -1,20 +1,20 @@
 # Cheetah Pup — Handoff Document
 
-**Status** (2026-09-04): Phase 1 nearly complete. Research done, architecture decided, design
-library built and tested, DR-01 candidates reviewed, **design locked (A · M)**, MuJoCo model
-generated and validated open-loop (stands, walks, trots). **Next: the RL environment** so training
-can start on cloud GPU.
+**Status** (2026-09-04): Phase 1 complete. Research done, architecture decided, design library
+built and tested, DR-01 candidates reviewed, **design locked (A · M)**, MuJoCo model generated and
+validated open-loop (DR-02), and the **RL environment built and smoke-tested on CPU (DR-03)**.
+**Next: the first cloud-GPU training run**, then Phase 2 CAD in parallel.
 
 ## 0. Progress
 
 | Phase | State | Where |
 |---|---|---|
 | 0 · Repo & tooling | done | this repo; `vendor/README.md` |
-| 1 · Kinematic validation | **design locked; sim model validated (DR-02); RL environment in progress** | `docs/design/locked.json`, `cheetah_pup/mjcf.py`, `sim/cheetah_pup.xml`, `docs/design/02-sim-validation.md`; DR-01 review https://claude.ai/code/artifact/6b9c92f0-98d5-4cf1-928c-98a28d699ba4; DR-02 playback https://claude.ai/code/artifact/2db54b1d-2707-4034-895f-95bec2b86281 |
+| 1 · Kinematic validation | **done** — design locked; sim model validated (DR-02); RL environment built (DR-03) | `docs/design/locked.json`, `cheetah_pup/mjcf.py`, `sim/cheetah_pup.xml`, `docs/design/02-sim-validation.md`, `docs/design/03-rl-environment.md`, `cheetah_pup/rl/`; DR-01 review https://claude.ai/code/artifact/6b9c92f0-98d5-4cf1-928c-98a28d699ba4; DR-02 playback https://claude.ai/code/artifact/2db54b1d-2707-4034-895f-95bec2b86281 |
 | 2 · Mechanical CAD | not started (build123d confirmed working here) | — |
 | 3 · Electrical / PCB | not started; volumes and power rails fixed in the design library | `cheetah_pup/electronics.py` |
 | 4 · Firmware | not started | — |
-| 5 · RL training | not started; STS3215 actuator model available from BAM | `vendor/bam` |
+| 5 · RL training | environment ready (`cheetah_pup/rl/`); first GPU run pending; BAM actuator model to add | `docs/design/03-rl-environment.md`, `vendor/bam` |
 | 6 · Bring-up | not started | — |
 
 Keep `docs/DESIGN_LOG.md` current: one dated entry per decision or milestone.
@@ -255,19 +255,20 @@ real failure modes.
 
 ## 8. Immediate next steps
 
-1. **RL environment** (`cheetah_pup/rl/`): MJX/MuJoCo Playground env over `sim/cheetah_pup.xml`
-   — observations (IMU orientation + gyro, joint positions/velocities, last action, velocity
-   command), 12-DOF PD position-target actions at 50 Hz, trot/walk reward terms (velocity
-   tracking, height, orientation, foot clearance, action smoothness, torque/energy penalties),
-   termination on falls, domain randomization hooks (mass, friction, servo gains, latency, BAM
-   backlash). Smoke-test on CPU here; train on cloud GPU (§4.3: mjlab is the closer Microduck
-   match, Playground the lower-friction fallback).
+1. **First GPU training run** (owner's cloud credits): `pip install -e ".[sim,rl]"` plus
+   `jax[cuda12]` and `mujoco-warp` on the instance, then
+   `python -m cheetah_pup.rl.train --impl warp --num-timesteps 100000000 --num-envs 4096`.
+   Evaluate the checkpoint in `sim/cheetah_pup.xml` (full collisions) and record a policy-driven
+   run for the DR-02 playback page. Tune reward scales from what the first policy does wrong.
 2. **Actuator realism**: swap the PD approximation for BAM's MuJoCo actuator model
-   (`vendor/bam`, native STS3215 @ 7.4 V params) before the real training runs.
-3. **Phase 2 kickoff (parallel)**: build123d parametric CAD from `locked()` — servo pockets,
+   (`vendor/bam`, native STS3215 @ 7.4 V params: rate-limited target, extended friction, backlash)
+   before the runs that will be deployed.
+3. **Policy export**: ONNX of the policy MLP + observation normalization for the Raspberry Pi
+   runtime (Phase 4); Open Duck's `export_onnx.py` shows the Brax-params-to-ONNX path.
+4. **Phase 2 kickoff (parallel)**: build123d parametric CAD from `locked()` — servo pockets,
    bearing points, wire routes, print splits — then STEP to the owner for the Fusion 360 pass;
    re-derive MJCF mass properties from CAD.
-4. Keep this document, `docs/DESIGN_LOG.md`, and the task list current as decisions get made.
+5. Keep this document, `docs/DESIGN_LOG.md`, and the task list current as decisions get made.
 
 ---
 
