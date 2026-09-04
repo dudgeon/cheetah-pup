@@ -1,5 +1,10 @@
 # Cheetah Pup
 
+> **Independent Microduck research branch:** see
+> [`docs/microduck-review/README.md`](docs/microduck-review/README.md) for updated
+> sources, additional submodules, and the owner's requirement to avoid custom servo
+> characterization. The original handoff below is retained for comparison.
+
 An experimental, hobbyist-scale quadruped robot for reinforcement-learning research:
 Mini-Cheetah-style 12-DOF body geometry and leg kinematics, built with Feetech
 STS3215-class smart servos and much of the surrounding stack (power, sensors, training
