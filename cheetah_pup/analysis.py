@@ -28,9 +28,9 @@ def nominal_pose(p: DesignParams, front: bool = True):
 
 
 def structure_masses(p: DesignParams) -> dict:
-    shell_area = 2 * (p.shell_length * (p.abad_to_abad + 0.025)
+    shell_area = 2 * (p.shell_length * p.shell_width
                       + p.shell_length * p.body_height
-                      + (p.abad_to_abad + 0.025) * p.body_height)
+                      + p.shell_width * p.body_height)
     shell = shell_area * SHELL_THICKNESS * PLA_DENSITY * SHELL_OPENING_FACTOR
     thigh = THIGH_LINEAR_MASS * p.thigh + 0.008
     shank = SHANK_LINEAR_MASS * p.shank + 0.005
@@ -53,12 +53,17 @@ def mass_model(p: DesignParams) -> dict:
     def add(name, m, x, y, z):
         comps.append({"name": name, "mass": m, "pos": (x, y, z)})
 
+    # Layout (Phase 2 CAD): battery transverse on the floor between the abad servo cradles, the Pi 5
+    # transverse above it on standoffs, the custom PCB (with the IMU) under the lid over the front
+    # servos, wiring spread through the body.
+    floor = p.body_z_offset - p.body_height / 2 + p.wall
     add("shell", sm["shell"], 0.0, 0.0, p.body_z_offset)
-    add(BATTERY_2S.name, BATTERY_2S.mass, 0.0, 0.0, p.body_z_offset - p.body_height / 2 + p.wall + BATTERY_2S.size[2] / 2)
-    top_z = p.body_z_offset - p.body_height / 2 + p.wall + sv.width + 0.002 + PI5.size[2] / 2
-    add(PI5.name, PI5.mass, -0.5 * (p.shell_length / 2 - PI5.size[0] / 2 - p.wall), 0.0, top_z)
-    add(PCB.name, PCB.mass, 0.5 * (p.shell_length / 2 - PCB.size[0] / 2 - p.wall), 0.0, top_z)
-    add(IMU.name, IMU.mass, 0.0, 0.0, p.body_z_offset)
+    add(BATTERY_2S.name, BATTERY_2S.mass, 0.0, 0.0, floor + BATTERY_2S.size[2] / 2)
+    add(PI5.name, PI5.mass, 0.0, 0.0, floor + BATTERY_2S.size[2] + 0.003 + PI5.size[2] / 2)
+    pcb_x = p.shell_length / 2 - p.wall - PCB.size[0] / 2
+    pcb_z = p.body_z_offset + p.body_height / 2 - p.wall - 0.004 - PCB.size[2] / 2
+    add(PCB.name, PCB.mass, pcb_x, 0.0, pcb_z)
+    add(IMU.name, IMU.mass, pcb_x, 0.0, pcb_z)
     add("wiring", WIRING_MASS, 0.0, 0.0, p.body_z_offset)
 
     for leg in LEGS:
@@ -171,20 +176,21 @@ def _footprint(item, bay_x: float, bay_y: float):
 def packaging_report(p: DesignParams) -> dict:
     """Does the electronics fit in the shell around the four abad servos?
 
-    Two-layer layout: bottom layer = abad servos in the corners with the battery between them;
-    top layer = Pi 5 and the custom PCB in a row along x, each turned whichever way fits best.
+    Layout (Phase 2 CAD): the abad servos sit in the four corners against the end walls; the battery
+    lies on the floor in the centre bay between the front and rear servo cradles with the Pi 5
+    stacked above it; the custom PCB hangs from the lid over one pair of servos.
     """
     sv = STS3215
     inner_len = p.shell_length - 2 * p.wall
-    inner_wid = p.abad_to_abad + 2 * sv.shaft_from_end + 2 * 0.002  # shell hugs the abad servos
+    inner_wid = p.shell_width - 2 * p.wall
     inner_h = p.body_height - 2 * p.wall
-    bottom_gap = p.shell_length - 2 * sv.height - 2 * p.wall          # between front/rear abad servos
-    gap = 0.008
+    cradle = sv.height + 0.0021 + 0.0025                               # case depth + idler + rib
+    bottom_gap = p.shell_length - 2 * p.wall - 2 * cradle              # centre bay length
     battery = _footprint(BATTERY_2S, bottom_gap, inner_wid)
-    pi = _footprint(PI5, inner_len, inner_wid)
-    pcb = _footprint(PCB, inner_len, inner_wid)
-    top_needed = (pi[0] if pi else PI5.size[0]) + (pcb[0] if pcb else PCB.size[0]) + gap
-    height_needed = sv.width + 0.002 + PI5.size[2]
+    pi = _footprint(PI5, bottom_gap, inner_wid)
+    pcb = _footprint(PCB, cradle + 0.006, inner_wid)                   # may overhang the cradle a little
+    stack_needed = BATTERY_2S.size[2] + 0.003 + PI5.size[2] + 0.004    # floor to lid over the centre bay
+    pcb_needed = sv.width / 2 + 0.003 + PCB.size[2] + 0.004            # servo top, clearance, PCB, lid bosses
     return {
         "inner_length": inner_len,
         "inner_width": inner_wid,
@@ -192,12 +198,12 @@ def packaging_report(p: DesignParams) -> dict:
         "bottom_gap": bottom_gap,
         "battery_fits": battery is not None,
         "battery_footprint": battery,
-        "top_needed": top_needed,
-        "top_fits": pi is not None and pcb is not None and top_needed <= inner_len,
+        "top_needed": stack_needed,
+        "top_fits": pi is not None and stack_needed <= inner_h,
         "pi_footprint": pi,
         "pcb_footprint": pcb,
-        "height_needed": height_needed,
-        "height_fits": inner_h >= height_needed,
+        "height_needed": pcb_needed,
+        "height_fits": pcb is not None and (p.body_height / 2 - p.wall) >= pcb_needed,
     }
 
 

@@ -3,6 +3,41 @@
 Dated record of decisions, milestones, and findings. Newest first. The decision table in
 `docs/HANDOFF.md` §3 is the summary; this log keeps the reasoning and the state at the time.
 
+## 2026-09-05 — Phase 2 CAD first pass; the sim now runs on CAD mass properties (DR-04)
+
+- **Owner's ask (in chat, away from the computer)**: another round of refinement of the 3D
+  model to the next level of detail, then use it in the simulation.
+- **CAD** (`cad/`, build123d 0.11): STS3215 modelled from Open Duck Mini v2's case meshes
+  (`cad/servo.py`: case, step, gear bump, Ø20 horn disc, idler disc, top-face M2 pattern, horn
+  pattern), a servo-frame helper so every servo is placed by where its gear end and horn point;
+  parts built in their MuJoCo body frames (`cad/parts.py`): trunk tub and lid, abad bracket,
+  thigh with the knee-servo cradle, shank, TPU foot; assembly, STEP/STL export, and per-body
+  mass properties (`cad/assembly.py`). Interface convention: 3 mm plate on the servo top-face
+  step with 4 × M2, Ø21 bore around the horn disc as a plain bearing, moving part on the horn's
+  r = 7 pattern.
+- **Packaging refinements found while modelling** (kinematics unchanged): abad link 43 mm,
+  abad axes 74 mm apart, hip x-offset 18 mm, feet 3.25 mm outboard of the knee plane; battery on
+  the floor with the Pi 5 above it in the centre bay, PCB + IMU hung from the lid over the front
+  abad servos; shell 144 × 102 × 62. `cheetah_pup/design.py`'s locked preset and
+  `docs/design/locked.json` carry the new values; packaging checks pass.
+- **Masses**: printed parts 451 g; robot 1.391 kg (tub 169 g, lid 73 g, brackets 13.6 g, thighs
+  24.5 g, shanks 9.3 g, feet 5 g) — 1.6 % under the 1.413 kg parametric estimate. The tub came
+  out heavier than the parametric shell (143 g) even after windowing the shelves and ribs.
+- **Sim**: `cheetah_pup/mjcf.py` gained a CAD mode (default for the locked design): explicit
+  `<inertial>` per body, STL meshes as visuals, servo meshes placed from the recorded frames,
+  feet at ±3.25 mm; collisions stay primitive. `sim/cheetah_pup.xml` and the RL variant were
+  regenerated; the RL env loads by path so the mesh directory resolves. Re-validation on the CAD
+  model: stand sag 0.9 mm, droop 0.76°, knee hold 0.249 N·m; open-loop walk 0.024 m/s and trot
+  0.069 m/s over 6 s without falling; leveled trot 0.098 m/s. RL env CPU tests pass (4/4);
+  27 fast tests pass, including CAD-vs-MJCF inertia checks.
+- **Review**: DR-04 https://claude.ai/code/artifact/6b9c8170-cae2-4a28-a494-7ba0548bcc4b (WebGL viewer of the
+  assembly with gait playback from the recordings and a joint sweep for clearances, part and
+  body tables, hardware checklist);
+  `docs/design/04-cad-detail.md`. DR-02 republished with the CAD masses.
+- **Open (§9.10)**: servo hole pattern, horn screw size, idler disc, and bore fit to confirm on a
+  real servo; foot socket, wire clips, fork supports not yet modelled; hip pitch limited to about
+  ±60° by the knee-servo case at the tub corner.
+
 ## 2026-09-04 — RL environment built (DR-03, Fable 5.1)
 
 - **Stack decision for Phase 1**: MuJoCo Playground (MJX, JAX backend on CPU here; `--impl warp`

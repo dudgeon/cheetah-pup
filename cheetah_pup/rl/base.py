@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+
 from typing import Any, Dict, Optional, Union
 
 import jax
@@ -18,13 +20,13 @@ from ..design import locked
 from ..mjcf import build_mjcf
 
 
-def load_xml(xml_path: Optional[str] = None) -> str:
-    """The RL model XML: the file if present, else generated from the locked design."""
+def load_model(xml_path: Optional[str] = None) -> mujoco.MjModel:
+    """The RL model: the XML file if present (loaded by path so its mesh directory resolves), else
+    generated from the locked design."""
     path = C.RL_XML if xml_path is None else xml_path
-    try:
-        return open(path).read()
-    except FileNotFoundError:
-        return build_mjcf(locked(), rl=True)
+    if os.path.exists(path):
+        return mujoco.MjModel.from_xml_path(str(path))
+    return mujoco.MjModel.from_xml_string(build_mjcf(locked(), rl=True))
 
 
 class CheetahPupEnv(mjx_env.MjxEnv):
@@ -38,7 +40,7 @@ class CheetahPupEnv(mjx_env.MjxEnv):
     ) -> None:
         super().__init__(config, config_overrides)
         self._xml_path = str(C.RL_XML if xml_path is None else xml_path)
-        self._mj_model = mujoco.MjModel.from_xml_string(load_xml(xml_path))
+        self._mj_model = load_model(xml_path)
         self._mj_model.opt.timestep = self._config.sim_dt
         self._model_assets = {}
         impl = self._config.get("impl", "jax")

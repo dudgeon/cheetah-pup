@@ -56,6 +56,9 @@ class DesignParams:
     # Transmission
     knee_ratio: float = 1.0      # knee joint torque / knee servo torque (belt or linkage reduction)
     knee_ratio_note: str = ""
+    # Phase 2 packaging details (CAD-derived; the kinematics library treats the foot as being in
+    # the thigh plane, the sim model uses the offset)
+    foot_y_offset: float = 0.0   # m, foot centre outboard of the thigh plane (shank pad + beam jog)
 
     def knee_sign(self, front: bool) -> int:
         """+1 = knee points backward (shank flexes forward), -1 = knee points forward."""
@@ -72,6 +75,11 @@ class DesignParams:
     @property
     def shell_length(self) -> float:
         return self.hip_to_hip - 2 * self.hip_x_offset
+
+    @property
+    def shell_width(self) -> float:
+        """Outer shell width: the abad servos' short ends (10.1 mm past the axis) plus clearance and walls."""
+        return self.abad_to_abad + 2 * (0.0101 + 0.0009 + self.wall)
 
     def ratios(self) -> dict:
         mc = MINI_CHEETAH
@@ -93,15 +101,20 @@ class DesignParams:
 
 # Baseline proportions shared by the candidates (Mini Cheetah ratios, sized to the STS3215 and the
 # electronics bay). Only the knee transmission and the hip cluster differ between A/B/C.
+# Phase 2 (CAD) refinements to the DR-01 baseline, all packaging-driven, kinematics unchanged:
+# abad_link 40 -> 43 mm so the knee servo case clears the shell side wall; hip_x_offset 16 -> 18 mm
+# so the hip servo case clears the abad bracket's back plate; abad_to_abad 70 -> 74 mm so the two
+# abad servo cases at one end of the body do not touch; foot 3.25 mm outboard of the thigh plane.
 _BASE = dict(
     thigh=0.090,
     shank=0.085,
-    abad_link=0.040,
+    abad_link=0.043,
     hip_to_hip=0.180,
-    abad_to_abad=0.070,
-    hip_x_offset=0.016,   # keeps the upright hip-servo case clear of the shell end wall
+    abad_to_abad=0.074,
+    hip_x_offset=0.018,
     body_height=0.062,
     stance_height=0.120,
+    foot_y_offset=0.00325,
 )
 
 PRESETS: dict[str, DesignParams] = {
@@ -135,7 +148,7 @@ SIZES = {"S": 0.85, "M": 1.0, "L": 1.15}
 # environment, CAD) derives from `locked()`; change it only with a new dated design-log entry.
 LOCKED_KEY = "A"
 LOCKED_SIZE = "M"
-LOCKED_NAME = "Cheetah Pup v0 · A direct drive · M (locked 2026-09-04)"
+LOCKED_NAME = "Cheetah Pup v0.1 · A direct drive · M (locked 2026-09-04, Phase 2 packaging refinements)"
 
 
 def locked() -> "DesignParams":

@@ -1,0 +1,481 @@
+<title>Cheetah Pup CAD Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --paper: #F4F3EF; --paper-2: #ECEAE3; --paper-3: #E2DFD6;
+    --ink: #1F2328; --ink-2: #5C626B; --ink-3: #8A8F97;
+    --line: #CBC8BF; --line-2: #B3AFA4;
+    --gold: #B8862B; --gold-ink: #7A5A18; --gold-tint: rgba(184,134,43,.16);
+    --ok: #3E8E5A; --bad: #C0453A;
+    --canvas: #EDEBE4; --grid: #CFCBC0; --grid-2: #A9A497;
+    --display: "Barlow Semi Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+    --body: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+    --mono: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --paper: #1B1D21; --paper-2: #23262B; --paper-3: #2C3037;
+      --ink: #E8E5DD; --ink-2: #ABA79E; --ink-3: #7E7B74;
+      --line: #3B3F46; --line-2: #4C515A;
+      --gold: #E0A83A; --gold-ink: #F0C466; --gold-tint: rgba(224,168,58,.18);
+      --ok: #5DB27A; --bad: #E06A60;
+      --canvas: #202329; --grid: #33373E; --grid-2: #4E535C;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --paper: #1B1D21; --paper-2: #23262B; --paper-3: #2C3037;
+    --ink: #E8E5DD; --ink-2: #ABA79E; --ink-3: #7E7B74;
+    --line: #3B3F46; --line-2: #4C515A;
+    --gold: #E0A83A; --gold-ink: #F0C466; --gold-tint: rgba(224,168,58,.18);
+    --ok: #5DB27A; --bad: #E06A60;
+    --canvas: #202329; --grid: #33373E; --grid-2: #4E535C;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.45; }
+  h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.1; margin: 0; text-wrap: balance; }
+  h1 { font-size: clamp(26px, 3.4vw, 36px); letter-spacing: -.01em; }
+  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-2); margin-bottom: 10px; }
+  h3 { font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+  p { margin: 0; }
+  .muted { color: var(--ink-2); } .small { font-size: 13px; }
+  .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .sheet { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; display: grid; gap: 26px; }
+  .titleblock { display: grid; grid-template-columns: 1fr auto; gap: 22px; align-items: end; border-bottom: 2px solid var(--ink); padding-bottom: 18px; }
+  .eyebrow { font-family: var(--display); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-ink); }
+  .titleblock .lead { display: grid; gap: 10px; }
+  .titleblock .lead p { max-width: 72ch; color: var(--ink-2); }
+  .tb { display: grid; grid-template-columns: repeat(2, minmax(120px, auto)); gap: 8px 22px; border-left: 1px solid var(--line-2); padding-left: 18px; }
+  .tb .k { display: block; font-family: var(--display); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+  .tb .v { display: block; font-family: var(--mono); font-size: 13px; margin-top: 2px; }
+  @media (max-width: 760px) { .titleblock { grid-template-columns: 1fr; } .tb { border-left: 0; padding-left: 0; border-top: 1px solid var(--line-2); padding-top: 12px; } }
+
+  .panel { background: var(--paper-2); border: 1px solid var(--line); }
+  .bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  .seg { display: inline-flex; border: 1px solid var(--line-2); }
+  .seg button { border: 0; border-right: 1px solid var(--line-2); }
+  .seg button:last-child { border-right: 0; }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+  .seg button, .btn { appearance: none; font: inherit; font-family: var(--display); font-weight: 600; font-size: 13px; letter-spacing: .02em; color: var(--ink); background: var(--paper); border: 1px solid var(--line-2); padding: 5px 10px; cursor: pointer; }
+  .btn:hover, .seg button:hover { background: var(--paper-3); }
+  .seg button[aria-pressed="true"]:hover { background: var(--ink); }
+  button:focus-visible, input:focus-visible, select:focus-visible, canvas:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .chk { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: var(--ink-2); cursor: pointer; }
+  .chk input { margin: 0; accent-color: var(--gold); }
+  .bar .live { font-family: var(--mono); font-size: 12px; color: var(--ink-2); margin-left: auto; white-space: nowrap; }
+  .stage { position: relative; }
+  canvas#gl { display: block; width: 100%; height: min(64vh, 600px); background: var(--canvas); touch-action: none; cursor: grab; }
+  canvas#gl:active { cursor: grabbing; }
+  .legend { position: absolute; left: 12px; bottom: 10px; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--ink-2); pointer-events: none; }
+  .legend i { display: inline-block; width: 10px; height: 10px; margin-right: 5px; vertical-align: -1px; border: 1px solid rgba(0,0,0,.25); }
+  .hint { position: absolute; right: 12px; bottom: 10px; font-size: 12px; color: var(--ink-3); pointer-events: none; }
+  .nogl { padding: 40px 20px; text-align: center; color: var(--ink-2); }
+  .pose { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px 22px; padding: 10px 12px; border-top: 1px solid var(--line); }
+  .pose label { display: grid; grid-template-columns: 6ch 1fr 6ch; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-2); }
+  .pose input[type=range] { width: 100%; accent-color: var(--gold); }
+  .pose output { font-family: var(--mono); font-size: 12px; color: var(--ink); text-align: right; }
+  .scrub { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-2); }
+  .scrub input[type=range] { flex: 1; accent-color: var(--gold); }
+
+  .two { display: grid; grid-template-columns: 1.55fr 1fr; gap: 26px; align-items: start; }
+  @media (max-width: 900px) { .two { grid-template-columns: 1fr; } }
+  .tablewrap { overflow-x: auto; }
+  table.data { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  table.data th { font-family: var(--display); font-weight: 600; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--line-2); white-space: nowrap; }
+  table.data td { padding: 7px 8px; border-bottom: 1px solid var(--line); text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; vertical-align: top; }
+  table.data td:first-child, table.data th:first-child { text-align: left; font-family: var(--body); }
+  table.data td.nw { white-space: nowrap; }
+  table.data td.txt { text-align: left; font-family: var(--body); font-size: 13px; color: var(--ink-2); min-width: 26ch; }
+  table.data td.txt b { color: var(--ink); font-weight: 600; }
+  table.data tr.total td { border-top: 1px solid var(--line-2); border-bottom: 0; font-weight: 600; }
+  .stat { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px 18px; margin-bottom: 14px; }
+  .stat .k { font-family: var(--display); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+  .stat .v { font-family: var(--mono); font-size: 18px; margin-top: 2px; }
+  .stat .v small { font-size: 12px; color: var(--ink-2); }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 22px 28px; }
+  dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 5px 14px; font-size: 13.5px; }
+  dt { color: var(--ink-2); } dd { margin: 0; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  ol.verify { margin: 0; padding-left: 22px; display: grid; gap: 8px; max-width: 90ch; font-size: 14px; }
+  ol.verify li::marker { font-family: var(--mono); color: var(--gold-ink); }
+  .notes { font-size: 13px; color: var(--ink-2); border-top: 1px solid var(--line); padding-top: 14px; display: grid; gap: 6px; max-width: 92ch; }
+  code { font-family: var(--mono); font-size: .92em; background: var(--paper-3); padding: 0 4px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="sheet">
+  <header class="titleblock">
+    <div class="lead">
+      <span class="eyebrow">Cheetah Pup · Phase 2 · CAD detail of the locked design</span>
+      <h1>Every printed part, every servo, in the frames the simulator uses</h1>
+      <p>The build123d model of <span class="mono" id="design-name"></span>, exported as STEP and STL, with each body's mass, centre of mass and inertia now feeding the MuJoCo model. Orbit the assembly, replay the recorded open-loop gaits on the real geometry, or sweep the joints to check clearances. The tables below are the numbers the simulator reads; the last section is what to confirm on hardware before printing.</p>
+    </div>
+    <div class="tb">
+      <div><span class="k">Sheet</span><span class="v">DR-04 · CAD detail</span></div>
+      <div><span class="k">Date</span><span class="v" id="tb-date">—</span></div>
+      <div><span class="k">Total mass</span><span class="v" id="tb-mass">—</span></div>
+      <div><span class="k">Printed</span><span class="v" id="tb-printed">—</span></div>
+      <div><span class="k">Commit</span><span class="v" id="tb-commit">—</span></div>
+      <div><span class="k">Units</span><span class="v">mm · g · g·cm²</span></div>
+    </div>
+  </header>
+
+  <section class="panel" aria-label="3D viewer">
+    <div class="bar">
+      <span class="small muted">Show</span><div class="seg" id="mode-seg" role="group" aria-label="Pose"></div>
+      <button class="btn" id="play" hidden>Pause</button>
+      <label class="small muted" id="speed-wrap" hidden>Speed <select id="speed"><option value="0.25">¼×</option><option value="0.5">½×</option><option value="1" selected>1×</option></select></label>
+      <span class="small muted">View</span><div class="seg" id="view-seg" role="group" aria-label="Camera"></div>
+      <span class="small muted">Layers</span>
+      <label class="chk"><input type="checkbox" id="l-tub" checked> Tub</label>
+      <label class="chk"><input type="checkbox" id="l-lid" checked> Lid</label>
+      <label class="chk"><input type="checkbox" id="l-glass" checked> Glass lid</label>
+      <label class="chk"><input type="checkbox" id="l-servos" checked> Servos</label>
+      <label class="chk"><input type="checkbox" id="l-elec" checked> Electronics</label>
+      <label class="chk"><input type="checkbox" id="l-legs" checked> Legs</label>
+      <span class="live" id="live">—</span>
+    </div>
+    <div class="stage">
+      <canvas id="gl" tabindex="0" aria-label="Cheetah Pup assembly, orbit with the pointer or arrow keys"></canvas>
+      <div class="legend">
+        <span><i style="background:#D9D2C1"></i>PLA parts</span>
+        <span><i style="background:#2B2D31"></i>STS3215 servos</span>
+        <span><i style="background:#3A3D42"></i>TPU feet</span>
+        <span><i style="background:#4F6E9E"></i>Battery</span>
+        <span><i style="background:#3D8C7C"></i>Pi 5</span>
+        <span><i style="background:#5F8C3A"></i>PCB + IMU</span>
+      </div>
+      <div class="hint">drag · orbit &nbsp; wheel · zoom &nbsp; shift-drag · pan</div>
+    </div>
+    <div class="scrub" id="scrub-wrap" hidden><span>Frame</span><input type="range" id="scrub" min="0" max="1" step="1" value="0"><span class="mono" id="scrub-live"></span></div>
+    <div class="pose" id="pose-wrap" hidden>
+      <label>Abad <input type="range" id="p-abad" min="-45" max="45" step="1" value="0"><output id="o-abad">0°</output></label>
+      <label>Hip <input type="range" id="p-hip" min="-90" max="90" step="1" value="-45"><output id="o-hip">-45°</output></label>
+      <label>Knee <input type="range" id="p-knee" min="3" max="155" step="1" value="93"><output id="o-knee">93°</output></label>
+      <span class="small muted" style="align-self:center">All four legs follow the sliders; the trunk stays at the stance height, so the feet leave the ground — this mode is for clearances, not balance.</span>
+    </div>
+  </section>
+
+  <div class="two">
+    <section>
+      <h2>Printed parts</h2>
+      <div class="tablewrap"><table class="data" id="parts"></table></div>
+    </section>
+    <section>
+      <h2>Bodies as the simulator sees them</h2>
+      <div class="stat" id="mass-stat"></div>
+      <div class="tablewrap"><table class="data" id="bodies"></table></div>
+      <p class="small muted" style="margin-top:8px">Centre of mass in each body's own frame (the joint at the origin); principal moments about that centre. Each servo is 55 g spread over its case; electronics are uniform boxes; wiring is 60 g in the trunk.</p>
+    </section>
+  </div>
+
+  <section>
+    <h2>Dimensions and interfaces</h2>
+    <div class="cols">
+      <div>
+        <h3>Geometry</h3>
+        <dl id="dl-geom"></dl>
+      </div>
+      <div>
+        <h3>Servo mounting convention</h3>
+        <dl>
+          <dt>Fixed part</dt><dd>3 mm plate on the servo's top-face step</dd>
+          <dt>Case screws</dt><dd>4 × M2, Ø2.4 clearance at (8.3, ±10.25) and (29.0, ±10.25)</dd>
+          <dt>Bearing</dt><dd>Ø20 horn disc in a Ø21 bore, 0.95 mm proud of the plate</dd>
+          <dt>Moving part</dt><dd>4 × Ø2.5 on r = 7 + Ø3.2 centre, on the horn disc</dd>
+          <dt>Idler pocket</dt><dd>Ø20 × 2.1 disc on the case bottom, 0.4 mm clearance</dd>
+          <dt>Servo</dt><dd id="dl-servo">—</dd>
+        </dl>
+      </div>
+      <div>
+        <h3>Electronics bay</h3>
+        <dl>
+          <dt>Battery</dt><dd>70 × 40 × 22 on the floor, rails 44 apart</dd>
+          <dt>Pi 5</dt><dd>85 × 56 transverse, standoffs (±24.5, ±29), 3 mm over the battery</dd>
+          <dt>PCB + IMU</dt><dd>40 × 60 × 8 under the lid at x = 49, bosses (49 ± 15, ±25)</dd>
+          <dt>Lid screws</dt><dd>M2 at (±31, 0) and (0, ±45.5)</dd>
+          <dt>Materials</dt><dd id="dl-mat">—</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Confirm on hardware before printing</h2>
+    <ol class="verify" id="verify"></ol>
+  </section>
+
+  <div class="notes">
+    <p id="notes-files"></p>
+    <p>Regenerate: <code>python -m cad.assembly</code> (STEP, STL, mass properties, viewer meshes) → <code>python -m cheetah_pup.mjcf sim/cheetah_pup.xml</code> and <code>--rl</code> → <code>python -m cheetah_pup.validate</code> → <code>python -m cheetah_pup.build_cad_review</code>. Parts are modelled in their MuJoCo body frames, so the STL files drop into the model without transforms.</p>
+    <p>Gait playback is the open-loop MuJoCo recording (inverse-kinematics targets, no balance feedback) between 3 and 5 s, shown in place. See DR-02 for the full runs and the torque/speed traces.</p>
+  </div>
+</div>
+
+<script>
+const DATA = __DATA_JSON__;
+const $ = id => document.getElementById(id);
+const VW = DATA.viewer, P = DATA.params, LEGS = ["LF", "RF", "LH", "RH"];
+const fmt = (v, d = 1) => Number(v).toFixed(d);
+const deg = r => r * 180 / Math.PI;
+
+// ---------- header + tables
+$("design-name").textContent = P.name;
+$("tb-date").textContent = DATA.meta.generated;
+$("tb-mass").textContent = `${(DATA.mass.total * 1000).toFixed(0)} g`;
+$("tb-printed").textContent = `${(DATA.mass.printed * 1000).toFixed(0)} g`;
+$("tb-commit").textContent = DATA.meta.commit;
+$("dl-servo").textContent = `STS3215, ${(DATA.servo.length*1000).toFixed(1)} × ${(DATA.servo.width*1000).toFixed(1)} × ${(DATA.servo.height*1000).toFixed(1)} mm, ${(DATA.servo.mass*1000).toFixed(0)} g, ${DATA.servo.stall.toFixed(2)} N·m stall`;
+$("dl-mat").textContent = `PLA ${DATA.mass.densities.pla} kg/m³ at ${Object.entries(DATA.mass.infill).filter(([k]) => k !== "tpu").map(([k, v]) => `${k} ${(v*100).toFixed(0)} %`).join(", ")}; TPU ${DATA.mass.densities.tpu} kg/m³ solid`;
+{
+  const mm = v => `${(v * 1000).toFixed(v * 1000 % 1 ? 2 : 0)}`;
+  const rows = [["Thigh / shank", `${mm(P.thigh)} / ${mm(P.shank)}`], ["Abad link", mm(P.abad_link)], ["Hips apart (x)", mm(P.hip_to_hip)],
+    ["Abad axes apart (y)", mm(P.abad_to_abad)], ["Hip x-offset from the end wall", mm(P.hip_x_offset)], ["Shell", `${mm(P.shell_length)} × ${mm(P.shell_width)} × ${mm(P.body_height)}, walls ${mm(P.wall)}`],
+    ["Tub / lid split", "z = +14 above the hip axes"], ["Stance hip height", `${mm(P.stance_height)} (+${mm(P.foot_radius)} foot radius)`], ["Foot outboard of the knee plane", mm(P.foot_y_offset)],
+    ["Nominal pose", `hip ${deg(VW.stance.q_hip).toFixed(1)}°, knee ${deg(VW.stance.q_knee).toFixed(1)}°`]];
+  $("dl-geom").innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
+}
+{
+  const t = $("parts");
+  let html = `<tr><th>Part</th><th>Qty</th><th>Class · solid</th><th>Volume cm³</th><th>Mass g</th><th>Set g</th><th>Print orientation · notes</th></tr>`;
+  let total = 0;
+  for (const r of DATA.parts) {
+    total += r.mass_g * r.qty;
+    html += `<tr><td class="nw">${r.label}</td><td>${r.qty}</td><td class="nw">${r.cls} · ${(r.infill*100).toFixed(0)} %</td><td>${fmt(r.volume_cm3, 1)}</td><td>${fmt(r.mass_g, 1)}</td><td>${fmt(r.mass_g * r.qty, 0)}</td><td class="txt"><b>${r.orientation}.</b> ${r.notes}</td></tr>`;
+  }
+  html += `<tr class="total"><td class="nw">All printed parts</td><td>${DATA.parts.reduce((s, r) => s + r.qty, 0)}</td><td></td><td></td><td></td><td>${fmt(total, 0)}</td><td class="txt"></td></tr>`;
+  t.innerHTML = html;
+}
+{
+  const B = DATA.mass.bodies;
+  const legMass = ["abad", "hip", "knee"].reduce((s, j) => s + B["LF_" + j].mass, 0);
+  $("mass-stat").innerHTML = `<div><span class="k">Trunk</span><div class="v">${(B.trunk.mass*1000).toFixed(0)} <small>g</small></div></div>
+    <div><span class="k">Each leg</span><div class="v">${(legMass*1000).toFixed(0)} <small>g</small></div></div>
+    <div><span class="k">Below the hip</span><div class="v">${((B.LF_hip.mass + B.LF_knee.mass)*1000).toFixed(0)} <small>g</small></div></div>`;
+  let html = `<tr><th>Body</th><th>Mass g</th><th>CoM x, y, z mm</th><th>I₁ I₂ I₃ g·cm²</th></tr>`;
+  for (const name of ["trunk", "LF_abad", "LF_hip", "LF_knee"]) {
+    const b = B[name];
+    html += `<tr><td>${name === "trunk" ? "Trunk (shell, 4 abad servos, electronics)" : name.replace("LF_", "Left-front ") + (name.endsWith("abad") ? " (bracket, hip servo)" : name.endsWith("hip") ? " (thigh, knee servo)" : " (shank, foot)")}</td><td>${(b.mass*1000).toFixed(1)}</td><td class="nw">${b.com.map(v => (v*1000).toFixed(1)).join(", ")}</td><td class="nw">${b.principal.map(v => (v*1e7).toFixed(0)).join(" · ")}</td></tr>`;
+  }
+  html += `<tr><td class="txt" colspan="4">The other three legs mirror the left-front values (right legs flip y; hind legs flip x).</td></tr>`;
+  $("bodies").innerHTML = html;
+}
+$("verify").innerHTML = DATA.verify.map(s => `<li>${s}</li>`).join("");
+$("notes-files").textContent = `Files: cad/exports/step/*.step (per part, plus assembly_nominal_stance.step), cad/exports/stl/*.stl (millimetres, body frames), cad/exports/mass_properties.json, cad/exports/viewer_meshes.json. CAD built ${DATA.meta.cad_generated}; page built ${DATA.meta.generated} at commit ${DATA.meta.commit}.`;
+
+// ---------- small matrix library (column-major 4×4)
+const M4 = {
+  ident: () => [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1],
+  mul(a, b) { const o = new Array(16); for (let c = 0; c < 4; c++) for (let r = 0; r < 4; r++) o[c*4+r] = a[r]*b[c*4] + a[4+r]*b[c*4+1] + a[8+r]*b[c*4+2] + a[12+r]*b[c*4+3]; return o; },
+  translate: (x, y, z) => [1,0,0,0, 0,1,0,0, 0,0,1,0, x,y,z,1],
+  axisAngle(ax, ay, az, t) { const l = Math.hypot(ax, ay, az) || 1; ax /= l; ay /= l; az /= l; const c = Math.cos(t), s = Math.sin(t), k = 1 - c;
+    return [c+ax*ax*k, ay*ax*k+az*s, az*ax*k-ay*s, 0,  ax*ay*k-az*s, c+ay*ay*k, az*ay*k+ax*s, 0,  ax*az*k+ay*s, ay*az*k-ax*s, c+az*az*k, 0,  0,0,0,1]; },
+  quat: ([w, x, y, z]) => [1-2*(y*y+z*z), 2*(x*y+z*w), 2*(x*z-y*w), 0,  2*(x*y-z*w), 1-2*(x*x+z*z), 2*(y*z+x*w), 0,  2*(x*z+y*w), 2*(y*z-x*w), 1-2*(x*x+y*y), 0,  0,0,0,1],
+  perspective(fovy, aspect, near, far) { const f = 1 / Math.tan(fovy / 2); return [f/aspect,0,0,0, 0,f,0,0, 0,0,(far+near)/(near-far),-1, 0,0,2*far*near/(near-far),0]; },
+  lookAt(eye, target, up) {
+    let fx = target[0]-eye[0], fy = target[1]-eye[1], fz = target[2]-eye[2]; let l = Math.hypot(fx, fy, fz); fx /= l; fy /= l; fz /= l;
+    let sx = fy*up[2]-fz*up[1], sy = fz*up[0]-fx*up[2], sz = fx*up[1]-fy*up[0]; l = Math.hypot(sx, sy, sz); sx /= l; sy /= l; sz /= l;
+    const ux = sy*fz-sz*fy, uy = sz*fx-sx*fz, uz = sx*fy-sy*fx;
+    return { m: [sx,ux,-fx,0, sy,uy,-fy,0, sz,uz,-fz,0, -(sx*eye[0]+sy*eye[1]+sz*eye[2]), -(ux*eye[0]+uy*eye[1]+uz*eye[2]), (fx*eye[0]+fy*eye[1]+fz*eye[2]), 1], s: [sx,sy,sz], u: [ux,uy,uz], f: [fx,fy,fz] };
+  },
+};
+
+// ---------- WebGL
+const canvas = $("gl");
+const gl = canvas.getContext("webgl", { antialias: true, alpha: false });
+if (!gl) {
+  canvas.replaceWith(Object.assign(document.createElement("div"), { className: "nogl", textContent: "This browser has no WebGL, so the 3D viewer cannot draw. The STEP and STL files in cad/exports open in Fusion 360 or any mesh viewer." }));
+}
+const VS = `attribute vec3 aPos; attribute vec3 aNrm; uniform mat4 uModel, uView, uProj; varying vec3 vN, vP;
+void main(){ vec4 wp = uModel * vec4(aPos, 1.0); vP = wp.xyz; vN = mat3(uModel) * aNrm; gl_Position = uProj * uView * wp; }`;
+const FS = `#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+varying vec3 vN, vP; uniform vec4 uColor; uniform vec3 uLight, uEye; uniform float uUnlit;
+void main(){ if (uUnlit > 0.5) { gl_FragColor = uColor; return; }
+  vec3 n = normalize(vN); if (!gl_FrontFacing) n = -n;
+  float diff = max(dot(n, uLight), 0.0); float hemi = 0.5 + 0.5 * n.z;
+  vec3 v = normalize(uEye - vP); vec3 h = normalize(uLight + v); float spec = pow(max(dot(n, h), 0.0), 36.0) * 0.12;
+  vec3 c = uColor.rgb * (0.34 + 0.22 * hemi + 0.50 * diff) + spec; gl_FragColor = vec4(c, uColor.a); }`;
+let prog, loc = {}, meshes = {}, grid = null;
+function compile(type, src) { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; }
+if (gl) {
+  prog = gl.createProgram(); gl.attachShader(prog, compile(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+  for (const n of ["aPos", "aNrm"]) loc[n] = gl.getAttribLocation(prog, n);
+  for (const n of ["uModel", "uView", "uProj", "uColor", "uLight", "uEye", "uUnlit"]) loc[n] = gl.getUniformLocation(prog, n);
+  // flat-shaded, unindexed geometry per unique mesh
+  for (const [key, m] of Object.entries(VW.meshes)) {
+    const v = m.v, t = m.t, n = t.length, pos = new Float32Array(n * 3), nrm = new Float32Array(n * 3);
+    for (let i = 0; i < n; i += 3) {
+      const a = t[i]*3, b = t[i+1]*3, c = t[i+2]*3;
+      const ax = v[a], ay = v[a+1], az = v[a+2], bx = v[b], by = v[b+1], bz = v[b+2], cx = v[c], cy = v[c+1], cz = v[c+2];
+      let nx = (by-ay)*(cz-az) - (bz-az)*(cy-ay), ny = (bz-az)*(cx-ax) - (bx-ax)*(cz-az), nz = (bx-ax)*(cy-ay) - (by-ay)*(cx-ax);
+      const l = Math.hypot(nx, ny, nz) || 1; nx /= l; ny /= l; nz /= l;
+      pos.set([ax,ay,az, bx,by,bz, cx,cy,cz], i * 3);
+      for (let k = 0; k < 3; k++) nrm.set([nx, ny, nz], (i + k) * 3);
+    }
+    const pb = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, pb); gl.bufferData(gl.ARRAY_BUFFER, pos, gl.STATIC_DRAW);
+    const nb = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, nb); gl.bufferData(gl.ARRAY_BUFFER, nrm, gl.STATIC_DRAW);
+    meshes[key] = { pb, nb, count: n };
+  }
+  // ground grid: 25 mm pitch over ±250 mm, heavier lines through the origin
+  const g = [], g2 = [];
+  for (let i = -250; i <= 250; i += 25) { const arr = i === 0 ? g2 : g; arr.push(i, -250, 0, i, 250, 0, -250, i, 0, 250, i, 0); }
+  const mk = arr => { const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(arr), gl.STATIC_DRAW); return { b, count: arr.length / 3 }; };
+  grid = { minor: mk(g), major: mk(g2) };
+}
+
+// ---------- scene state
+const MAT = { print: [0.85, 0.82, 0.76, 1], servo: [0.17, 0.18, 0.19, 1], foot: [0.23, 0.24, 0.26, 1], battery: [0.31, 0.43, 0.62, 0.62], pi: [0.24, 0.55, 0.49, 0.62], pcb: [0.37, 0.55, 0.23, 0.62] };
+const layerOf = inst => inst.name === "trunk_tub" ? "tub" : inst.name === "trunk_lid" ? "lid" : inst.kind === "servo" ? "servos" : (inst.kind === "battery" || inst.kind === "pi" || inst.kind === "pcb") ? "elec" : "legs";
+const instances = VW.instances.map(inst => ({ ...inst, local: M4.mul(M4.translate(...inst.pos), M4.quat(inst.quat)), layer: layerOf(inst) }));
+const bodies = VW.bodies;
+const layers = { tub: true, lid: true, glass: true, servos: true, elec: true, legs: true };
+const cam = { az: -0.62, el: 0.36, dist: 560, target: [0, 0, 70] };
+const state = { mode: "stand", playing: false, t: 0, speed: matchMedia("(prefers-reduced-motion: reduce)").matches ? 0.5 : 1, frame: 0, pose: { abad: 0, hip: -45, knee: 93 } };
+const stanceQ = () => { const q = {}; for (const l of LEGS) { q[l + "_abad"] = 0; q[l + "_hip"] = VW.stance.q_hip; q[l + "_knee"] = VW.stance.q_knee; } return q; };
+
+function framePose() {
+  // trunk transform (mm) and joint angles for the current mode/frame
+  if (state.mode === "walk" || state.mode === "trot") {
+    const seg = DATA.gaits[state.mode]; const i = Math.min(state.frame, seg.q.length - 1);
+    const q = {}; LEGS.forEach((l, k) => { q[l + "_abad"] = seg.q[i][3*k]; q[l + "_hip"] = seg.q[i][3*k+1]; q[l + "_knee"] = seg.q[i][3*k+2]; });
+    const [r, p, y] = seg.rpy[i], pos = seg.pos[i];
+    const R = M4.mul(M4.mul(M4.axisAngle(0, 0, 1, y), M4.axisAngle(0, 1, 0, p)), M4.axisAngle(1, 0, 0, r));
+    return { trunk: M4.mul(M4.translate(pos[0]*1000, pos[1]*1000, pos[2]*1000), R), q, pos, rpy: seg.rpy[i], t: i * seg.dt };
+  }
+  const q = stanceQ();
+  if (state.mode === "pose") for (const l of LEGS) { q[l + "_abad"] = state.pose.abad * Math.PI/180; q[l + "_hip"] = state.pose.hip * Math.PI/180; q[l + "_knee"] = state.pose.knee * Math.PI/180; }
+  return { trunk: M4.translate(0, 0, VW.stance.trunk_z * 1000), q, pos: [0, 0, VW.stance.trunk_z], rpy: [0, 0, 0], t: 0 };
+}
+function bodyMatrices(trunk, q) {
+  const W = {};
+  for (const b of bodies) {
+    if (!b.parent) { W[b.name] = trunk; continue; }
+    let M = M4.mul(W[b.parent], M4.translate(...b.pos));
+    if (b.axis) M = M4.mul(M, M4.axisAngle(b.axis[0], b.axis[1], b.axis[2], q[b.name] || 0));
+    W[b.name] = M;
+  }
+  return W;
+}
+function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+function rgb(hex) { const h = hex.replace("#", ""); return [parseInt(h.slice(0, 2), 16) / 255, parseInt(h.slice(2, 4), 16) / 255, parseInt(h.slice(4, 6), 16) / 255]; }
+
+function resize() {
+  const dpr = Math.min(devicePixelRatio || 1, 2), w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);
+  if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+}
+function render() {
+  if (!gl) return;
+  resize();
+  const bg = rgb(css("--canvas")), gridc = rgb(css("--grid")), gridc2 = rgb(css("--grid-2"));
+  gl.viewport(0, 0, canvas.width, canvas.height);
+  gl.clearColor(bg[0], bg[1], bg[2], 1); gl.enable(gl.DEPTH_TEST); gl.disable(gl.CULL_FACE); gl.depthMask(true); gl.disable(gl.BLEND);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  const eye = [cam.target[0] + cam.dist * Math.cos(cam.el) * Math.cos(cam.az), cam.target[1] + cam.dist * Math.cos(cam.el) * Math.sin(cam.az), cam.target[2] + cam.dist * Math.sin(cam.el)];
+  const view = M4.lookAt(eye, cam.target, [0, 0, 1]);
+  const proj = M4.perspective(0.62, canvas.width / canvas.height, 20, 5000);
+  // key light: above and to the left of the camera, so the visible side always reads
+  const L = [0.45 * view.s[0] + 0.55 * view.u[0] - 0.7 * view.f[0], 0.45 * view.s[1] + 0.55 * view.u[1] - 0.7 * view.f[1], 0.45 * view.s[2] + 0.55 * view.u[2] - 0.7 * view.f[2]];
+  const ll = Math.hypot(...L);
+  gl.useProgram(prog);
+  gl.uniformMatrix4fv(loc.uView, false, view.m); gl.uniformMatrix4fv(loc.uProj, false, proj);
+  gl.uniform3f(loc.uLight, L[0] / ll, L[1] / ll, L[2] / ll); gl.uniform3f(loc.uEye, eye[0], eye[1], eye[2]);
+  gl.enableVertexAttribArray(loc.aPos); gl.enableVertexAttribArray(loc.aNrm);
+  // grid
+  gl.uniformMatrix4fv(loc.uModel, false, M4.ident()); gl.uniform1f(loc.uUnlit, 1);
+  gl.disableVertexAttribArray(loc.aNrm); gl.vertexAttrib3f(loc.aNrm, 0, 0, 1);
+  for (const [buf, col] of [[grid.minor, gridc], [grid.major, gridc2]]) {
+    gl.uniform4f(loc.uColor, col[0], col[1], col[2], 1); gl.bindBuffer(gl.ARRAY_BUFFER, buf.b); gl.vertexAttribPointer(loc.aPos, 3, gl.FLOAT, false, 0, 0); gl.drawArrays(gl.LINES, 0, buf.count);
+  }
+  gl.enableVertexAttribArray(loc.aNrm); gl.uniform1f(loc.uUnlit, 0);
+  // bodies
+  const fp = framePose(); const W = bodyMatrices(fp.trunk, fp.q);
+  const visible = instances.filter(inst => layers[inst.layer]);
+  const draw = inst => {
+    const m = meshes[inst.mesh]; let col = MAT[inst.kind] || MAT.print;
+    if (inst.name === "trunk_lid" && layers.glass) col = [col[0], col[1], col[2], 0.42];
+    gl.uniform4f(loc.uColor, col[0], col[1], col[2], col[3]);
+    gl.uniformMatrix4fv(loc.uModel, false, M4.mul(W[inst.body], inst.local));
+    gl.bindBuffer(gl.ARRAY_BUFFER, m.pb); gl.vertexAttribPointer(loc.aPos, 3, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, m.nb); gl.vertexAttribPointer(loc.aNrm, 3, gl.FLOAT, false, 0, 0);
+    gl.drawArrays(gl.TRIANGLES, 0, m.count);
+  };
+  const isGlass = inst => inst.layer === "elec" || (inst.name === "trunk_lid" && layers.glass);
+  for (const inst of visible) if (!isGlass(inst)) draw(inst);
+  gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false);
+  for (const inst of visible) if (isGlass(inst)) draw(inst);
+  gl.depthMask(true); gl.disable(gl.BLEND);
+  // readout
+  const lf = [fp.q.LF_abad, fp.q.LF_hip, fp.q.LF_knee].map(v => deg(v).toFixed(0) + "°").join(" / ");
+  $("live").textContent = `${state.mode}${state.mode === "walk" || state.mode === "trot" ? ` t ${fp.t.toFixed(2)} s` : ""} · trunk z ${(fp.pos[2]*1000).toFixed(0)} mm · pitch ${deg(fp.rpy[1]).toFixed(1)}° · LF abad/hip/knee ${lf}`;
+  if (state.mode === "walk" || state.mode === "trot") { $("scrub").value = state.frame; $("scrub-live").textContent = `${state.frame + 1} / ${DATA.gaits[state.mode].q.length}`; }
+}
+
+// ---------- playback
+let raf = 0, last = 0;
+function tick(now) {
+  if (!state.playing) { raf = 0; return; }
+  const seg = DATA.gaits[state.mode]; if (!seg) { state.playing = false; raf = 0; return; }
+  if (last) { state.t += (now - last) / 1000 * state.speed; }
+  last = now;
+  state.frame = Math.floor(state.t / seg.dt) % seg.q.length;
+  render(); raf = requestAnimationFrame(tick);
+}
+function setPlaying(on) { state.playing = on && !!DATA.gaits[state.mode]; $("play").textContent = state.playing ? "Pause" : "Play"; last = 0; if (state.playing && !raf) raf = requestAnimationFrame(tick); if (!state.playing) render(); }
+
+// ---------- controls
+const modes = [["stand", "Stand"], ...(DATA.gaits.walk ? [["walk", "Walk"]] : []), ...(DATA.gaits.trot ? [["trot", "Trot"]] : []), ["pose", "Pose"]];
+for (const [key, label] of modes) {
+  const b = document.createElement("button"); b.textContent = label; b.setAttribute("aria-pressed", key === state.mode);
+  b.onclick = () => setMode(key); $("mode-seg").appendChild(b);
+}
+function setMode(key) {
+  state.mode = key; state.t = 0; state.frame = 0;
+  for (const b of $("mode-seg").children) b.setAttribute("aria-pressed", b.textContent.toLowerCase() === key);
+  const gait = key === "walk" || key === "trot";
+  $("play").hidden = !gait; $("speed-wrap").hidden = !gait; $("scrub-wrap").hidden = !gait; $("pose-wrap").hidden = key !== "pose";
+  if (gait) { $("scrub").max = DATA.gaits[key].q.length - 1; setPlaying(true); } else { setPlaying(false); }
+}
+$("play").onclick = () => setPlaying(!state.playing);
+$("speed").value = String(state.speed); $("speed").onchange = e => { state.speed = parseFloat(e.target.value); };
+$("scrub").oninput = e => { setPlaying(false); state.frame = parseInt(e.target.value, 10); state.t = state.frame * DATA.gaits[state.mode].dt; render(); };
+for (const j of ["abad", "hip", "knee"]) $("p-" + j).oninput = e => { state.pose[j] = parseFloat(e.target.value); $("o-" + j).textContent = `${state.pose[j]}°`; render(); };
+for (const [id, key] of [["l-tub", "tub"], ["l-lid", "lid"], ["l-glass", "glass"], ["l-servos", "servos"], ["l-elec", "elec"], ["l-legs", "legs"]]) $(id).onchange = e => { layers[key] = e.target.checked; render(); };
+const views = { iso: [-0.62, 0.36], side: [-Math.PI / 2, 0.03], front: [0, 0.03], top: [-Math.PI / 2, 1.53], rear: [Math.PI, 0.2] };
+for (const [key, label] of [["iso", "Iso"], ["side", "Side"], ["front", "Front"], ["rear", "Rear"], ["top", "Top"]]) {
+  const b = document.createElement("button"); b.textContent = label; b.onclick = () => { [cam.az, cam.el] = views[key]; cam.target = [0, 0, 70]; render(); }; $("view-seg").appendChild(b);
+}
+// pointer: orbit, shift/right-drag pan, wheel zoom, pinch zoom
+const ptrs = new Map(); let pinch0 = 0, dist0 = 0;
+canvas.addEventListener("pointerdown", e => { canvas.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY, pan: e.shiftKey || e.button === 2 }); if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch0 = Math.hypot(a.x - b.x, a.y - b.y); dist0 = cam.dist; } });
+canvas.addEventListener("pointermove", e => {
+  const p = ptrs.get(e.pointerId); if (!p) return;
+  const dx = e.clientX - p.x, dy = e.clientY - p.y; p.x = e.clientX; p.y = e.clientY;
+  if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; const d = Math.hypot(a.x - b.x, a.y - b.y); if (pinch0) cam.dist = Math.min(2500, Math.max(120, dist0 * pinch0 / d)); }
+  else if (p.pan) { const s = cam.dist * 0.0016; const view = M4.lookAt([0, 0, 0], [-Math.cos(cam.el) * Math.cos(cam.az), -Math.cos(cam.el) * Math.sin(cam.az), -Math.sin(cam.el)], [0, 0, 1]); cam.target = cam.target.map((v, i) => v - dx * s * view.s[i] + dy * s * view.u[i]); }
+  else { cam.az -= dx * 0.008; cam.el = Math.min(1.55, Math.max(-1.2, cam.el + dy * 0.008)); }
+  render();
+});
+const release = e => { ptrs.delete(e.pointerId); pinch0 = 0; };
+canvas.addEventListener("pointerup", release); canvas.addEventListener("pointercancel", release);
+canvas.addEventListener("contextmenu", e => e.preventDefault());
+canvas.addEventListener("wheel", e => { e.preventDefault(); cam.dist = Math.min(2500, Math.max(120, cam.dist * Math.exp(e.deltaY * 0.0012))); render(); }, { passive: false });
+canvas.addEventListener("keydown", e => {
+  const k = e.key; let used = true;
+  if (k === "ArrowLeft") cam.az += 0.08; else if (k === "ArrowRight") cam.az -= 0.08; else if (k === "ArrowUp") cam.el = Math.min(1.55, cam.el + 0.06); else if (k === "ArrowDown") cam.el = Math.max(-1.2, cam.el - 0.06);
+  else if (k === "+" || k === "=") cam.dist = Math.max(120, cam.dist * 0.9); else if (k === "-") cam.dist = Math.min(2500, cam.dist * 1.1); else if (k === " ") setPlaying(!state.playing); else used = false;
+  if (used) { e.preventDefault(); render(); }
+});
+new ResizeObserver(() => render()).observe(canvas);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", render);
+new MutationObserver(render).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+document.fonts && document.fonts.ready.then(render);
+render();
+</script>

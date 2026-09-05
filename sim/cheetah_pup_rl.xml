@@ -1,5 +1,5 @@
 <mujoco model="cheetah_pup_rl">
-  <compiler angle="radian" autolimits="true"/>
+  <compiler angle="radian" autolimits="true" meshdir="../cad/exports/stl"/>
   <option timestep="0.002" integrator="implicitfast" cone="pyramidal" iterations="4" ls_iterations="8"/>
   <visual><headlight ambient="0.4 0.4 0.4" diffuse="0.6 0.6 0.6"/><map znear="0.01"/></visual>
   <default>
@@ -9,85 +9,117 @@
     <default class="nocollide"><geom contype="0" conaffinity="0" group="0" rgba="0.85 0.83 0.78 1"/></default>
     <default class="collision"><geom group="0" rgba="0.85 0.83 0.78 1"/></default>
     <default class="electronics"><geom contype="0" conaffinity="0" group="1" rgba="0.3 0.55 0.5 0.6"/></default>
+    <default class="print"><geom type="mesh" contype="0" conaffinity="0" group="1" rgba="0.87 0.85 0.80 1"/></default>
+    <default class="servo_mesh"><geom type="mesh" contype="0" conaffinity="0" group="1" rgba="0.17 0.18 0.19 1"/></default>
     <default class="servo"><general dyntype="none" gaintype="fixed" biastype="affine" ctrllimited="true" forcelimited="true" gainprm="18.7666" biasprm="0 -18.7666 -0.5595" forcerange="-1.9123 1.9123"/></default>
   </default>
-  <asset><texture name="grid" type="2d" builtin="checker" rgb1="0.9 0.9 0.88" rgb2="0.8 0.8 0.78" width="256" height="256"/><material name="grid" texture="grid" texrepeat="8 8" reflectance="0.05"/></asset>
+  <asset>
+    <texture name="grid" type="2d" builtin="checker" rgb1="0.9 0.9 0.88" rgb2="0.8 0.8 0.78" width="256" height="256"/><material name="grid" texture="grid" texrepeat="8 8" reflectance="0.05"/>
+    <mesh name="trunk_tub" file="trunk_tub.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="trunk_lid" file="trunk_lid.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="LF_bracket" file="LF_bracket.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="LF_thigh" file="LF_thigh.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="LF_shank" file="LF_shank.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="RF_bracket" file="RF_bracket.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="RF_thigh" file="RF_thigh.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="RF_shank" file="RF_shank.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="LH_bracket" file="LH_bracket.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="LH_thigh" file="LH_thigh.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="LH_shank" file="LH_shank.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="RH_bracket" file="RH_bracket.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="RH_thigh" file="RH_thigh.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="RH_shank" file="RH_shank.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="sts3215" file="servo_sts3215.stl" scale="0.001 0.001 0.001"/>
+  </asset>
   <worldbody>
     <light pos="0.5 -0.5 1.2" dir="-0.3 0.3 -1" directional="true"/>
     <geom name="floor" type="plane" size="0 0 0.05" material="grid" contype="1" conaffinity="1" friction="0.8 0.02 0.001"/>
     <body name="trunk" pos="0 0 0.1300">
       <freejoint name="root"/>
       <site name="imu" pos="0 0 0" size="0.005"/>
-<geom name="shell" type="box" class="nocollide" pos="0.00000 0.00000 0.00000" size="0.07400 0.04750 0.03100" mass="0.19869" />
-<geom name="battery" type="box" class="electronics" pos="0.00000 0.00000 -0.01700" size="0.03500 0.02000 0.01100" mass="0.12500" rgba="0.3 0.42 0.63 0.6"/>
-<geom name="pi5" type="box" class="electronics" pos="-0.04300 0.00000 0.01122" size="0.02800 0.04250 0.01250" mass="0.06500" />
-<geom name="pcb" type="box" class="electronics" pos="0.04850 0.00000 0.00472" size="0.02250 0.03000 0.00600" mass="0.02500" rgba="0.37 0.55 0.23 0.6"/>
-<geom name="imu_board" type="box" class="electronics" pos="0.00000 0.00000 0.00172" size="0.01350 0.01000 0.00200" mass="0.00500" rgba="0.48 0.35 0.65 0.7"/>
-<geom name="LF_abad_servo" type="box" class="visual" pos="0.05615 0.02199 0.00000" size="0.01785 0.02261 0.01236" mass="0.05500" />
-      <body name="LF_abad" pos="0.09000 0.03500 0">
+      <inertial pos="0.002130 0.000000 -0.002030" mass="0.74177" fullinertia="7.2905e-04 1.5519e-03 1.8896e-03 1.6073e-20 -3.5873e-05 1.9183e-20"/>
+      <geom name="trunk_tub" mesh="trunk_tub" class="print"/>
+      <geom name="trunk_lid" mesh="trunk_lid" class="print" rgba="0.87 0.85 0.80 0.55"/>
+      <geom name="LF_abad_servo" type="mesh" mesh="sts3215" class="servo_mesh" pos="0.067900 0.037000 0.000000" quat="-0.500000 0.500000 -0.500000 0.500000"/>
+      <geom name="RF_abad_servo" type="mesh" mesh="sts3215" class="servo_mesh" pos="0.067900 -0.037000 0.000000" quat="0.500000 0.500000 0.500000 0.500000"/>
+      <geom name="LH_abad_servo" type="mesh" mesh="sts3215" class="servo_mesh" pos="-0.067900 0.037000 0.000000" quat="-0.500000 -0.500000 0.500000 0.500000"/>
+      <geom name="RH_abad_servo" type="mesh" mesh="sts3215" class="servo_mesh" pos="-0.067900 -0.037000 0.000000" quat="0.500000 -0.500000 -0.500000 0.500000"/>
+<geom name="battery" type="box" class="electronics" pos="0.00000 0.00000 -0.01700" size="0.03500 0.02000 0.01100" mass="0.00000" rgba="0.3 0.42 0.63 0.6"/>
+<geom name="pi5" type="box" class="electronics" pos="0.00000 0.00000 0.00950" size="0.02800 0.04250 0.01250" mass="0.00000" rgba="0.3 0.55 0.5 0.6"/>
+<geom name="pcb" type="box" class="electronics" pos="0.04900 0.00000 0.02000" size="0.02000 0.03000 0.00400" mass="0.00000" rgba="0.37 0.55 0.23 0.6"/>
+      <body name="LF_abad" pos="0.09000 0.03700 0">
         <joint name="LF_abad" axis="1 0 0" range="-0.8 0.8"/>
-  <geom name="LF_bracket" type="box" class="visual" pos="0.00000 0.02000 -0.00400" size="0.01000 0.02000 0.01100" mass="0.02500" />
-  <geom name="LF_hip_servo" type="box" class="visual" pos="0.00000 0.01615 0.01301" size="0.01236 0.01785 0.02261" mass="0.05500" />
-        <body name="LF_hip" pos="0 0.04000 0">
+        <inertial pos="-0.000710 0.021870 0.008650" mass="0.06855" fullinertia="2.6984e-05 2.0596e-05 1.4889e-05 -7.8654e-07 -8.1963e-07 -2.6378e-06"/>
+        <geom name="LF_bracket" mesh="LF_bracket" class="print"/>
+        <geom name="LF_hip_servo" type="mesh" mesh="sts3215" class="servo_mesh" pos="0.000000 0.037950 0.000000" quat="-0.500000 0.500000 0.500000 0.500000"/>
+        <body name="LF_hip" pos="0 0.04300 0">
           <joint name="LF_hip" axis="0 -1 0" range="-1.6 1.6"/>
-          <geom name="LF_thigh" type="capsule" class="nocollide" fromto="0 0 0 0 0 -0.09000" size="0.010" mass="0.03440"/>
-    <geom name="LF_knee_servo" type="box" class="visual" pos="0.00000 0.00000 -0.07699" size="0.01236 0.01785 0.02261" mass="0.05500" />
+          <inertial pos="-0.000000 -0.014290 -0.096640" mass="0.07953" fullinertia="6.0242e-05 5.4997e-05 1.6148e-05 1.7089e-21 4.6016e-22 -7.0889e-06"/>
+          <geom name="LF_thigh" mesh="LF_thigh" class="print"/>
+          <geom name="LF_knee_servo" type="mesh" mesh="sts3215" class="servo_mesh" pos="0.000000 -0.001100 -0.090000" quat="0.500000 -0.500000 0.500000 0.500000"/>
           <body name="LF_knee" pos="0 0 -0.09000">
             <joint name="LF_knee" axis="0 -1 0" range="0.05 2.7"/>
-            <geom name="LF_shank" type="capsule" class="nocollide" fromto="0 0 0 0 0 -0.08500" size="0.007" mass="0.01520"/>
-            <geom name="LF_foot" type="sphere" class="collision" pos="0 0 -0.08500" size="0.0100" mass="0.00800" friction="1.0 0.02 0.001" rgba="0.12 0.12 0.12 1"/>
-            <site name="LF_foot" pos="0 0 -0.08500" size="0.0120" type="sphere" rgba="0 0 0 0"/>
+            <inertial pos="0.000000 0.004870 -0.054590" mass="0.01429" fullinertia="1.5832e-05 1.5928e-05 4.8486e-07 -2.3136e-23 -4.0550e-22 -8.4931e-07"/>
+            <geom name="LF_shank" mesh="LF_shank" class="print"/>
+            <geom name="LF_foot" type="sphere" class="collision" pos="0 0.00325 -0.08500" size="0.0100" mass="0.00000" friction="1.0 0.02 0.001" rgba="0.12 0.12 0.12 1"/>
+            <site name="LF_foot" pos="0 0.00325 -0.08500" size="0.0120" type="sphere" rgba="0 0 0 0"/>
           </body>
         </body>
       </body>
-<geom name="RF_abad_servo" type="box" class="visual" pos="0.05615 -0.02199 0.00000" size="0.01785 0.02261 0.01236" mass="0.05500" />
-      <body name="RF_abad" pos="0.09000 -0.03500 0">
+      <body name="RF_abad" pos="0.09000 -0.03700 0">
         <joint name="RF_abad" axis="-1 0 0" range="-0.8 0.8"/>
-  <geom name="RF_bracket" type="box" class="visual" pos="0.00000 -0.02000 -0.00400" size="0.01000 0.02000 0.01100" mass="0.02500" />
-  <geom name="RF_hip_servo" type="box" class="visual" pos="0.00000 -0.01615 0.01301" size="0.01236 0.01785 0.02261" mass="0.05500" />
-        <body name="RF_hip" pos="0 -0.04000 0">
+        <inertial pos="-0.000710 -0.021870 0.008650" mass="0.06855" fullinertia="2.6984e-05 2.0596e-05 1.4889e-05 7.8654e-07 -8.1963e-07 2.6378e-06"/>
+        <geom name="RF_bracket" mesh="RF_bracket" class="print"/>
+        <geom name="RF_hip_servo" type="mesh" mesh="sts3215" class="servo_mesh" pos="0.000000 -0.037950 0.000000" quat="0.500000 0.500000 -0.500000 0.500000"/>
+        <body name="RF_hip" pos="0 -0.04300 0">
           <joint name="RF_hip" axis="0 -1 0" range="-1.6 1.6"/>
-          <geom name="RF_thigh" type="capsule" class="nocollide" fromto="0 0 0 0 0 -0.09000" size="0.010" mass="0.03440"/>
-    <geom name="RF_knee_servo" type="box" class="visual" pos="0.00000 0.00000 -0.07699" size="0.01236 0.01785 0.02261" mass="0.05500" />
+          <inertial pos="-0.000000 0.014290 -0.096640" mass="0.07953" fullinertia="6.0242e-05 5.4997e-05 1.6148e-05 -2.1516e-22 5.9265e-21 7.0889e-06"/>
+          <geom name="RF_thigh" mesh="RF_thigh" class="print"/>
+          <geom name="RF_knee_servo" type="mesh" mesh="sts3215" class="servo_mesh" pos="0.000000 0.001100 -0.090000" quat="-0.500000 -0.500000 -0.500000 0.500000"/>
           <body name="RF_knee" pos="0 0 -0.09000">
             <joint name="RF_knee" axis="0 -1 0" range="0.05 2.7"/>
-            <geom name="RF_shank" type="capsule" class="nocollide" fromto="0 0 0 0 0 -0.08500" size="0.007" mass="0.01520"/>
-            <geom name="RF_foot" type="sphere" class="collision" pos="0 0 -0.08500" size="0.0100" mass="0.00800" friction="1.0 0.02 0.001" rgba="0.12 0.12 0.12 1"/>
-            <site name="RF_foot" pos="0 0 -0.08500" size="0.0120" type="sphere" rgba="0 0 0 0"/>
+            <inertial pos="0.000000 -0.004870 -0.054590" mass="0.01429" fullinertia="1.5832e-05 1.5928e-05 4.8486e-07 3.3940e-23 -3.9944e-22 8.4931e-07"/>
+            <geom name="RF_shank" mesh="RF_shank" class="print"/>
+            <geom name="RF_foot" type="sphere" class="collision" pos="0 -0.00325 -0.08500" size="0.0100" mass="0.00000" friction="1.0 0.02 0.001" rgba="0.12 0.12 0.12 1"/>
+            <site name="RF_foot" pos="0 -0.00325 -0.08500" size="0.0120" type="sphere" rgba="0 0 0 0"/>
           </body>
         </body>
       </body>
-<geom name="LH_abad_servo" type="box" class="visual" pos="-0.05615 0.02199 0.00000" size="0.01785 0.02261 0.01236" mass="0.05500" />
-      <body name="LH_abad" pos="-0.09000 0.03500 0">
+      <body name="LH_abad" pos="-0.09000 0.03700 0">
         <joint name="LH_abad" axis="1 0 0" range="-0.8 0.8"/>
-  <geom name="LH_bracket" type="box" class="visual" pos="0.00000 0.02000 -0.00400" size="0.01000 0.02000 0.01100" mass="0.02500" />
-  <geom name="LH_hip_servo" type="box" class="visual" pos="0.00000 0.01615 0.01301" size="0.01236 0.01785 0.02261" mass="0.05500" />
-        <body name="LH_hip" pos="0 0.04000 0">
+        <inertial pos="0.000710 0.021870 0.008650" mass="0.06855" fullinertia="2.6984e-05 2.0596e-05 1.4889e-05 7.8654e-07 8.1963e-07 -2.6378e-06"/>
+        <geom name="LH_bracket" mesh="LH_bracket" class="print"/>
+        <geom name="LH_hip_servo" type="mesh" mesh="sts3215" class="servo_mesh" pos="0.000000 0.037950 0.000000" quat="-0.500000 0.500000 0.500000 0.500000"/>
+        <body name="LH_hip" pos="0 0.04300 0">
           <joint name="LH_hip" axis="0 -1 0" range="-1.6 1.6"/>
-          <geom name="LH_thigh" type="capsule" class="nocollide" fromto="0 0 0 0 0 -0.09000" size="0.010" mass="0.03440"/>
-    <geom name="LH_knee_servo" type="box" class="visual" pos="0.00000 0.00000 -0.07699" size="0.01236 0.01785 0.02261" mass="0.05500" />
+          <inertial pos="-0.000000 -0.014290 -0.096640" mass="0.07953" fullinertia="6.0242e-05 5.4997e-05 1.6148e-05 1.7089e-21 4.6016e-22 -7.0889e-06"/>
+          <geom name="LH_thigh" mesh="LH_thigh" class="print"/>
+          <geom name="LH_knee_servo" type="mesh" mesh="sts3215" class="servo_mesh" pos="0.000000 -0.001100 -0.090000" quat="0.500000 -0.500000 0.500000 0.500000"/>
           <body name="LH_knee" pos="0 0 -0.09000">
             <joint name="LH_knee" axis="0 -1 0" range="0.05 2.7"/>
-            <geom name="LH_shank" type="capsule" class="nocollide" fromto="0 0 0 0 0 -0.08500" size="0.007" mass="0.01520"/>
-            <geom name="LH_foot" type="sphere" class="collision" pos="0 0 -0.08500" size="0.0100" mass="0.00800" friction="1.0 0.02 0.001" rgba="0.12 0.12 0.12 1"/>
-            <site name="LH_foot" pos="0 0 -0.08500" size="0.0120" type="sphere" rgba="0 0 0 0"/>
+            <inertial pos="0.000000 0.004870 -0.054590" mass="0.01429" fullinertia="1.5832e-05 1.5928e-05 4.8486e-07 -2.3136e-23 -4.0550e-22 -8.4931e-07"/>
+            <geom name="LH_shank" mesh="LH_shank" class="print"/>
+            <geom name="LH_foot" type="sphere" class="collision" pos="0 0.00325 -0.08500" size="0.0100" mass="0.00000" friction="1.0 0.02 0.001" rgba="0.12 0.12 0.12 1"/>
+            <site name="LH_foot" pos="0 0.00325 -0.08500" size="0.0120" type="sphere" rgba="0 0 0 0"/>
           </body>
         </body>
       </body>
-<geom name="RH_abad_servo" type="box" class="visual" pos="-0.05615 -0.02199 0.00000" size="0.01785 0.02261 0.01236" mass="0.05500" />
-      <body name="RH_abad" pos="-0.09000 -0.03500 0">
+      <body name="RH_abad" pos="-0.09000 -0.03700 0">
         <joint name="RH_abad" axis="-1 0 0" range="-0.8 0.8"/>
-  <geom name="RH_bracket" type="box" class="visual" pos="0.00000 -0.02000 -0.00400" size="0.01000 0.02000 0.01100" mass="0.02500" />
-  <geom name="RH_hip_servo" type="box" class="visual" pos="0.00000 -0.01615 0.01301" size="0.01236 0.01785 0.02261" mass="0.05500" />
-        <body name="RH_hip" pos="0 -0.04000 0">
+        <inertial pos="0.000710 -0.021870 0.008650" mass="0.06855" fullinertia="2.6984e-05 2.0596e-05 1.4889e-05 -7.8654e-07 8.1963e-07 2.6378e-06"/>
+        <geom name="RH_bracket" mesh="RH_bracket" class="print"/>
+        <geom name="RH_hip_servo" type="mesh" mesh="sts3215" class="servo_mesh" pos="0.000000 -0.037950 0.000000" quat="0.500000 0.500000 -0.500000 0.500000"/>
+        <body name="RH_hip" pos="0 -0.04300 0">
           <joint name="RH_hip" axis="0 -1 0" range="-1.6 1.6"/>
-          <geom name="RH_thigh" type="capsule" class="nocollide" fromto="0 0 0 0 0 -0.09000" size="0.010" mass="0.03440"/>
-    <geom name="RH_knee_servo" type="box" class="visual" pos="0.00000 0.00000 -0.07699" size="0.01236 0.01785 0.02261" mass="0.05500" />
+          <inertial pos="-0.000000 0.014290 -0.096640" mass="0.07953" fullinertia="6.0242e-05 5.4997e-05 1.6148e-05 -2.1516e-22 5.9265e-21 7.0889e-06"/>
+          <geom name="RH_thigh" mesh="RH_thigh" class="print"/>
+          <geom name="RH_knee_servo" type="mesh" mesh="sts3215" class="servo_mesh" pos="0.000000 0.001100 -0.090000" quat="-0.500000 -0.500000 -0.500000 0.500000"/>
           <body name="RH_knee" pos="0 0 -0.09000">
             <joint name="RH_knee" axis="0 -1 0" range="0.05 2.7"/>
-            <geom name="RH_shank" type="capsule" class="nocollide" fromto="0 0 0 0 0 -0.08500" size="0.007" mass="0.01520"/>
-            <geom name="RH_foot" type="sphere" class="collision" pos="0 0 -0.08500" size="0.0100" mass="0.00800" friction="1.0 0.02 0.001" rgba="0.12 0.12 0.12 1"/>
-            <site name="RH_foot" pos="0 0 -0.08500" size="0.0120" type="sphere" rgba="0 0 0 0"/>
+            <inertial pos="0.000000 -0.004870 -0.054590" mass="0.01429" fullinertia="1.5832e-05 1.5928e-05 4.8486e-07 3.3940e-23 -3.9944e-22 8.4931e-07"/>
+            <geom name="RH_shank" mesh="RH_shank" class="print"/>
+            <geom name="RH_foot" type="sphere" class="collision" pos="0 -0.00325 -0.08500" size="0.0100" mass="0.00000" friction="1.0 0.02 0.001" rgba="0.12 0.12 0.12 1"/>
+            <site name="RH_foot" pos="0 -0.00325 -0.08500" size="0.0120" type="sphere" rgba="0 0 0 0"/>
           </body>
         </body>
       </body>

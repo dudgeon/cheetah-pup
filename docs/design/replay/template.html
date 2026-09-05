@@ -116,7 +116,7 @@
 <div class="sheet">
   <header class="titleblock">
     <div class="lead">
-      <span class="eyebrow">Cheetah Pup · Phase 1 · MuJoCo validation of the locked design</span>
+      <span class="eyebrow">Cheetah Pup · Phase 1–2 · MuJoCo validation of the locked design</span>
       <h1>The locked robot, standing and trotting in simulation</h1>
       <p>Recorded MuJoCo runs of <span class="mono" id="design-name"></span>: the servos track inverse-kinematics gait targets at 50 Hz with no learned policy. <strong>Open-loop</strong> sends the targets blind; <strong>leveled</strong> adds one geometric term that lengthens legs under a low corner of the body. Neither balances — a robot that survives both has slack for the RL policy to use. Drag the timeline or hover the charts; the playback and the cursors move together.</p>
     </div>
@@ -397,7 +397,7 @@ function loop(ts) { if (last !== null) frame(Math.min(0.05, (ts - last) / 1000))
 
 $("design-name").textContent = P.name; $("tb-model").textContent = DATA.meta.model; $("tb-date").textContent = DATA.meta.generated;
 $("tb-phys").textContent = `MuJoCo · 2 ms step · ${HZ} Hz control`; $("tb-servo").textContent = `PD ${SV.gains.kp.toFixed(1)} N·m/rad · clamp ${SV.stall.toFixed(2)} N·m`;
-$("notes-model").textContent = `${P.name}: ${DATA.mass.toFixed(3)} kg of primitives with the component masses, STS3215 servos as PD position actuators (kp ${SV.gains.kp.toFixed(1)} N·m/rad, back-EMF damping ${SV.gains.kd.toFixed(2)} N·m·s/rad, clamped at the datasheet stall ${SV.stall.toFixed(2)} N·m, reflected inertia and Coulomb friction from BAM).`;
+$("notes-model").textContent = `${P.name}: ${DATA.mass.toFixed(3)} kg with each body's mass, centre of mass and inertia taken from the Phase 2 CAD (cad/exports/mass_properties.json), sphere feet for contact, STS3215 servos as PD position actuators (kp ${SV.gains.kp.toFixed(1)} N·m/rad, back-EMF damping ${SV.gains.kd.toFixed(2)} N·m·s/rad, clamped at the datasheet stall ${SV.stall.toFixed(2)} N·m, reflected inertia and Coulomb friction from BAM).`;
 $("notes-hold").textContent = `${DATA.stand.hold_torque_Nm.knee.toFixed(2)} N·m`;
 $("notes-commit").textContent = `Recordings from cheetah_pup.validate at commit ${DATA.meta.commit}, ${DATA.meta.generated}.`;
 allRunsTable(); loadRun(); requestAnimationFrame(loop);

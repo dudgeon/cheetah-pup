@@ -10,11 +10,11 @@ validated open-loop (DR-02), and the **RL environment built and smoke-tested on 
 | Phase | State | Where |
 |---|---|---|
 | 0 · Repo & tooling | done | this repo; `vendor/README.md` |
-| 1 · Kinematic validation | **done** — design locked; sim model validated (DR-02); RL environment built (DR-03) | `docs/design/locked.json`, `cheetah_pup/mjcf.py`, `sim/cheetah_pup.xml`, `docs/design/02-sim-validation.md`, `docs/design/03-rl-environment.md`, `cheetah_pup/rl/`; DR-01 review https://claude.ai/code/artifact/6b9c92f0-98d5-4cf1-928c-98a28d699ba4; DR-02 playback https://claude.ai/code/artifact/2db54b1d-2707-4034-895f-95bec2b86281 |
-| 2 · Mechanical CAD | not started (build123d confirmed working here) | — |
+| 1 · Kinematic validation | **done** — design locked; sim model validated (DR-02, re-run on the CAD model 2026-09-05); RL environment built (DR-03) | `docs/design/locked.json`, `cheetah_pup/mjcf.py`, `sim/cheetah_pup.xml`, `docs/design/02-sim-validation.md`, `docs/design/03-rl-environment.md`, `cheetah_pup/rl/`; DR-01 review https://claude.ai/code/artifact/6b9c92f0-98d5-4cf1-928c-98a28d699ba4; DR-02 playback https://claude.ai/code/artifact/2db54b1d-2707-4034-895f-95bec2b86281 |
+| 2 · Mechanical CAD | **first pass done** (2026-09-05) — build123d model of every printed part with the measured STS3215 interface, STEP/STL exported, per-body mass properties feeding the sim (DR-04). Next: confirm the servo hole patterns on a real servo, then foot sockets, wire routing, fork supports, and the owner's Fusion 360 pass | `cad/`, `cad/exports/`, `docs/design/04-cad-detail.md`; DR-04 CAD review https://claude.ai/code/artifact/6b9c8170-cae2-4a28-a494-7ba0548bcc4b |
 | 3 · Electrical / PCB | not started; volumes and power rails fixed in the design library | `cheetah_pup/electronics.py` |
 | 4 · Firmware | not started | — |
-| 5 · RL training | environment ready (`cheetah_pup/rl/`); first GPU run pending; BAM actuator model to add | `docs/design/03-rl-environment.md`, `vendor/bam` |
+| 5 · RL training | environment ready (`cheetah_pup/rl/`) and passing on the CAD-derived model; first GPU run pending; BAM actuator model to add | `docs/design/03-rl-environment.md`, `vendor/bam` |
 | 6 · Bring-up | not started | — |
 
 Keep `docs/DESIGN_LOG.md` current: one dated entry per decision or milestone.
@@ -86,6 +86,9 @@ ever need to revisit one.
 | **Electronics layout** (Phase 1) | Two layers: abad servos + battery low, Pi 5 (transverse) + PCB high | Pi lengthwise | Transverse Pi saves ~40 mm of body length and keeps hip-to-hip near Mini Cheetah's 1.82× thigh ratio (2.0×). |
 | **Knee-drive architecture & size** (locked 2026-09-04) | **A · direct drive, size M**, knees back, baseline proportions and gait — `cheetah_pup.design.locked()`, `docs/design/locked.json` | B coaxial + belt; C coaxial + pushrod; sizes S/L | Owner accepted the DR-01 defaults. A is the lowest-risk path and the best fit for reusing Open Duck Mini's directly-driven-joint sim-to-real pipeline; 40 % of stall at trot peak, 76 % of the speed cap, narrowest hips. |
 | **Sim actuator model** (Phase 1) | MuJoCo `general` PD from BAM's electrical model (kp 18.8 N·m/rad, kd 0.56 N·m·s/rad), clamped at the datasheet stall 1.91 N·m; joint armature 0.026 kg·m², Coulomb 0.05 N·m | BAM's implied 3.4 N·m stall; BAM's full stateful model | Conservative clamp for viability; `--bam` flag generates the optimistic variant. The RL environment should move to BAM's MuJoCo integration (rate-limited target, extended friction) for the real training runs. |
+| **Servo interface convention** (Phase 2, 2026-09-05) | Fixed part = 3 mm plate on the STS3215's top-face step, 4 × M2 into the case's tapped holes; Ø20 horn disc rides in a Ø21 printed bore as a plain bearing; moving part bolts to the horn's r = 7 pattern. Single-sided joints | Fork (idler-side) support on every joint; metal bearings | Derived from the measured case geometry (`cad/servo.py`); the simplest joint that uses the servo's own horn as the bearing, as Open Duck does. Fork supports are drawn as an upgrade path in the thigh cradle if horn play shows up. **Hole positions and horn screw size must be confirmed on a real servo** (§9.10). |
+| **Phase 2 packaging refinements** (2026-09-05) | abad link 43 mm (was 40), abad axes 74 apart (was 70), hip x-offset 18 (was 15), feet 3.25 mm outboard of the knee plane; battery on the floor, Pi 5 above it in the centre bay, PCB + IMU hung from the lid over the front abad servos; shell 144 × 102 × 62 | Keep Phase 1 numbers and squeeze the parts | Each change is the minimum the real servo cases and interfaces need; leg lengths, hip spacing, stance and gait are unchanged, so the DR-01 sizing still holds (re-validated in sim). `docs/design/04-cad-detail.md` has the table. |
+| **Sim fidelity source** (2026-09-05) | `mjcf.py` defaults to the CAD for the locked design: explicit `<inertial>` per body from `cad/exports/mass_properties.json`, STL meshes as visuals, feet spheres (plus hidden shell box and leg capsules in the full model) for collision | Mesh convex hulls for collision; keep the primitive model | Primitive collisions keep the RL model fast and match Playground's quadruped scenes; the CAD gives the masses and inertias the policy actually needs to be right. `--no-cad` keeps the Phase 1 model for the unlocked presets. Total 1.391 kg vs the 1.413 kg parametric estimate. |
 
 ---
 
@@ -178,6 +181,11 @@ Research, submodules, this document, initial repo structure, MIT license.
   manufacturability polish, anything requiring their DFM judgment).
 - Re-derive MJCF collision geometry and mass properties from the real CAD model; re-run Phase 1's
   validation as a sim-to-sim consistency check before moving on.
+- **Status 2026-09-05**: first pass done — `cad/` (build123d: servo model, parts in MuJoCo body
+  frames, assembly with mass properties), `cad/exports/` (STEP, STL, `mass_properties.json`),
+  MJCF regenerated from the CAD and re-validated (DR-02), DR-04 review page. Not yet modelled:
+  foot sockets, wire clips/strain reliefs, fork supports, print-in-place features; the servo
+  hole patterns are measured from a mesh and need a hardware check (§9.10) before the first print.
 
 ### Phase 3 — Electrical: power, sensors, custom PCB
 - Schematic + layout (KiCad) for the motor-bus/power/sensor breakout board described in §4.2.
@@ -265,9 +273,11 @@ real failure modes.
    before the runs that will be deployed.
 3. **Policy export**: ONNX of the policy MLP + observation normalization for the Raspberry Pi
    runtime (Phase 4); Open Duck's `export_onnx.py` shows the Brax-params-to-ONNX path.
-4. **Phase 2 kickoff (parallel)**: build123d parametric CAD from `locked()` — servo pockets,
-   bearing points, wire routes, print splits — then STEP to the owner for the Fusion 360 pass;
-   re-derive MJCF mass properties from CAD.
+4. **Phase 2, second pass**: (a) put a real STS3215 on the bench and confirm the top-face hole
+   pattern, horn screw size, idler disc, and the Ø21 bore fit with a test print of one thigh;
+   (b) model the foot socket, wire routes with clips, and the fork support option; (c) re-export
+   and hand the STEP files to the owner for the Fusion 360 pass. Every CAD change re-runs
+   `python -m cad.assembly` → `python -m cheetah_pup.mjcf` (both variants) → validation → DR-02/DR-04.
 5. Keep this document, `docs/DESIGN_LOG.md`, and the task list current as decisions get made.
 
 ---
@@ -277,10 +287,10 @@ real failure modes.
 Things deliberately left unresolved rather than guessed at — resolve these as they become
 relevant, pulling the owner in only where marked.
 
-### 9.1 Final servo count, and whether any joint needs extra torque
-Depends on Phase 1's torque analysis. Hip joints carrying more of the body's weight than knees
-might warrant a higher-torque STS3215 variant or a different gear ratio at those specific joints
-— don't assume uniform servos across all 12 without checking.
+### 9.1 Final servo count, and whether any joint needs extra torque — resolved 2026-09-04
+Twelve identical STS3215s: DR-01's sizing puts the knee at 40 % of stall at the trot peak, the
+abad at 29 %, the hip at 16 %; speed (the 5.29 rad/s cap), not torque, is the binding limit.
+Revisit only if the first policy saturates a joint in the CAD-mass model.
 
 ### 9.2 Licensing on the three unlicensed Open Duck repos
 `open_duck_mini_runtime`, `open_duck_playground`, and `open_duck_reference_motion_generator` have
@@ -328,3 +338,11 @@ the front feet float most of the cycle (servo tracking itself is fine, 2–3° m
 leveling term recovers speed but oscillates. Both behaviors are what the policy must learn around;
 keep torque saturation and BAM's rate-limited target in the training model so the policy does not
 learn an unrealistically fast robot, and give it the IMU (orientation + rates) in the observation.
+
+### 9.10 Servo interface measured from meshes — confirm on hardware
+`cad/servo.py` encodes the STS3215 case, horn, idler disc, and the top-face M2 hole pattern
+((8.3, ±10.25) and (29.0, ±10.25) mm from the horn axis) as measured from Open Duck Mini v2's
+meshes. Before the first structural print: confirm those positions and threads on a real servo,
+the horn screw size (M2 vs M2.5 in the Ø2.5 holes on r = 7), that the idler disc exists on the
+current revision, and tune the Ø21 bearing bore to the printer (0.15–0.25 mm radial). DR-04 lists
+the full set. Open until the bench check.

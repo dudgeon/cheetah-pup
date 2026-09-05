@@ -43,9 +43,9 @@
   },
   "Custom bus/power/sensor PCB": {
    "size": [
+    0.04,
     0.06,
-    0.045,
-    0.012
+    0.008
    ],
    "mass": 0.025
   },
@@ -82,10 +82,10 @@
     "architecture": "direct",
     "thigh": 0.0765,
     "shank": 0.07225000000000001,
-    "abad_link": 0.037000000000000005,
+    "abad_link": 0.039775,
     "hip_to_hip": 0.175,
-    "abad_to_abad": 0.06475000000000002,
-    "hip_x_offset": 0.016,
+    "abad_to_abad": 0.06845,
+    "hip_x_offset": 0.018,
     "body_height": 0.062,
     "body_z_offset": 0.0,
     "wall": 0.003,
@@ -99,16 +99,17 @@
     "dynamic_factor": 1.5,
     "lateral_shift": 0.01,
     "knee_ratio": 1.0,
-    "knee_ratio_note": "knee servo at the knee, drives the shank directly"
+    "knee_ratio_note": "knee servo at the knee, drives the shank directly",
+    "foot_y_offset": 0.00325
    },
    "metrics": {
     "name": "A \u00b7 Direct drive \u00b7 S",
     "architecture": "direct",
-    "mass": 1.3854638336000002,
+    "mass": 1.3889859891200003,
     "com": [
-     -0.010976439981655737,
-     -7.042998392108687e-19,
-     -0.013103549583231682
+     -0.009682394726519583,
+     1.5611419855608575e-19,
+     -0.012920788388025527
     ],
     "leg_length": 0.14875,
     "stance_height": 0.102,
@@ -116,14 +117,14 @@
     "nominal_knee_deg": 93.46607419806767,
     "body_top_height": 0.133,
     "overall_length": 0.255,
-    "overall_width": 0.17075000000000004,
-    "shell_length": 0.143,
+    "overall_width": 0.18,
+    "shell_length": 0.13899999999999998,
     "ratios": {
      "shank/thigh": 0.9444444444444445,
      "shank/thigh (Mini Cheetah)": 0.9330143540669857,
      "hip_to_hip/thigh": 2.287581699346405,
      "hip_to_hip/thigh (Mini Cheetah)": 1.8181818181818183,
-     "abad_link/thigh": 0.4836601307189543,
+     "abad_link/thigh": 0.5199346405228757,
      "abad_link/thigh (Mini Cheetah)": 0.2966507177033493,
      "stance/leg_length": 0.6857142857142857,
      "stance/leg_length (Mini Cheetah)": 0.7178217821782177,
@@ -131,31 +132,31 @@
     },
     "torque": {
      "stand": {
-      "force_per_leg": 3.3966897259433604,
-      "abad": 0.12567751985990436,
-      "hip": 2.3569269632812698e-17,
-      "knee_joint": 0.18372144012443012,
-      "knee_servo": 0.18372144012443012,
+      "force_per_leg": 3.4053248625509123,
+      "abad": 0.13544679640796253,
+      "hip": 2.3629187929578246e-17,
+      "knee_joint": 0.18418850066313444,
+      "knee_servo": 0.18418850066313444,
       "limit": 0.47807418749999997,
-      "abad_frac": 0.06572072031179489,
-      "hip_frac": 1.232511096032177e-17,
-      "knee_servo_frac": 0.09607370829053082,
+      "abad_frac": 0.0708293816887795,
+      "hip_frac": 1.235644411861195e-17,
+      "knee_servo_frac": 0.09631794890784312,
       "ok": true
      },
      "trot_peak": {
-      "force_per_leg": 10.19006917783008,
-      "abad": 0.47893325135801385,
-      "hip": 0.25984676403466717,
-      "knee_joint": 0.6421859575423773,
-      "knee_servo": 0.6421859575423773,
+      "force_per_leg": 10.215974587652736,
+      "abad": 0.5085001351004149,
+      "hip": 0.26050735198514485,
+      "knee_joint": 0.6438185362935288,
+      "knee_servo": 0.6438185362935288,
       "limit": 1.14737805,
-      "abad_frac": 0.2504492314584616,
-      "hip_frac": 0.13588202983384623,
-      "knee_servo_frac": 0.3358191962321629,
+      "abad_frac": 0.2659106831094154,
+      "hip_frac": 0.1362274720098462,
+      "knee_servo_frac": 0.33667292290986156,
       "ok": true
      },
      "stall_torque": 1.9122967499999999,
-     "mass": 1.3854638336000002
+     "mass": 1.3889859891200003
     },
     "speed": {
      "gait": "trot",
@@ -169,33 +170,29 @@
      "ok": true
     },
     "packaging": {
-     "inner_length": 0.13699999999999998,
-     "inner_width": 0.08795000000000001,
+     "inner_length": 0.13299999999999998,
+     "inner_width": 0.09044999999999999,
      "inner_height": 0.056,
-     "bottom_gap": 0.06559999999999998,
+     "bottom_gap": 0.052399999999999974,
      "battery_fits": true,
      "battery_footprint": [
       0.04,
       0.07,
       true
      ],
-     "top_needed": 0.10900000000000001,
-     "top_fits": true,
-     "pi_footprint": [
-      0.056,
-      0.085,
-      true
-     ],
+     "top_needed": 0.054000000000000006,
+     "top_fits": false,
+     "pi_footprint": null,
      "pcb_footprint": [
-      0.045,
+      0.04,
       0.06,
-      true
+      false
      ],
-     "height_needed": 0.05172,
+     "height_needed": 0.02736,
      "height_fits": true
     },
     "servo_count": 12,
-    "servo_mass_fraction": 0.47637475911951505,
+    "servo_mass_fraction": 0.47516678006100455,
     "trot_speed_body_lengths": 0.816
    }
   },
@@ -205,10 +202,10 @@
     "architecture": "direct",
     "thigh": 0.09,
     "shank": 0.085,
-    "abad_link": 0.04,
+    "abad_link": 0.043,
     "hip_to_hip": 0.18,
-    "abad_to_abad": 0.07,
-    "hip_x_offset": 0.016,
+    "abad_to_abad": 0.074,
+    "hip_x_offset": 0.018,
     "body_height": 0.062,
     "body_z_offset": 0.0,
     "wall": 0.003,
@@ -222,16 +219,17 @@
     "dynamic_factor": 1.5,
     "lateral_shift": 0.01,
     "knee_ratio": 1.0,
-    "knee_ratio_note": "knee servo at the knee, drives the shank directly"
+    "knee_ratio_note": "knee servo at the knee, drives the shank directly",
+    "foot_y_offset": 0.00325
    },
    "metrics": {
     "name": "A \u00b7 Direct drive \u00b7 M",
     "architecture": "direct",
-    "mass": 1.4090863616000002,
+    "mass": 1.4129623040000001,
     "com": [
-     -0.013273423059363262,
-     -4.616617697957446e-19,
-     -0.016348484720052407
+     -0.011903820333409067,
+     -1.5346512350912716e-19,
+     -0.016156642528413725
     ],
     "leg_length": 0.175,
     "stance_height": 0.12,
@@ -239,14 +237,14 @@
     "nominal_knee_deg": 93.46607419806767,
     "body_top_height": 0.151,
     "overall_length": 0.26,
-    "overall_width": 0.18200000000000002,
-    "shell_length": 0.148,
+    "overall_width": 0.19199999999999998,
+    "shell_length": 0.144,
     "ratios": {
      "shank/thigh": 0.9444444444444445,
      "shank/thigh (Mini Cheetah)": 0.9330143540669857,
      "hip_to_hip/thigh": 2.0,
      "hip_to_hip/thigh (Mini Cheetah)": 1.8181818181818183,
-     "abad_link/thigh": 0.4444444444444445,
+     "abad_link/thigh": 0.47777777777777775,
      "abad_link/thigh (Mini Cheetah)": 0.2966507177033493,
      "stance/leg_length": 0.6857142857142857,
      "stance/leg_length (Mini Cheetah)": 0.7178217821782177,
@@ -254,31 +252,31 @@
     },
     "torque": {
      "stand": {
-      "force_per_leg": 3.4546041919961605,
-      "abad": 0.13818416767984643,
-      "hip": 4.794226393650903e-17,
-      "knee_joint": 0.2198281643468444,
-      "knee_servo": 0.2198281643468444,
+      "force_per_leg": 3.4641066946304,
+      "abad": 0.14895658786910718,
+      "hip": 4.80741376517102e-17,
+      "knee_joint": 0.22043284077131747,
+      "knee_servo": 0.22043284077131747,
       "limit": 0.47807418749999997,
-      "abad_frac": 0.07226083905641027,
-      "hip_frac": 2.507051478098733e-17,
-      "knee_servo_frac": 0.11495504782238657,
+      "abad_frac": 0.07789407573333333,
+      "hip_frac": 2.513947568634952e-17,
+      "knee_servo_frac": 0.11527125210630489,
       "ok": true
      },
      "trot_peak": {
-      "force_per_leg": 10.363812575988481,
-      "abad": 0.5181906287994241,
-      "hip": 0.3109143772796545,
-      "knee_joint": 0.7683945875900491,
-      "knee_servo": 0.7683945875900491,
+      "force_per_leg": 10.3923200838912,
+      "abad": 0.5507929644462336,
+      "hip": 0.311769602516736,
+      "knee_joint": 0.7705081934293596,
+      "knee_servo": 0.7705081934293596,
       "limit": 1.14737805,
-      "abad_frac": 0.27097814646153856,
-      "hip_frac": 0.16258688787692313,
-      "knee_servo_frac": 0.40181765073336506,
+      "abad_frac": 0.2880269312,
+      "hip_frac": 0.163034112,
+      "knee_servo_frac": 0.4029229215755137,
       "ok": true
      },
      "stall_torque": 1.9122967499999999,
-     "mass": 1.4090863616000002
+     "mass": 1.4129623040000001
     },
     "speed": {
      "gait": "trot",
@@ -292,17 +290,17 @@
      "ok": true
     },
     "packaging": {
-     "inner_length": 0.142,
-     "inner_width": 0.0932,
+     "inner_length": 0.13799999999999998,
+     "inner_width": 0.09599999999999999,
      "inner_height": 0.056,
-     "bottom_gap": 0.07059999999999998,
+     "bottom_gap": 0.05739999999999998,
      "battery_fits": true,
      "battery_footprint": [
       0.04,
       0.07,
       true
      ],
-     "top_needed": 0.10900000000000001,
+     "top_needed": 0.054000000000000006,
      "top_fits": true,
      "pi_footprint": [
       0.056,
@@ -310,15 +308,15 @@
       true
      ],
      "pcb_footprint": [
-      0.045,
+      0.04,
       0.06,
-      true
+      false
      ],
-     "height_needed": 0.05172,
+     "height_needed": 0.02736,
      "height_fits": true
     },
     "servo_count": 12,
-    "servo_mass_fraction": 0.46838860838208535,
+    "servo_mass_fraction": 0.4671037565061608,
     "trot_speed_body_lengths": 0.9333333333333332
    }
   },
@@ -328,10 +326,10 @@
     "architecture": "direct",
     "thigh": 0.1035,
     "shank": 0.09775,
-    "abad_link": 0.043,
+    "abad_link": 0.046224999999999995,
     "hip_to_hip": 0.207,
-    "abad_to_abad": 0.07525,
-    "hip_x_offset": 0.016,
+    "abad_to_abad": 0.07955,
+    "hip_x_offset": 0.018,
     "body_height": 0.062,
     "body_z_offset": 0.0,
     "wall": 0.003,
@@ -345,16 +343,17 @@
     "dynamic_factor": 1.5,
     "lateral_shift": 0.01,
     "knee_ratio": 1.0,
-    "knee_ratio_note": "knee servo at the knee, drives the shank directly"
+    "knee_ratio_note": "knee servo at the knee, drives the shank directly",
+    "foot_y_offset": 0.00325
    },
    "metrics": {
     "name": "A \u00b7 Direct drive \u00b7 L",
     "architecture": "direct",
-    "mass": 1.4499554047999996,
+    "mass": 1.4549641318399995,
     "com": [
-     -0.015559252675311963,
-     3.7387431671909054e-19,
-     -0.019427791672832453
+     -0.013747055390240355,
+     -2.086488605818945e-18,
+     -0.01921815866621429
     ],
     "leg_length": 0.20124999999999998,
     "stance_height": 0.13799999999999998,
@@ -362,14 +361,14 @@
     "nominal_knee_deg": 93.46607419806767,
     "body_top_height": 0.16899999999999998,
     "overall_length": 0.287,
-    "overall_width": 0.19325,
-    "shell_length": 0.175,
+    "overall_width": 0.204,
+    "shell_length": 0.17099999999999999,
     "ratios": {
      "shank/thigh": 0.9444444444444445,
      "shank/thigh (Mini Cheetah)": 0.9330143540669857,
      "hip_to_hip/thigh": 2.0,
      "hip_to_hip/thigh (Mini Cheetah)": 1.8181818181818183,
-     "abad_link/thigh": 0.41545893719806765,
+     "abad_link/thigh": 0.44661835748792267,
      "abad_link/thigh (Mini Cheetah)": 0.2966507177033493,
      "stance/leg_length": 0.6857142857142857,
      "stance/leg_length (Mini Cheetah)": 0.7178217821782177,
@@ -377,31 +376,31 @@
     },
     "torque": {
      "stand": {
-      "force_per_leg": 3.554801292620479,
-      "abad": 0.15285645558268057,
-      "hip": 9.86655560758631e-17,
-      "knee_joint": 0.26013465197338903,
-      "knee_servo": 0.26013465197338903,
+      "force_per_leg": 3.5670810008771827,
+      "abad": 0.16488831926554776,
+      "hip": 9.900638644691991e-17,
+      "knee_joint": 0.2610332613106602,
+      "knee_servo": 0.2610332613106602,
       "limit": 0.47807418749999997,
-      "abad_frac": 0.07993343898256407,
-      "hip_frac": 5.1595316509251564e-17,
-      "knee_servo_frac": 0.1360325754741721,
+      "abad_frac": 0.0862252781978256,
+      "hip_frac": 5.177354740937562e-17,
+      "knee_servo_frac": 0.1365024865051202,
       "ok": true
      },
      "trot_peak": {
-      "force_per_leg": 10.664403877861437,
-      "abad": 0.5652134055266561,
-      "hip": 0.3679219337862195,
-      "knee_joint": 0.9092832086137672,
-      "knee_servo": 0.9092832086137672,
+      "force_per_leg": 10.701243002631548,
+      "abad": 0.6016773878229588,
+      "hip": 0.3691928835907884,
+      "knee_joint": 0.9124242372129397,
+      "knee_servo": 0.9124242372129397,
       "limit": 1.14737805,
-      "abad_frac": 0.295567832516923,
-      "hip_frac": 0.1923979287138461,
-      "knee_servo_frac": 0.475492733339513,
+      "abad_frac": 0.3146359935103999,
+      "hip_frac": 0.19306254826338454,
+      "knee_servo_frac": 0.4771352757948994,
       "ok": true
      },
      "stall_torque": 1.9122967499999999,
-     "mass": 1.4499554047999996
+     "mass": 1.4549641318399995
     },
     "speed": {
      "gait": "trot",
@@ -415,17 +414,17 @@
      "ok": true
     },
     "packaging": {
-     "inner_length": 0.16899999999999998,
-     "inner_width": 0.09845,
+     "inner_length": 0.16499999999999998,
+     "inner_width": 0.10154999999999999,
      "inner_height": 0.056,
-     "bottom_gap": 0.09759999999999998,
+     "bottom_gap": 0.08439999999999998,
      "battery_fits": true,
      "battery_footprint": [
       0.04,
       0.07,
       true
      ],
-     "top_needed": 0.10900000000000001,
+     "top_needed": 0.054000000000000006,
      "top_fits": true,
      "pi_footprint": [
       0.056,
@@ -433,15 +432,15 @@
       true
      ],
      "pcb_footprint": [
-      0.045,
+      0.04,
       0.06,
-      true
+      false
      ],
-     "height_needed": 0.05172,
+     "height_needed": 0.02736,
      "height_fits": true
     },
     "servo_count": 12,
-    "servo_mass_fraction": 0.4551864131925061,
+    "servo_mass_fraction": 0.4536194298929833,
     "trot_speed_body_lengths": 0.9333333333333331
    }
   },
@@ -451,10 +450,10 @@
     "architecture": "belt",
     "thigh": 0.0765,
     "shank": 0.07225000000000001,
-    "abad_link": 0.037000000000000005,
+    "abad_link": 0.039775,
     "hip_to_hip": 0.175,
-    "abad_to_abad": 0.06475000000000002,
-    "hip_x_offset": 0.016,
+    "abad_to_abad": 0.06845,
+    "hip_x_offset": 0.018,
     "body_height": 0.062,
     "body_z_offset": 0.0,
     "wall": 0.003,
@@ -468,16 +467,17 @@
     "dynamic_factor": 1.5,
     "lateral_shift": 0.01,
     "knee_ratio": 1.25,
-    "knee_ratio_note": "GT2 belt, 20T at the hip to 25T at the knee; 1.5:1 exceeds the servo speed cap at a 1.4 Hz trot"
+    "knee_ratio_note": "GT2 belt, 20T at the hip to 25T at the knee; 1.5:1 exceeds the servo speed cap at a 1.4 Hz trot",
+    "foot_y_offset": 0.00325
    },
    "metrics": {
     "name": "B \u00b7 Coaxial hip + belt knee \u00b7 S",
     "architecture": "belt",
-    "mass": 1.4334638336000003,
+    "mass": 1.43698598912,
     "com": [
-     -0.004718476070604834,
-     -2.117783519752564e-18,
-     -0.004481338709243292
+     -0.003482994848115466,
+     7.54497385983187e-19,
+     -0.00432581598768314
     ],
     "leg_length": 0.14875,
     "stance_height": 0.09945,
@@ -485,14 +485,14 @@
     "nominal_knee_deg": 96.13826431733386,
     "body_top_height": 0.13045,
     "overall_length": 0.255,
-    "overall_width": 0.24215000000000003,
-    "shell_length": 0.143,
+    "overall_width": 0.2514,
+    "shell_length": 0.13899999999999998,
     "ratios": {
      "shank/thigh": 0.9444444444444445,
      "shank/thigh (Mini Cheetah)": 0.9330143540669857,
      "hip_to_hip/thigh": 2.287581699346405,
      "hip_to_hip/thigh (Mini Cheetah)": 1.8181818181818183,
-     "abad_link/thigh": 0.4836601307189543,
+     "abad_link/thigh": 0.5199346405228757,
      "abad_link/thigh (Mini Cheetah)": 0.2966507177033493,
      "stance/leg_length": 0.6685714285714286,
      "stance/leg_length (Mini Cheetah)": 0.7178217821782177,
@@ -500,31 +500,31 @@
     },
     "torque": {
      "stand": {
-      "force_per_leg": 3.5143695259433607,
-      "abad": 0.13003167245990435,
-      "hip": 2.4385837279645722e-17,
-      "knee_joint": 0.19419803978482927,
-      "knee_servo": 0.1553584318278634,
+      "force_per_leg": 3.523004662550912,
+      "abad": 0.1401275104529625,
+      "hip": 2.4445755576411267e-17,
+      "knee_joint": 0.19467520264151852,
+      "knee_servo": 0.15574016211321481,
       "limit": 0.47807418749999997,
-      "abad_frac": 0.06799764338871797,
-      "hip_frac": 1.2752119815946831e-17,
-      "knee_servo_frac": 0.08124180090138386,
+      "abad_frac": 0.07327707399647179,
+      "hip_frac": 1.278345297423701e-17,
+      "knee_servo_frac": 0.08144141965059284,
       "ok": true
      },
      "trot_peak": {
-      "force_per_leg": 10.543108577830083,
-      "abad": 0.49552610315801393,
-      "hip": 0.26884926873466714,
-      "knee_joint": 0.6755316580055952,
-      "knee_servo": 0.5404253264044762,
+      "force_per_leg": 10.569013987652736,
+      "abad": 0.5260726712354149,
+      "hip": 0.2695098566851448,
+      "knee_joint": 0.6771915028530258,
+      "knee_servo": 0.5417532022824206,
       "limit": 1.14737805,
-      "abad_frac": 0.25912615453538473,
-      "hip_frac": 0.14058972214153853,
-      "knee_servo_frac": 0.2826053678146324,
+      "abad_frac": 0.27509991387864613,
+      "hip_frac": 0.1409351643175385,
+      "knee_servo_frac": 0.2832997557949208,
       "ok": true
      },
      "stall_torque": 1.9122967499999999,
-     "mass": 1.4334638336000003
+     "mass": 1.43698598912
     },
     "speed": {
      "gait": "trot",
@@ -538,33 +538,29 @@
      "ok": true
     },
     "packaging": {
-     "inner_length": 0.13699999999999998,
-     "inner_width": 0.08795000000000001,
+     "inner_length": 0.13299999999999998,
+     "inner_width": 0.09044999999999999,
      "inner_height": 0.056,
-     "bottom_gap": 0.06559999999999998,
+     "bottom_gap": 0.052399999999999974,
      "battery_fits": true,
      "battery_footprint": [
       0.04,
       0.07,
       true
      ],
-     "top_needed": 0.10900000000000001,
-     "top_fits": true,
-     "pi_footprint": [
-      0.056,
-      0.085,
-      true
-     ],
+     "top_needed": 0.054000000000000006,
+     "top_fits": false,
+     "pi_footprint": null,
      "pcb_footprint": [
-      0.045,
+      0.04,
       0.06,
-      true
+      false
      ],
-     "height_needed": 0.05172,
+     "height_needed": 0.02736,
      "height_fits": true
     },
     "servo_count": 12,
-    "servo_mass_fraction": 0.4604231962675168,
+    "servo_mass_fraction": 0.45929466605598523,
     "trot_speed_body_lengths": 0.816
    }
   },
@@ -574,10 +570,10 @@
     "architecture": "belt",
     "thigh": 0.09,
     "shank": 0.085,
-    "abad_link": 0.04,
+    "abad_link": 0.043,
     "hip_to_hip": 0.18,
-    "abad_to_abad": 0.07,
-    "hip_x_offset": 0.016,
+    "abad_to_abad": 0.074,
+    "hip_x_offset": 0.018,
     "body_height": 0.062,
     "body_z_offset": 0.0,
     "wall": 0.003,
@@ -591,16 +587,17 @@
     "dynamic_factor": 1.5,
     "lateral_shift": 0.01,
     "knee_ratio": 1.25,
-    "knee_ratio_note": "GT2 belt, 20T at the hip to 25T at the knee; 1.5:1 exceeds the servo speed cap at a 1.4 Hz trot"
+    "knee_ratio_note": "GT2 belt, 20T at the hip to 25T at the knee; 1.5:1 exceeds the servo speed cap at a 1.4 Hz trot",
+    "foot_y_offset": 0.00325
    },
    "metrics": {
     "name": "B \u00b7 Coaxial hip + belt knee \u00b7 M",
     "architecture": "belt",
-    "mass": 1.4570863616,
+    "mass": 1.4609623040000002,
     "com": [
-     -0.0057806807785910855,
-     4.46453498320427e-19,
-     -0.0064264439002788085
+     -0.004475954721996945,
+     -5.93692072419415e-19,
+     -0.006267227932996526
     ],
     "leg_length": 0.175,
     "stance_height": 0.117,
@@ -608,14 +605,14 @@
     "nominal_knee_deg": 96.13826431733385,
     "body_top_height": 0.14800000000000002,
     "overall_length": 0.26,
-    "overall_width": 0.2534,
-    "shell_length": 0.148,
+    "overall_width": 0.26339999999999997,
+    "shell_length": 0.144,
     "ratios": {
      "shank/thigh": 0.9444444444444445,
      "shank/thigh (Mini Cheetah)": 0.9330143540669857,
      "hip_to_hip/thigh": 2.0,
      "hip_to_hip/thigh (Mini Cheetah)": 1.8181818181818183,
-     "abad_link/thigh": 0.4444444444444445,
+     "abad_link/thigh": 0.47777777777777775,
      "abad_link/thigh (Mini Cheetah)": 0.2966507177033493,
      "stance/leg_length": 0.6685714285714287,
      "stance/leg_length (Mini Cheetah)": 0.7178217821782177,
@@ -623,31 +620,31 @@
     },
     "torque": {
      "stand": {
-      "force_per_leg": 3.57228399199616,
-      "abad": 0.1428913596798464,
+      "force_per_leg": 3.5817864946304003,
+      "abad": 0.1540168192691072,
       "hip": 0.0,
-      "knee_joint": 0.23223328702319532,
-      "knee_servo": 0.18578662961855624,
+      "knee_joint": 0.23285104233790171,
+      "knee_servo": 0.18628083387032138,
       "limit": 0.47807418749999997,
-      "abad_frac": 0.07472237751794872,
+      "abad_frac": 0.08054022957948719,
       "hip_frac": 0.0,
-      "knee_servo_frac": 0.09715366070593189,
+      "knee_servo_frac": 0.09741209562287934,
       "ok": true
      },
      "trot_peak": {
-      "force_per_leg": 10.71685197598848,
-      "abad": 0.535842598799424,
-      "hip": 0.3215055592796547,
-      "knee_joint": 0.8078399637848658,
-      "knee_servo": 0.6462719710278926,
+      "force_per_leg": 10.745359483891201,
+      "abad": 0.5695040526462336,
+      "hip": 0.32236078451673633,
+      "knee_joint": 0.8099888694712866,
+      "knee_servo": 0.6479910955770293,
       "limit": 1.14737805,
-      "abad_frac": 0.2802089156923077,
-      "hip_frac": 0.16812534941538476,
-      "knee_servo_frac": 0.3379559009488944,
+      "abad_frac": 0.2978115465846154,
+      "hip_frac": 0.16857257353846172,
+      "knee_servo_frac": 0.3388548851411421,
       "ok": true
      },
      "stall_torque": 1.9122967499999999,
-     "mass": 1.4570863616
+     "mass": 1.4609623040000002
     },
     "speed": {
      "gait": "trot",
@@ -661,17 +658,17 @@
      "ok": true
     },
     "packaging": {
-     "inner_length": 0.142,
-     "inner_width": 0.0932,
+     "inner_length": 0.13799999999999998,
+     "inner_width": 0.09599999999999999,
      "inner_height": 0.056,
-     "bottom_gap": 0.07059999999999998,
+     "bottom_gap": 0.05739999999999998,
      "battery_fits": true,
      "battery_footprint": [
       0.04,
       0.07,
       true
      ],
-     "top_needed": 0.10900000000000001,
+     "top_needed": 0.054000000000000006,
      "top_fits": true,
      "pi_footprint": [
       0.056,
@@ -679,15 +676,15 @@
       true
      ],
      "pcb_footprint": [
-      0.045,
+      0.04,
       0.06,
-      true
+      false
      ],
-     "height_needed": 0.05172,
+     "height_needed": 0.02736,
      "height_fits": true
     },
     "servo_count": 12,
-    "servo_mass_fraction": 0.45295873833810785,
+    "servo_mass_fraction": 0.45175703588858646,
     "trot_speed_body_lengths": 0.9333333333333332
    }
   },
@@ -697,10 +694,10 @@
     "architecture": "belt",
     "thigh": 0.1035,
     "shank": 0.09775,
-    "abad_link": 0.043,
+    "abad_link": 0.046224999999999995,
     "hip_to_hip": 0.207,
-    "abad_to_abad": 0.07525,
-    "hip_x_offset": 0.016,
+    "abad_to_abad": 0.07955,
+    "hip_x_offset": 0.018,
     "body_height": 0.062,
     "body_z_offset": 0.0,
     "wall": 0.003,
@@ -714,16 +711,17 @@
     "dynamic_factor": 1.5,
     "lateral_shift": 0.01,
     "knee_ratio": 1.25,
-    "knee_ratio_note": "GT2 belt, 20T at the hip to 25T at the knee; 1.5:1 exceeds the servo speed cap at a 1.4 Hz trot"
+    "knee_ratio_note": "GT2 belt, 20T at the hip to 25T at the knee; 1.5:1 exceeds the servo speed cap at a 1.4 Hz trot",
+    "foot_y_offset": 0.00325
    },
    "metrics": {
     "name": "B \u00b7 Coaxial hip + belt knee \u00b7 L",
     "architecture": "belt",
-    "mass": 1.4979554047999997,
+    "mass": 1.5029641318399996,
     "com": [
-     -0.006973551416300689,
-     1.1580608277243204e-18,
-     -0.008377508677159121
+     -0.005247842491784748,
+     2.5969534057804978e-18,
+     -0.008211396493275215
     ],
     "leg_length": 0.20124999999999998,
     "stance_height": 0.13455,
@@ -731,14 +729,14 @@
     "nominal_knee_deg": 96.13826431733385,
     "body_top_height": 0.16555,
     "overall_length": 0.287,
-    "overall_width": 0.26465,
-    "shell_length": 0.175,
+    "overall_width": 0.2754,
+    "shell_length": 0.17099999999999999,
     "ratios": {
      "shank/thigh": 0.9444444444444445,
      "shank/thigh (Mini Cheetah)": 0.9330143540669857,
      "hip_to_hip/thigh": 2.0,
      "hip_to_hip/thigh (Mini Cheetah)": 1.8181818181818183,
-     "abad_link/thigh": 0.41545893719806765,
+     "abad_link/thigh": 0.44661835748792267,
      "abad_link/thigh (Mini Cheetah)": 0.2966507177033493,
      "stance/leg_length": 0.6685714285714286,
      "stance/leg_length (Mini Cheetah)": 0.7178217821782177,
@@ -746,31 +744,31 @@
     },
     "torque": {
      "stand": {
-      "force_per_leg": 3.672481092620479,
-      "abad": 0.1579166869826806,
-      "hip": 5.09659133315976e-17,
-      "knee_joint": 0.2745591367365488,
-      "knee_servo": 0.21964730938923904,
+      "force_per_leg": 3.6847608008771826,
+      "abad": 0.17032806802054776,
+      "hip": 5.1136328517126e-17,
+      "knee_joint": 0.2754771826061686,
+      "knee_servo": 0.22038174608493488,
       "limit": 0.47807418749999997,
-      "abad_frac": 0.08257959282871793,
-      "hip_frac": 2.6651675965875906e-17,
-      "knee_servo_frac": 0.1148604730877878,
+      "abad_frac": 0.089069893582441,
+      "hip_frac": 2.674079141593793e-17,
+      "knee_servo_frac": 0.1152445330908683,
       "ok": true
      },
      "trot_peak": {
-      "force_per_leg": 11.017443277861437,
-      "abad": 0.5839244937266561,
-      "hip": 0.38010179308621966,
-      "knee_joint": 0.9550734346532516,
-      "knee_servo": 0.7640587477226013,
+      "force_per_leg": 11.054282402631548,
+      "abad": 0.6215270280879588,
+      "hip": 0.38137274289078854,
+      "knee_joint": 0.9582669223378679,
+      "knee_servo": 0.7666135378702943,
       "limit": 1.14737805,
-      "abad_frac": 0.30535244790153837,
-      "hip_frac": 0.19876715948307694,
-      "knee_servo_frac": 0.3995503039591535,
+      "abad_frac": 0.3250159935103999,
+      "hip_frac": 0.19943177903261539,
+      "knee_servo_frac": 0.40088628392549136,
       "ok": true
      },
      "stall_torque": 1.9122967499999999,
-     "mass": 1.4979554047999997
+     "mass": 1.5029641318399996
     },
     "speed": {
      "gait": "trot",
@@ -784,17 +782,17 @@
      "ok": true
     },
     "packaging": {
-     "inner_length": 0.16899999999999998,
-     "inner_width": 0.09845,
+     "inner_length": 0.16499999999999998,
+     "inner_width": 0.10154999999999999,
      "inner_height": 0.056,
-     "bottom_gap": 0.09759999999999998,
+     "bottom_gap": 0.08439999999999998,
      "battery_fits": true,
      "battery_footprint": [
       0.04,
       0.07,
       true
      ],
-     "top_needed": 0.10900000000000001,
+     "top_needed": 0.054000000000000006,
      "top_fits": true,
      "pi_footprint": [
       0.056,
@@ -802,15 +800,15 @@
       true
      ],
      "pcb_footprint": [
-      0.045,
+      0.04,
       0.06,
-      true
+      false
      ],
-     "height_needed": 0.05172,
+     "height_needed": 0.02736,
      "height_fits": true
     },
     "servo_count": 12,
-    "servo_mass_fraction": 0.4406005665356375,
+    "servo_mass_fraction": 0.43913223610466134,
     "trot_speed_body_lengths": 0.9333333333333331
    }
   },
@@ -820,10 +818,10 @@
     "architecture": "pushrod",
     "thigh": 0.0765,
     "shank": 0.07225000000000001,
-    "abad_link": 0.037000000000000005,
+    "abad_link": 0.039775,
     "hip_to_hip": 0.175,
-    "abad_to_abad": 0.06475000000000002,
-    "hip_x_offset": 0.016,
+    "abad_to_abad": 0.06845,
+    "hip_x_offset": 0.018,
     "body_height": 0.062,
     "body_z_offset": 0.0,
     "wall": 0.003,
@@ -837,16 +835,17 @@
     "dynamic_factor": 1.5,
     "lateral_shift": 0.01,
     "knee_ratio": 1.2,
-    "knee_ratio_note": "4-bar pushrod, ~1.2:1 average; the ratio varies \u00b120% over the knee range"
+    "knee_ratio_note": "4-bar pushrod, ~1.2:1 average; the ratio varies \u00b120% over the knee range",
+    "foot_y_offset": 0.00325
    },
    "metrics": {
     "name": "C \u00b7 Coaxial hip + pushrod knee \u00b7 S",
     "architecture": "pushrod",
-    "mass": 1.4254638336000003,
+    "mass": 1.42898598912,
     "com": [
-     -0.004559784278067352,
-     -7.605960578791805e-19,
-     -0.004424646691187549
+     -0.0033177775104166916,
+     4.552328073502719e-19,
+     -0.004268393029173047
     ],
     "leg_length": 0.14875,
     "stance_height": 0.10029999999999999,
@@ -854,14 +853,14 @@
     "nominal_knee_deg": 95.25385550672104,
     "body_top_height": 0.13129999999999997,
     "overall_length": 0.255,
-    "overall_width": 0.24215000000000003,
-    "shell_length": 0.143,
+    "overall_width": 0.2514,
+    "shell_length": 0.13899999999999998,
     "ratios": {
      "shank/thigh": 0.9444444444444445,
      "shank/thigh (Mini Cheetah)": 0.9330143540669857,
      "hip_to_hip/thigh": 2.287581699346405,
      "hip_to_hip/thigh (Mini Cheetah)": 1.8181818181818183,
-     "abad_link/thigh": 0.4836601307189543,
+     "abad_link/thigh": 0.5199346405228757,
      "abad_link/thigh (Mini Cheetah)": 0.2966507177033493,
      "stance/leg_length": 0.6742857142857143,
      "stance/leg_length (Mini Cheetah)": 0.7178217821782177,
@@ -869,31 +868,31 @@
     },
     "torque": {
      "stand": {
-      "force_per_leg": 3.4947562259433607,
-      "abad": 0.12930598035990437,
+      "force_per_leg": 3.503391362550912,
+      "abad": 0.13934739144546252,
       "hip": 0.0,
-      "knee_joint": 0.19177271884614255,
-      "knee_servo": 0.15981059903845213,
+      "knee_joint": 0.19224656695392894,
+      "knee_servo": 0.16020547246160746,
       "limit": 0.47807418749999997,
-      "abad_frac": 0.0676181562092308,
+      "abad_frac": 0.07286912527852307,
       "hip_frac": 0.0,
-      "knee_servo_frac": 0.08356997889498695,
+      "knee_servo_frac": 0.08377647060353341,
       "ok": true
      },
      "trot_peak": {
-      "force_per_leg": 10.484268677830082,
-      "abad": 0.49276062785801394,
-      "hip": 0.267348851284667,
-      "knee_joint": 0.6681622709204307,
-      "knee_servo": 0.5568018924336923,
+      "force_per_leg": 10.510174087652736,
+      "abad": 0.5231439152129149,
+      "hip": 0.2680094392351447,
+      "knee_joint": 0.6698132222636398,
+      "knee_servo": 0.5581776852196999,
       "limit": 1.14737805,
-      "abad_frac": 0.25768000068923086,
-      "hip_frac": 0.13980510675692306,
-      "knee_servo_frac": 0.2911691882725274,
+      "abad_frac": 0.2735683754171077,
+      "hip_frac": 0.14015054893292306,
+      "knee_servo_frac": 0.29188863350821465,
       "ok": true
      },
      "stall_torque": 1.9122967499999999,
-     "mass": 1.4254638336000003
+     "mass": 1.42898598912
     },
     "speed": {
      "gait": "trot",
@@ -907,33 +906,29 @@
      "ok": true
     },
     "packaging": {
-     "inner_length": 0.13699999999999998,
-     "inner_width": 0.08795000000000001,
+     "inner_length": 0.13299999999999998,
+     "inner_width": 0.09044999999999999,
      "inner_height": 0.056,
-     "bottom_gap": 0.06559999999999998,
+     "bottom_gap": 0.052399999999999974,
      "battery_fits": true,
      "battery_footprint": [
       0.04,
       0.07,
       true
      ],
-     "top_needed": 0.10900000000000001,
-     "top_fits": true,
-     "pi_footprint": [
-      0.056,
-      0.085,
-      true
-     ],
+     "top_needed": 0.054000000000000006,
+     "top_fits": false,
+     "pi_footprint": null,
      "pcb_footprint": [
-      0.045,
+      0.04,
       0.06,
-      true
+      false
      ],
-     "height_needed": 0.05172,
+     "height_needed": 0.02736,
      "height_fits": true
     },
     "servo_count": 12,
-    "servo_mass_fraction": 0.46300718716459754,
+    "servo_mass_fraction": 0.46186597001307345,
     "trot_speed_body_lengths": 0.816
    }
   },
@@ -943,10 +938,10 @@
     "architecture": "pushrod",
     "thigh": 0.09,
     "shank": 0.085,
-    "abad_link": 0.04,
+    "abad_link": 0.043,
     "hip_to_hip": 0.18,
-    "abad_to_abad": 0.07,
-    "hip_x_offset": 0.016,
+    "abad_to_abad": 0.074,
+    "hip_x_offset": 0.018,
     "body_height": 0.062,
     "body_z_offset": 0.0,
     "wall": 0.003,
@@ -960,16 +955,17 @@
     "dynamic_factor": 1.5,
     "lateral_shift": 0.01,
     "knee_ratio": 1.2,
-    "knee_ratio_note": "4-bar pushrod, ~1.2:1 average; the ratio varies \u00b120% over the knee range"
+    "knee_ratio_note": "4-bar pushrod, ~1.2:1 average; the ratio varies \u00b120% over the knee range",
+    "foot_y_offset": 0.00325
    },
    "metrics": {
     "name": "C \u00b7 Coaxial hip + pushrod knee \u00b7 M",
     "architecture": "pushrod",
-    "mass": 1.4490863616,
+    "mass": 1.4529623040000001,
     "com": [
-     -0.00559599521401853,
-     0.0,
-     -0.006371703852313981
+     -0.004284578014911198,
+     1.641642575930249e-18,
+     -0.006211757268371892
     ],
     "leg_length": 0.175,
     "stance_height": 0.118,
@@ -977,14 +973,14 @@
     "nominal_knee_deg": 95.25385550672102,
     "body_top_height": 0.149,
     "overall_length": 0.26,
-    "overall_width": 0.2534,
-    "shell_length": 0.148,
+    "overall_width": 0.26339999999999997,
+    "shell_length": 0.144,
     "ratios": {
      "shank/thigh": 0.9444444444444445,
      "shank/thigh (Mini Cheetah)": 0.9330143540669857,
      "hip_to_hip/thigh": 2.0,
      "hip_to_hip/thigh (Mini Cheetah)": 1.8181818181818183,
-     "abad_link/thigh": 0.4444444444444445,
+     "abad_link/thigh": 0.47777777777777775,
      "abad_link/thigh (Mini Cheetah)": 0.2966507177033493,
      "stance/leg_length": 0.6742857142857143,
      "stance/leg_length (Mini Cheetah)": 0.7178217821782177,
@@ -992,31 +988,31 @@
     },
     "torque": {
      "stand": {
-      "force_per_leg": 3.55267069199616,
-      "abad": 0.1421068276798464,
+      "force_per_leg": 3.5621731946304003,
+      "abad": 0.1531734473691072,
       "hip": 0.0,
-      "knee_joint": 0.22935381358317652,
-      "knee_servo": 0.19112817798598045,
+      "knee_joint": 0.22996727748306944,
+      "knee_servo": 0.19163939790255788,
       "limit": 0.47807418749999997,
-      "abad_frac": 0.07431212110769231,
+      "abad_frac": 0.08009920393846155,
       "hip_frac": 0.0,
-      "knee_servo_frac": 0.09994692402524893,
+      "knee_servo_frac": 0.10021425696747008,
       "ok": true
      },
      "trot_peak": {
-      "force_per_leg": 10.65801207598848,
-      "abad": 0.532900603799424,
-      "hip": 0.31974036227965447,
-      "knee_joint": 0.799099923336561,
-      "knee_servo": 0.6659166027804675,
+      "force_per_leg": 10.6865195838912,
+      "abad": 0.5663855379462336,
+      "hip": 0.3205955875167361,
+      "knee_joint": 0.8012373151144238,
+      "knee_servo": 0.6676977625953532,
       "limit": 1.14737805,
-      "abad_frac": 0.2786704541538462,
-      "hip_frac": 0.16720227249230774,
-      "knee_servo_frac": 0.3482286955622696,
+      "abad_frac": 0.2961807773538462,
+      "hip_frac": 0.1676494966153847,
+      "knee_servo_frac": 0.34916011994234325,
       "ok": true
      },
      "stall_torque": 1.9122967499999999,
-     "mass": 1.4490863616
+     "mass": 1.4529623040000001
     },
     "speed": {
      "gait": "trot",
@@ -1030,17 +1026,17 @@
      "ok": true
     },
     "packaging": {
-     "inner_length": 0.142,
-     "inner_width": 0.0932,
+     "inner_length": 0.13799999999999998,
+     "inner_width": 0.09599999999999999,
      "inner_height": 0.056,
-     "bottom_gap": 0.07059999999999998,
+     "bottom_gap": 0.05739999999999998,
      "battery_fits": true,
      "battery_footprint": [
       0.04,
       0.07,
       true
      ],
-     "top_needed": 0.10900000000000001,
+     "top_needed": 0.054000000000000006,
      "top_fits": true,
      "pi_footprint": [
       0.056,
@@ -1048,15 +1044,15 @@
       true
      ],
      "pcb_footprint": [
-      0.045,
+      0.04,
       0.06,
-      true
+      false
      ],
-     "height_needed": 0.05172,
+     "height_needed": 0.02736,
      "height_fits": true
     },
     "servo_count": 12,
-    "servo_mass_fraction": 0.4554593966858297,
+    "servo_mass_fraction": 0.45424440688035905,
     "trot_speed_body_lengths": 0.9333333333333332
    }
   },
@@ -1066,10 +1062,10 @@
     "architecture": "pushrod",
     "thigh": 0.1035,
     "shank": 0.09775,
-    "abad_link": 0.043,
+    "abad_link": 0.046224999999999995,
     "hip_to_hip": 0.207,
-    "abad_to_abad": 0.07525,
-    "hip_x_offset": 0.016,
+    "abad_to_abad": 0.07955,
+    "hip_x_offset": 0.018,
     "body_height": 0.062,
     "body_z_offset": 0.0,
     "wall": 0.003,
@@ -1083,16 +1079,17 @@
     "dynamic_factor": 1.5,
     "lateral_shift": 0.01,
     "knee_ratio": 1.2,
-    "knee_ratio_note": "4-bar pushrod, ~1.2:1 average; the ratio varies \u00b120% over the knee range"
+    "knee_ratio_note": "4-bar pushrod, ~1.2:1 average; the ratio varies \u00b120% over the knee range",
+    "foot_y_offset": 0.00325
    },
    "metrics": {
     "name": "C \u00b7 Coaxial hip + pushrod knee \u00b7 L",
     "architecture": "pushrod",
-    "mass": 1.4899554047999997,
+    "mass": 1.4949641318399995,
     "com": [
-     -0.006766165484919765,
-     4.802650009088602e-18,
-     -0.008326613747506746
+     -0.005031916601750642,
+     2.4658032309535335e-18,
+     -0.008159783166011923
     ],
     "leg_length": 0.20124999999999998,
     "stance_height": 0.1357,
@@ -1100,14 +1097,14 @@
     "nominal_knee_deg": 95.25385550672104,
     "body_top_height": 0.1667,
     "overall_length": 0.287,
-    "overall_width": 0.26465,
-    "shell_length": 0.175,
+    "overall_width": 0.2754,
+    "shell_length": 0.17099999999999999,
     "ratios": {
      "shank/thigh": 0.9444444444444445,
      "shank/thigh (Mini Cheetah)": 0.9330143540669857,
      "hip_to_hip/thigh": 2.0,
      "hip_to_hip/thigh (Mini Cheetah)": 1.8181818181818183,
-     "abad_link/thigh": 0.41545893719806765,
+     "abad_link/thigh": 0.44661835748792267,
      "abad_link/thigh (Mini Cheetah)": 0.2966507177033493,
      "stance/leg_length": 0.6742857142857143,
      "stance/leg_length (Mini Cheetah)": 0.7178217821782177,
@@ -1115,31 +1112,31 @@
     },
     "torque": {
      "stand": {
-      "force_per_leg": 3.652867792620479,
-      "abad": 0.15707331508268058,
+      "force_per_leg": 3.6651475008771826,
+      "abad": 0.16942144322804775,
       "hip": 0.0,
-      "knee_joint": 0.27119570489214606,
-      "knee_servo": 0.22599642074345505,
+      "knee_joint": 0.2721073732923204,
+      "knee_servo": 0.22675614441026698,
       "limit": 0.47807418749999997,
-      "abad_frac": 0.08213856718769227,
+      "abad_frac": 0.08859579101833842,
       "hip_frac": 0.0,
-      "knee_servo_frac": 0.11818062272158077,
+      "knee_servo_frac": 0.11857790607564804,
       "ok": true
      },
      "trot_peak": {
-      "force_per_leg": 10.958603377861436,
-      "abad": 0.5808059790266561,
-      "hip": 0.3780718165362195,
-      "knee_joint": 0.9448827713079486,
-      "knee_servo": 0.7874023094232906,
+      "force_per_leg": 10.995442502631548,
+      "abad": 0.6182187547104587,
+      "hip": 0.37934276634078834,
+      "knee_joint": 0.9480591481787151,
+      "knee_servo": 0.7900492901489292,
       "limit": 1.14737805,
-      "abad_frac": 0.30372167867076916,
-      "hip_frac": 0.19770562102153838,
-      "knee_servo_frac": 0.4117573851565091,
+      "abad_frac": 0.3232859935103999,
+      "hip_frac": 0.19837024057107683,
+      "knee_servo_frac": 0.41314157447003413,
       "ok": true
      },
      "stall_torque": 1.9122967499999999,
-     "mass": 1.4899554047999997
+     "mass": 1.4949641318399995
     },
     "speed": {
      "gait": "trot",
@@ -1153,17 +1150,17 @@
      "ok": true
     },
     "packaging": {
-     "inner_length": 0.16899999999999998,
-     "inner_width": 0.09845,
+     "inner_length": 0.16499999999999998,
+     "inner_width": 0.10154999999999999,
      "inner_height": 0.056,
-     "bottom_gap": 0.09759999999999998,
+     "bottom_gap": 0.08439999999999998,
      "battery_fits": true,
      "battery_footprint": [
       0.04,
       0.07,
       true
      ],
-     "top_needed": 0.10900000000000001,
+     "top_needed": 0.054000000000000006,
      "top_fits": true,
      "pi_footprint": [
       0.056,
@@ -1171,15 +1168,15 @@
       true
      ],
      "pcb_footprint": [
-      0.045,
+      0.04,
       0.06,
-      true
+      false
      ],
-     "height_needed": 0.05172,
+     "height_needed": 0.02736,
      "height_fits": true
     },
     "servo_count": 12,
-    "servo_mass_fraction": 0.44296627796628146,
+    "servo_mass_fraction": 0.4414821639818696,
     "trot_speed_body_lengths": 0.9333333333333331
    }
   }

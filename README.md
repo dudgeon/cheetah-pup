@@ -6,11 +6,14 @@ STS3215-class smart servos and much of the surrounding stack (power, sensors, tr
 approach) drawn from Hugging Face/Pollen Robotics' open-source **Open Duck Mini v2**
 project.
 
-**Status**: Phase 1 complete. The design is locked (candidate A · direct drive, size M — see
-[`docs/design/01-candidates.md`](docs/design/01-candidates.md) and `docs/design/locked.json`),
-the MuJoCo model is validated ([`docs/design/02-sim-validation.md`](docs/design/02-sim-validation.md)),
-and the RL environment is built and smoke-tested ([`docs/design/03-rl-environment.md`](docs/design/03-rl-environment.md)).
-Next: the first cloud-GPU training run, and Phase 2 CAD.
+**Status**: Phase 1 complete, Phase 2 CAD first pass done. The design is locked (candidate A ·
+direct drive, size M — see [`docs/design/01-candidates.md`](docs/design/01-candidates.md) and
+`docs/design/locked.json`), the MuJoCo model is validated
+([`docs/design/02-sim-validation.md`](docs/design/02-sim-validation.md)), the RL environment is
+built and smoke-tested ([`docs/design/03-rl-environment.md`](docs/design/03-rl-environment.md)),
+and the build123d CAD of every printed part now feeds the simulator its masses, inertias and
+meshes ([`docs/design/04-cad-detail.md`](docs/design/04-cad-detail.md)). Next: confirm the servo
+interface on a real STS3215, the first cloud-GPU training run, and the second CAD pass.
 
 **Start here**: [`docs/HANDOFF.md`](docs/HANDOFF.md) is the project plan — decisions made and
 why, architecture, phased build sequence, budget, safety, and open questions.
@@ -24,17 +27,22 @@ cheetah_pup/            Design library (SI units): servo + electronics data, par
                         presets (incl. the locked design), 3-DOF leg kinematics, gait generation,
                         sizing analysis, MJCF generation, MuJoCo validation, page builders
 cheetah_pup/rl/         MuJoCo Playground (MJX) environment, domain randomization, PPO runner
+cad/                    build123d CAD: STS3215 model and interface conventions, printed parts in
+                        their MuJoCo body frames, assembly + mass properties + STEP/STL export
+cad/exports/            Generated: step/ and stl/ per part, mass_properties.json (read by the
+                        MJCF generator), viewer_meshes.json (read by the DR-04 page builder)
 sim/                    Generated models (cheetah_pup.xml, cheetah_pup_rl.xml) and validation
                         recordings; checkpoints are written to sim/checkpoints (ignored)
 tests/                  pytest suite (design library, MJCF, RL environment)
 docs/                   Plan, design log, research; docs/design/ holds each design review
 docs/design/review/     DR-01 candidate review page (template + build)
 docs/design/replay/     DR-02 sim playback page (template + build)
+docs/design/cad/        DR-04 CAD review page with a WebGL viewer (template + build)
 vendor/                 Git submodules: external reference repos (see vendor/README.md)
 ```
 
-Mechanical CAD, PCB design, and firmware directories will be added as each build phase
-starts (see `docs/HANDOFF.md` §5).
+PCB design and firmware directories will be added as those build phases start (see
+`docs/HANDOFF.md` §5).
 
 ## Working with the code
 
@@ -49,6 +57,19 @@ JAX_PLATFORMS=cpu .venv/bin/pytest tests/test_rl_env.py                         
 .venv/bin/python -m cheetah_pup.build_artifact                      # rebuild the DR-01 page
 JAX_PLATFORMS=cpu .venv/bin/python -m cheetah_pup.rl.train --smoke  # PPO pipeline check
 ```
+
+The CAD needs the `cad` extra (build123d pulls in OCP, so use a separate venv if the sim one
+is precious):
+
+```
+python -m venv .venv-cad && .venv-cad/bin/pip install -e ".[cad]"
+.venv-cad/bin/python -m cad.assembly                 # STEP/STL, mass_properties.json, viewer meshes
+.venv/bin/python -m cheetah_pup.mjcf sim/cheetah_pup.xml && .venv/bin/python -m cheetah_pup.mjcf sim/cheetah_pup_rl.xml --rl
+.venv/bin/python -m cheetah_pup.build_cad_review     # rebuild the DR-04 page
+```
+
+`python -m cheetah_pup.mjcf` uses the CAD inertias and meshes whenever `cad/exports` matches the
+locked design; `--no-cad` writes the Phase 1 primitive model instead.
 
 `cheetah_pup.design.PRESETS` holds the candidates; `cheetah_pup.analysis.metrics()` sizes any
 `DesignParams`. The review page's JavaScript mirrors the same math and cross-checks itself

@@ -43,3 +43,14 @@ Model: `sim/cheetah_pup.xml` from `python -m cheetah_pup.mjcf` (locked design A 
 - Feet: 10 mm spheres, friction 1.0. Contact sensing via MuJoCo touch sensors.
 - Sensors present for the observation space: IMU quaternion, gyro, accelerometer; four foot touch
   sensors; joint positions and velocities from the state.
+
+## 2026-09-05 — re-run on the CAD-derived model
+
+Same protocol on `sim/cheetah_pup.xml` regenerated from the Phase 2 CAD (explicit per-body
+inertias, 1.391 kg, feet 3.25 mm outboard): stand sag 0.9 mm, droop 0.76°, knee hold 0.249 N·m;
+open-loop walk 0.145 m in 6 s (0.024 m/s, pitch ≤ 10.2°), open-loop trot 0.411 m (0.069 m/s,
+pitch ≤ 8.7°); leveled trot 0.098 m/s with 21° pitch excursions. No falls. The DR-02 page shows
+these runs. Trot is 23 % faster than on the primitive model, mostly from the lower trunk inertia
+about pitch (1.55 vs the primitive box's value) — the qualitative picture (front feet floating,
+speed loss open-loop) is unchanged and remains the RL policy's job (§9.9).
+
